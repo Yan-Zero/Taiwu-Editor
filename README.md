@@ -4,6 +4,7 @@
 前前 [[太吾绘卷] [mod] 修改器1.0.8(基础数值+快速读书+快速练功+奇遇直接到达终点+无限负重+会面亲密全满)](https://bbs.nga.cn/read.php?tid=15234286&rand=514) 并做少许修改
 
 前主页：[[MOD] 太吾修改器](https://nga.178.com/read.php?tid=17443101)
+
 主页：[[BIE][MOD] 太吾修改器](https://nga.178.com/read.php?tid=21413796)
 
 ## Change Log

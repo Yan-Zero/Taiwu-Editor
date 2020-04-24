@@ -1,10 +1,18 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using TaiwuUIKit.GameObjects;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityUIKit.Core;
+using UnityUIKit.Core.GameObjects;
+using UnityUIKit.GameObjects;
 
 namespace TaiwuEditor
 {
-    internal class EditorUI : MonoBehaviour
+    internal class EditorUIOld : MonoBehaviour
     {
         #region Constant
         /// <summary>窗口背景图</summary>
@@ -74,7 +82,7 @@ namespace TaiwuEditor
         #endregion
 
         #region Instance
-        public static EditorUI Instance { get; private set; }
+        public static EditorUIOld Instance { get; private set; }
         #endregion
 
         /// <summary>太吾修改器的参数</summary>
@@ -149,7 +157,7 @@ namespace TaiwuEditor
                 if (Instance == null)
                 {
                     modSettings = instance;
-                    new GameObject(typeof(EditorUI).FullName, typeof(EditorUI));
+                    new GameObject(typeof(EditorUIOld).FullName, typeof(EditorUIOld));
                     windowTexture = new Texture2D(2, 2);
                     if (!windowTexture.LoadImage(Convert.FromBase64String(windowBase64)))
                     {
@@ -278,7 +286,7 @@ namespace TaiwuEditor
                 padding = RectOffset(5)
             };
             windowStyle.normal.background = windowTexture;
-            windowStyle.normal.background.wrapMode = TextureWrapMode.Repeat;
+            windowStyle.normal.background.wrapMode = TextureWrapMode.Clamp;
 
             titleStyle = new GUIStyle
             {
@@ -868,5 +876,26 @@ namespace TaiwuEditor
         private static RectOffset RectOffset(int value) => new RectOffset(value, value, value, value);
 
         private static RectOffset RectOffset(int x, int y) => new RectOffset(x, x, y, y);
+    }
+
+    public static class RuntimeCongfig
+    {
+        public static TaiwuEditor TaiwuEditor;
+
+        public static void Init()
+        {
+            ImageConfig.Init();
+        }
+
+        public static class ImageConfig
+        {
+            public static Image BackgroundImage;
+            public static Image Button_Brown;
+
+            public static void Init()
+            {
+                BackgroundImage = Resources.Load<GameObject>("OldScenePrefabs/YesOrNoWindow").transform.Find("WindowBody").GetComponent<Image>();
+            }
+        }
     }
 }

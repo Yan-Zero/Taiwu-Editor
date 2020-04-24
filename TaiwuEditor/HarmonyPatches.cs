@@ -12,14 +12,20 @@ namespace TaiwuEditor
 
         public static void Init()
         {
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            harmony.PatchAll();
 
-            var actorMenuAwake = AccessTools.Method(typeof(ActorMenu), "Awake");
-            var postFixes = Harmony.GetPatchInfo(actorMenuAwake)?.Postfixes;
-            if (postFixes == null || postFixes.Count == 0)
+            try
             {
-                var patchedPostfix = new HarmonyMethod(typeof(Patches.ActorMenu_Awake_Hook), "Postfix", new[] { typeof(ActorMenu) });
-                harmony.Patch(actorMenuAwake, null, patchedPostfix);
+                var actorMenuAwake = AccessTools.Method(typeof(ActorMenu), "Awake");
+                var postFixes = Harmony.GetPatchInfo(actorMenuAwake)?.Postfixes;
+                if (postFixes == null || postFixes.Count == 0)
+                {
+                    var patchedPostfix = new HarmonyMethod(typeof(Patches.ActorMenu_Awake_Hook), "Postfix", new[] { typeof(ActorMenu) });
+                    harmony.Patch(actorMenuAwake, null, patchedPostfix);
+                }
+            }catch(Exception ex)
+            {
+                TaiwuEditor.Logger.LogError(ex);
             }
         }
 

@@ -10,6 +10,9 @@ using BepInEx.Configuration;
 using System.Runtime.InteropServices;
 using System;
 using Newtonsoft.Json;
+using UnityUIKit.GameObjects;
+using TaiwuUIKit.GameObjects;
+using UnityUIKit.Core;
 
 namespace TaiwuEditor
 {
@@ -34,7 +37,7 @@ namespace TaiwuEditor
         /// <summary>UI类是否已经创建</summary>
         private static bool uiIsShow = false;
 
-        public void Awake()
+        private void Awake()
         {
             DontDestroyOnLoad(this);
 
@@ -42,7 +45,11 @@ namespace TaiwuEditor
             settings.Init(Config);
             Logger = base.Logger;
 
-            if (!uiIsShow && EditorUI.Load(settings))
+            RuntimeCongfig.TaiwuEditor = this;
+            RuntimeCongfig.Init();
+            PrepareGUI();
+
+            if (!uiIsShow && EditorUIOld.Load(settings))
             {
                 uiIsShow = true;
 
@@ -67,6 +74,93 @@ namespace TaiwuEditor
             if (enabled && DateFile.instance != null && settings.basicUISettings.Value[0])
             {
                 DateFile.instance.dayTime = DateFile.instance.GetMaxDayTime();
+            }
+        }
+
+        private Container.CanvasContainer overlay;
+        private TaiwuWindows windows;
+        private TaiwuButton button;
+
+        /// <summary>
+        /// 初始化UI
+        /// </summary>
+        private void PrepareGUI()
+        {
+            overlay = new Container.CanvasContainer()
+            {
+                Name = "TaiwuEditor.Canvas",
+                Group =
+                {
+                    Padding = { 0 },
+                },
+                Children =
+                {
+                    (windows = new TaiwuWindows()
+                    {
+                        Name = "TaiwuEditor.Windows",
+                        Title = $"太吾修改器 {TaiwuEditor.version}",
+                        Direction = Direction.Vertical,
+                        Spacing = 10,
+                        Group =
+                        {
+                            ChildrenAlignment = TextAnchor.UpperCenter,
+                        },
+                        Children =
+                        {
+                            new Container()
+                            {
+                                Name = "Horizontal 1",
+                                Group=
+                                {
+                                    Direction = Direction.Horizontal,
+                                    Spacing = 2
+                                },
+                                Children =
+                                {
+                                    (button = new TaiwuButton()
+                                    {
+                                        Name = "Button",
+                                        Text = "A"
+                                    }),
+                                    new TaiwuToggle()
+                                    {
+                                        Name = "C_Toggle",
+                                        Text = "C"
+                                    }
+                                }
+                            }
+                        },
+                        Element =
+                        {
+                            PreferredSize = { 980, 700 }
+                        },
+                    }),
+                }
+            };
+            Logger.LogInfo(windows.Group.Direction);
+            Logger.LogInfo(windows.Direction);
+            button.onClick.AddListener(delegate { button.Text = button.Text == "A" ? "B" : "A"; });
+        }
+
+        private void Update()
+        {
+            if (settings.hotKey.Value.IsDown())
+            {
+                if (overlay.Created)
+                {
+                    if (overlay.IsActive)
+                        windows.CloseButton.Click();
+                    else
+                    {
+                        overlay.SetActive(true);
+                        AudioManager.instance.PlaySE("SE_BUTTONDEFAULT");
+                    }
+                }
+                else
+                {
+                    var parent = GameObject.Find("/UIRoot").transform;
+                    overlay.SetParent(parent);
+                }
             }
         }
     }
