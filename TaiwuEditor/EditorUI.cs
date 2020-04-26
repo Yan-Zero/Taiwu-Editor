@@ -878,6 +878,45 @@ namespace TaiwuEditor
         private static RectOffset RectOffset(int x, int y) => new RectOffset(x, x, y, y);
     }
 
+    public class EditorBoxMore : MonoBehaviour
+    {
+        private BaseScroll instance;
+
+        void Awake()
+        {
+        }
+
+        void OnGUI()
+        {
+            if (DateFile.instance == null || DateFile.instance.mianActorId == 0)
+            {
+                foreach(var i in instance.ContentChildren)
+                {
+                    if (i.Key != "未载入存档")
+                        i.Value.SetActive(false);
+                }
+                return;
+            }
+            if(instance.ContentChildren["未载入存档"].IsActive)
+            {
+                foreach (var i in instance.ContentChildren)
+                {
+                    if (i.Key != "未载入存档")
+                        i.Value.SetActive(true);
+                    else
+                        i.Value.SetActive(false);
+                }
+                return;
+            }
+        }
+
+
+        public void SetInstance(BaseScroll instance)
+        {
+            this.instance = instance;
+        }
+    }
+
     public static class RuntimeCongfig
     {
         public static TaiwuEditor TaiwuEditor;

@@ -113,4 +113,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)bin\Debug" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins" /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

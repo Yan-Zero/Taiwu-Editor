@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using UnityUIKit.GameObjects;
 using TaiwuUIKit.GameObjects;
 using UnityUIKit.Core;
+using System.IO;
+using System.Linq;
 
 namespace TaiwuEditor
 {
@@ -79,7 +81,8 @@ namespace TaiwuEditor
 
         private Container.CanvasContainer overlay;
         private TaiwuWindows windows;
-        private TaiwuButton button;
+        private BaseScroll Func_Base_Scroll;
+        private BaseScroll Func_More_Scroll;
 
         /// <summary>
         /// 初始化UI
@@ -109,37 +112,69 @@ namespace TaiwuEditor
                         {
                             new Container()
                             {
-                                Name = "Horizontal 1",
+                                Name = "Horizontal_Choose",
                                 Group=
                                 {
                                     Direction = Direction.Horizontal,
-                                    Spacing = 2
+                                    Spacing = 5
+                                },
+                                Element =
+                                {
+                                    PreferredSize = { 0, 50 }
                                 },
                                 Children =
                                 {
-                                    (button = new TaiwuButton()
+                                    new TaiwuButton()
                                     {
-                                        Name = "Button",
-                                        Text = "A"
-                                    }),
-                                    new TaiwuToggle()
+                                        Name = "Button_BaseFunc",
+                                        Text = "基础功能",
+                                        OnClick = delegate
+                                        {
+                                            Func_Base_Scroll.SetActive(true);
+                                            Func_More_Scroll.SetActive(false);
+                                        }
+                                    },
+                                    new TaiwuButton()
                                     {
-                                        Name = "C_Toggle",
-                                        Text = "C"
+                                        Name = "Button_属性修改",
+                                        Text = "属性修改",
+                                        OnClick = delegate
+                                        {
+                                            Func_Base_Scroll.SetActive(false);
+                                            Func_More_Scroll.SetActive(true);
+                                        }
                                     }
                                 }
-                            }
+                            },
+                            (Func_Base_Scroll = new BaseScroll()
+                            {
+                                Name = "Func_Base_Scroll",
+                                Group=
+                                {
+                                    Direction = Direction.Vertical,
+                                    Spacing = 2,
+                                    Padding = { 10 }
+                                }
+                            }),
+                            (Func_More_Scroll = new BaseScroll()
+                            {
+                                Name = "Func_More_Scroll",
+                                Group=
+                                {
+                                    Direction = Direction.Vertical,
+                                    Spacing = 2,
+                                    Padding = { 10 }
+                                },
+                                DefaultActive = false
+                            })
                         },
                         Element =
                         {
-                            PreferredSize = { 980, 700 }
+                            PreferredSize = { 1400, 1000 }
                         },
                     }),
                 }
             };
-            Logger.LogInfo(windows.Group.Direction);
-            Logger.LogInfo(windows.Direction);
-            button.onClick.AddListener(delegate { button.Text = button.Text == "A" ? "B" : "A"; });
         }
 
         private void Update()
@@ -148,6 +183,7 @@ namespace TaiwuEditor
             {
                 if (overlay.Created)
                 {
+                    overlay.RectTransform.SetAsLastSibling();
                     if (overlay.IsActive)
                         windows.CloseButton.Click();
                     else
@@ -158,8 +194,95 @@ namespace TaiwuEditor
                 }
                 else
                 {
-                    var parent = GameObject.Find("/UIRoot").transform;
+                    var parent = GameObject.Find("/UIRoot/Canvas/UIPopup").transform;
                     overlay.SetParent(parent);
+                    overlay.GameObject.layer = 5;
+                    overlay.RectTransform.anchorMax = new Vector2(0.5f,0.5f);
+                    overlay.RectTransform.anchorMin = new Vector2(0.5f,0.5f);
+                    overlay.RectTransform.anchoredPosition = Vector2.zero;
+                    TaiwuLabel PagesValue;
+
+                    Func_Base_Scroll.Add("每次阅读", new Container()
+                    {
+                        Name = "Box_每次阅读",
+                        Element =
+                        {
+                            PreferredSize = { 0 , 50 }
+                        },
+                        Group =
+                        {
+                            Spacing = 2,
+                            Direction = Direction.Horizontal
+                        },
+                        Children =
+                        {
+                            new TaiwuLabel()
+                            {
+                                Name = "ReadBookLabel",
+                                Text = "阅读页数",
+                                Element =
+                                {
+                                    PreferredSize = { 150 , 0 }
+                                },
+                                UseBoldFont = true,
+                                UseOutline = true
+                            },
+                            (PagesValue = new TaiwuLabel()
+                            {
+                                Name = "PagesValue",
+                                Text = "0",
+                                Element =
+                                {
+                                    PreferredSize = { 70 , 0 }
+                                },
+                                BackgroundStyle = TaiwuLabel.Style.Value
+                            }),
+                            new TaiwuSilder()
+                            {
+                                Name = "ReadPages",
+                                MinValue = 0,
+                                MaxValue = 10,
+                                Value = 10,
+                                WholeNumber = true,
+                                OnValueChanged = (float value,Slider silder) =>
+                                {
+                                    PagesValue.Text = ((int)value).ToString();
+                                    (silder as TaiwuSilder).TipContant = $"每次阅读<color=#F28234>{PagesValue.Text}</color>篇(只对功法类书籍有效，技艺类书籍会全部读完)";
+                                },
+                                TipTitle = "快速阅读"
+                            }
+                        }
+                    });
+
+                    var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
+                    i.SetInstance(Func_More_Scroll);
+
+                    //Func_Base_Scroll.Add();
+                    Func_More_Scroll.Add("未载入存档", new BaseFrame()
+                    {
+                        Name = "Box_未载入存档",
+                        Children =
+                        {
+                            new BaseText()
+                            {
+                                Name = "Text 未载入存档",
+                                Text = "未载入存档"
+                            }
+                        }
+                    });
+                    //Func_More_Scroll.Add("修改人物：", new Container()
+                    //{
+                    //    DefaultActive = false,
+                    //    Name = "修改人物",
+                    //    Children =
+                    //    {
+                    //        new BaseText()
+                    //        {
+                    //            Name = "Text 未载入存档",
+                    //            Text = "未载入存档"
+                    //        }
+                    //    }
+                    //});
                 }
             }
         }
