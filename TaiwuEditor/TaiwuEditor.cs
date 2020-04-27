@@ -22,7 +22,7 @@ namespace TaiwuEditor
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.0.10.7";
+        public const string version = "1.0.10.9";
 
         /// <summary>日志</summary>
         public static new ManualLogSource Logger;
@@ -49,8 +49,9 @@ namespace TaiwuEditor
 
             RuntimeCongfig.TaiwuEditor = this;
             RuntimeCongfig.Init();
+#if DEBUG
             PrepareGUI();
-
+#endif
             if (!uiIsShow && EditorUIOld.Load(settings))
             {
                 uiIsShow = true;
@@ -63,7 +64,6 @@ namespace TaiwuEditor
                 timer.Start();
             }
             enabled = uiIsShow;
-            //return uiIsShow;
         }
 
         /// <summary>
@@ -79,10 +79,12 @@ namespace TaiwuEditor
             }
         }
 
+#if DEBUG
         private Container.CanvasContainer overlay;
         private TaiwuWindows windows;
         private BaseScroll Func_Base_Scroll;
         private BaseScroll Func_More_Scroll;
+
 
         /// <summary>
         /// 初始化UI
@@ -177,8 +179,10 @@ namespace TaiwuEditor
             };
         }
 
+
         private void Update()
         {
+            // UI Hotkey
             if (settings.hotKey.Value.IsDown())
             {
                 if (overlay.Created)
@@ -227,10 +231,28 @@ namespace TaiwuEditor
                                 UseBoldFont = true,
                                 UseOutline = true
                             },
+                            new TaiwuToggle()
+                            {
+                                Name = "ReadBookToggle",
+                                Text = "关",
+                                Element =
+                                {
+                                    PreferredSize = { 50 , 50 }
+                                },
+                                isOn = false,
+                                onValueChanged = (bool value,TaiwuToggle toggle) =>
+                                {
+                                    toggle.Text = value ? "开" : "关";
+                                },
+                                UseBoldFont = true,
+                                UseOutline = true,
+                                TipTitle = "快速阅读",
+                                TipContant = "开启或关闭快速阅读"
+                            },
                             (PagesValue = new TaiwuLabel()
                             {
                                 Name = "PagesValue",
-                                Text = "0",
+                                Text = "10",
                                 Element =
                                 {
                                     PreferredSize = { 70 , 0 }
@@ -249,7 +271,7 @@ namespace TaiwuEditor
                                     PagesValue.Text = ((int)value).ToString();
                                     (silder as TaiwuSilder).TipContant = $"每次阅读<color=#F28234>{PagesValue.Text}</color>篇(只对功法类书籍有效，技艺类书籍会全部读完)";
                                 },
-                                TipTitle = "快速阅读"
+                                TipTitle = "设置快速阅读页数"
                             }
                         }
                     });
@@ -257,7 +279,6 @@ namespace TaiwuEditor
                     var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
                     i.SetInstance(Func_More_Scroll);
 
-                    //Func_Base_Scroll.Add();
                     Func_More_Scroll.Add("未载入存档", new BaseFrame()
                     {
                         Name = "Box_未载入存档",
@@ -270,22 +291,11 @@ namespace TaiwuEditor
                             }
                         }
                     });
-                    //Func_More_Scroll.Add("修改人物：", new Container()
-                    //{
-                    //    DefaultActive = false,
-                    //    Name = "修改人物",
-                    //    Children =
-                    //    {
-                    //        new BaseText()
-                    //        {
-                    //            Name = "Text 未载入存档",
-                    //            Text = "未载入存档"
-                    //        }
-                    //    }
-                    //});
                 }
             }
         }
+
+#endif
     }
 
     /// <summary>

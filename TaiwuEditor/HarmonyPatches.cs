@@ -13,20 +13,6 @@ namespace TaiwuEditor
         public static void Init()
         {
             harmony.PatchAll();
-
-            try
-            {
-                var actorMenuAwake = AccessTools.Method(typeof(ActorMenu), "Awake");
-                var postFixes = Harmony.GetPatchInfo(actorMenuAwake)?.Postfixes;
-                if (postFixes == null || postFixes.Count == 0)
-                {
-                    var patchedPostfix = new HarmonyMethod(typeof(Patches.ActorMenu_Awake_Hook), "Postfix", new[] { typeof(ActorMenu) });
-                    harmony.Patch(actorMenuAwake, null, patchedPostfix);
-                }
-            }catch(Exception ex)
-            {
-                TaiwuEditor.Logger.LogError(ex);
-            }
         }
 
         /// <summary>
