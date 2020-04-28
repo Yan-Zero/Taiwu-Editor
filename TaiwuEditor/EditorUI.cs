@@ -202,7 +202,7 @@ namespace TaiwuEditor
                 ActorPropertyHelper.Instance.Update(actorId);
             }
 
-            if (modSettings.hotKey.Value.IsDown())
+            if (modSettings.Hotkey.Value.IsDown())
             {
                 ToggleWindow(!Opened);
             }
@@ -369,7 +369,7 @@ namespace TaiwuEditor
             SetFuncMenu();
             DrawList();
             GUILayout.FlexibleSpace();
-            GUILayout.Label($"<color=#8FBAE7>[CTRL + F10]</color> 打开 UnityModManager 修改当前快捷键：<color=#F28234>{modSettings.hotKey.Value.ToString()}</color>" +
+            GUILayout.Label($"<color=#8FBAE7>[CTRL + F10]</color> 打开 UnityModManager 修改当前快捷键：<color=#F28234>{modSettings.Hotkey.Value.ToString()}</color>" +
                 $"          <color=#8FBAE7>[CTRL + 鼠标左键]</color>   拖动窗口", commentStyle, GUILayout.Width(mWindowWidth));
             GUILayout.Space(5f);
             if (GUILayout.Button("关闭", buttonStyle, GUILayout.Width(closeBtnWidth)))
@@ -430,8 +430,8 @@ namespace TaiwuEditor
                     case 1:
                         if (modSettings.basicUISettings.Value[i])
                         {
-                            GUILayout.Label($"每次阅读<color=#F28234>{modSettings.pagesPerFastRead.Value}</color>篇(只对功法类书籍有效，技艺类书籍会全部读完)", labelStyle);
-                            modSettings.pagesPerFastRead.Value = (int)GUILayout.HorizontalScrollbar(modSettings.pagesPerFastRead.Value, 1, 11, 1);
+                            GUILayout.Label($"每次阅读<color=#F28234>{modSettings.PagesPerFastRead.Value}</color>篇(只对功法类书籍有效，技艺类书籍会全部读完)", labelStyle);
+                            modSettings.PagesPerFastRead.Value = (int)GUILayout.HorizontalScrollbar(modSettings.PagesPerFastRead.Value, 1, 11, 1);
                         }
                         break;
                     case 3:

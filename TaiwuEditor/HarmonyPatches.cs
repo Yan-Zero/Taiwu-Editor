@@ -281,7 +281,7 @@ namespace TaiwuEditor
                 }
                 else
                 {
-                    HelperBase.EasyReadV2(___readBookId, ___studySkillTyp, TaiwuEditor.settings.pagesPerFastRead.Value);
+                    HelperBase.EasyReadV2(___readBookId, ___studySkillTyp, TaiwuEditor.settings.PagesPerFastRead.Value);
                     __instance.UpdateReadBookWindow();
                     return false;
                 }

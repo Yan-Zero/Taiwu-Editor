@@ -126,7 +126,7 @@ namespace TaiwuEditor
                     GUI.EndGroup();
                 }
                 // 鼠标左键或右键点击到下拉菜单以外的地方关闭菜单
-                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || TaiwuEditor.settings.hotKey.Value.IsDown() && !rectList.Contains(Event.current.mousePosition))
+                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || TaiwuEditor.settings.Hotkey.Value.IsDown() && !rectList.Contains(Event.current.mousePosition))
                 {
                     ShowList = false;
                 }

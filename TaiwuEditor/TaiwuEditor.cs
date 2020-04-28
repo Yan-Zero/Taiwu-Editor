@@ -112,38 +112,52 @@ namespace TaiwuEditor
                         },
                         Children =
                         {
-                            new Container()
+                            new ToggleGroup()
                             {
-                                Name = "Horizontal_Choose",
-                                Group=
+                                Name = "Func.Choose",
+                                Group =
                                 {
                                     Direction = Direction.Horizontal,
                                     Spacing = 5
                                 },
                                 Element =
                                 {
-                                    PreferredSize = { 0, 50 }
+                                    PreferredSize = { 0 , 50 }
                                 },
                                 Children =
                                 {
-                                    new TaiwuButton()
+                                    new TaiwuLabel()
                                     {
-                                        Name = "Button_BaseFunc",
-                                        Text = "基础功能",
-                                        OnClick = delegate
+                                        Name = "Text",
+                                        Text = "功能选择",
+                                        Element =
                                         {
-                                            Func_Base_Scroll.SetActive(true);
-                                            Func_More_Scroll.SetActive(false);
-                                        }
+                                            PreferredSize = { 150 , 0 }
+                                        },
+                                        UseOutline = true,
+                                        UseBoldFont = true
                                     },
-                                    new TaiwuButton()
+                                    new TaiwuToggle()
                                     {
-                                        Name = "Button_属性修改",
-                                        Text = "属性修改",
-                                        OnClick = delegate
+                                        Name = "Base.Func",
+                                        Text = "基础功能",
+                                        UseBoldFont = true,
+                                        UseOutline = true,
+                                        onValueChanged = (bool value,Toggle Toggle) =>
                                         {
-                                            Func_Base_Scroll.SetActive(false);
-                                            Func_More_Scroll.SetActive(true);
+                                            Func_Base_Scroll.SetActive(value);
+                                        },
+                                        isOn = true
+                                    },
+                                    new TaiwuToggle()
+                                    {
+                                        Name = "More.Func",
+                                        Text = "属性修改",
+                                        UseBoldFont = true,
+                                        UseOutline = true,
+                                        onValueChanged = (bool value,Toggle Toggle) =>
+                                        {
+                                            Func_More_Scroll.SetActive(value);
                                         }
                                     }
                                 }
@@ -179,11 +193,12 @@ namespace TaiwuEditor
             };
         }
 
+        private const int wideOfLabel = 200;
 
         private void Update()
         {
             // UI Hotkey
-            if (settings.hotKey.Value.IsDown())
+            if (settings.Hotkey.Value.IsDown())
             {
                 if (overlay.Created)
                 {
@@ -204,8 +219,110 @@ namespace TaiwuEditor
                     overlay.RectTransform.anchorMax = new Vector2(0.5f,0.5f);
                     overlay.RectTransform.anchorMin = new Vector2(0.5f,0.5f);
                     overlay.RectTransform.anchoredPosition = Vector2.zero;
-                    TaiwuLabel PagesValue;
 
+                    Func_Base_Scroll.Add("行动不减+修习单击全满", new Container()
+                    {
+                        Name = "Box_行动-修习",
+                        Element =
+                        {
+                            PreferredSize = { 0 , 50 }
+                        },
+                        Group =
+                        {
+                            Spacing = 10,
+                            Direction = Direction.Horizontal
+                        },
+                        Children =
+                        {
+                            new Container()
+                            {
+                                Name = "行动力不减",
+                                Group =
+                                {
+                                    Spacing = 2,
+                                    Direction = Direction.Horizontal
+                                },
+                                Children =
+                                {
+                                    new TaiwuLabel()
+                                    {
+                                        Name = "Text",
+                                        Text = "行动力不减",
+                                        Element =
+                                        {
+                                            PreferredSize = { wideOfLabel, 0 }
+                                        },
+                                        UseBoldFont = true,
+                                        UseOutline = true
+                                    },
+                                    new TaiwuToggle()
+                                    {
+                                        Name = "Toggle",
+                                        Text = settings.DayTimeMax.Value ? "开" : "关",
+                                        Element =
+                                        {
+                                            PreferredSize = { 0 , 50 }
+                                        },
+                                        isOn = settings.DayTimeMax.Value,
+                                        onValueChanged = (bool value,Toggle toggle) =>
+                                        {
+                                            toggle.Text = value ? "开" : "关";
+                                            settings.DayTimeMax.Value = value;
+                                        },
+                                        UseBoldFont = true,
+                                        UseOutline = true,
+                                        TipTitle = "锁定一月行动不减",
+                                        TipContant = "开启或关闭锁定行动力。"
+                                    }
+                                }
+                            },
+                            new Container()
+                            {
+                                Name = "修习单击全满",
+                                Group =
+                                {
+                                    Spacing = 2,
+                                    Direction = Direction.Horizontal
+                                },
+                                Children =
+                                {
+                                    new TaiwuLabel()
+                                    {
+                                        Name = "Text",
+                                        Text = "修习全满",
+                                        Element =
+                                        {
+                                            PreferredSize = { wideOfLabel, 0 }
+                                        },
+                                        UseBoldFont = true,
+                                        UseOutline = true
+                                    },
+                                    new TaiwuToggle()
+                                    {
+                                        Name = "Toggle",
+                                        Text = settings.PracticeMax.Value ? "开" : "关",
+                                        Element =
+                                        {
+                                            PreferredSize = { 0 , 50 }
+                                        },
+                                        isOn = settings.PracticeMax.Value,
+                                        onValueChanged = (bool value,Toggle toggle) =>
+                                        {
+                                            toggle.Text = value ? "开" : "关";
+                                            settings.PracticeMax.Value = value;
+                                        },
+                                        UseBoldFont = true,
+                                        UseOutline = true,
+                                        TipTitle = "修习单击全满",
+                                        TipContant = "开启或关闭修习单击全满。"
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    TaiwuLabel PagesValue;
+                    TaiwuSlider PagesSlider = null;
                     Func_Base_Scroll.Add("每次阅读", new Container()
                     {
                         Name = "Box_每次阅读",
@@ -226,7 +343,7 @@ namespace TaiwuEditor
                                 Text = "阅读页数",
                                 Element =
                                 {
-                                    PreferredSize = { 150 , 0 }
+                                    PreferredSize = { wideOfLabel, 0 }
                                 },
                                 UseBoldFont = true,
                                 UseOutline = true
@@ -234,15 +351,17 @@ namespace TaiwuEditor
                             new TaiwuToggle()
                             {
                                 Name = "ReadBookToggle",
-                                Text = "关",
+                                Text = settings.ReadBookCheat.Value ? "开" : "关",
                                 Element =
                                 {
                                     PreferredSize = { 50 , 50 }
                                 },
-                                isOn = false,
-                                onValueChanged = (bool value,TaiwuToggle toggle) =>
+                                isOn = settings.ReadBookCheat.Value,
+                                onValueChanged = (bool value,Toggle toggle) =>
                                 {
                                     toggle.Text = value ? "开" : "关";
+                                    settings.ReadBookCheat.Value = value;
+                                    PagesSlider.Interactable = value;
                                 },
                                 UseBoldFont = true,
                                 UseOutline = true,
@@ -252,29 +371,172 @@ namespace TaiwuEditor
                             (PagesValue = new TaiwuLabel()
                             {
                                 Name = "PagesValue",
-                                Text = "10",
+                                Text = settings.PagesPerFastRead.Value.ToString(),
                                 Element =
                                 {
                                     PreferredSize = { 70 , 0 }
                                 },
                                 BackgroundStyle = TaiwuLabel.Style.Value
                             }),
-                            new TaiwuSilder()
+                            (PagesSlider = new TaiwuSlider()
                             {
                                 Name = "ReadPages",
-                                MinValue = 0,
+                                MinValue = 1,
                                 MaxValue = 10,
-                                Value = 10,
+                                Value = settings.PagesPerFastRead.Value,
                                 WholeNumber = true,
                                 OnValueChanged = (float value,Slider silder) =>
                                 {
                                     PagesValue.Text = ((int)value).ToString();
-                                    (silder as TaiwuSilder).TipContant = $"每次阅读<color=#F28234>{PagesValue.Text}</color>篇(只对功法类书籍有效，技艺类书籍会全部读完)";
                                 },
-                                TipTitle = "设置快速阅读页数"
-                            }
+                                TipTitle = "设置快速阅读页数",
+                                TipContant = $"每次阅读指定篇数(只对功法类书籍有效，技艺类书籍会全部读完)",
+                            })
                         }
                     });
+
+
+                    Container storyTyps = new Container
+                    {
+                        Name = "StoryTypes",
+                        Group =
+                        {
+                            Spacing = 2,
+                            Direction = Direction.Horizontal
+                        },
+                        Element =
+                        {
+                            PreferredSize = { 0 , 50 }
+                        }
+                    };
+                    for(int index = 0;index < settings.StoryTypsList.Count;index ++)
+                    {
+                        var storyType = settings.GetStoryTyp(index);
+                        storyTyps.Children.Add(new Container
+                        {
+                            Name = $"Type-{storyType.Name}",
+                            Group =
+                            {
+                                Spacing = 2,
+                                Direction = Direction.Horizontal
+                            },
+                            Children =
+                            {
+                                new TaiwuLabel
+                                {
+                                    Name = $"Text-{storyType.Name}",
+                                    Text = storyType.Name,
+                                    Element =
+                                    {
+                                        PreferredSize = { 0 , 0 }
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true
+                                },
+                                new TaiwuToggle
+                                {
+                                    Name = $"{index}",
+                                    Text = settings.includedStoryTyps.Value[index] ? "开" : "关",
+                                    UseBoldFont = true,
+                                    isOn = settings.includedStoryTyps.Value[index],
+                                    onValueChanged = (bool value , Toggle tg) =>
+                                    {
+                                        settings.includedStoryTyps.Value[int.Parse(tg.Name)] = value;
+                                        tg.Text = value ? "开" : "关";
+                                    },
+                                    Element =
+                                    {
+                                        PreferredSize = { 50 , 50 }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    TaiwuButton allChoose = new TaiwuButton
+                    {
+                        Name = "Button",
+                        Text = "全选",
+                        FontColor = Color.white,
+                        OnClick = (Button _this) =>
+                        {
+                            if(_this.Text == "全选")
+                            {
+                                _this.Text = "全取消";
+                                foreach(var child in storyTyps.Children)
+                                    (child.Children[1] as Toggle).isOn = true;
+                            }
+                            else
+                            {
+                                _this.Text = "全选";
+                                foreach (var child in storyTyps.Children)
+                                    (child.Children[1] as Toggle).isOn = false;
+                            }
+                        }
+                    };
+                    Func_Base_Scroll.Add("奇遇直接到达目的地", new Container
+                    {
+                        Name = "Box_奇遇直接到达目的地",
+                        Group =
+                        {
+                            Spacing = 2,
+                            Direction = Direction.Vertical
+                        },
+                        Element =
+                        {
+                            PreferredSize = { 0 , settings.StoryCheat.Value ? 102 : 50 }
+                        },
+                        Children =
+                        {
+                            new Container
+                            {
+                                Name = "Main",
+                                Group =
+                                {
+                                    Spacing = 2,
+                                    Direction = Direction.Horizontal
+                                },
+                                Element =
+                                {
+                                    PreferredSize = { 0 , 50 }
+                                },
+                                Children =
+                                {
+                                    new TaiwuLabel
+                                    {
+                                        Name = "Text",
+                                        Text = "奇遇到达目的地",
+                                        Element =
+                                        {
+                                            PreferredSize = { wideOfLabel , 0 }
+                                        },
+                                        UseBoldFont = true
+                                    },
+                                    new TaiwuToggle
+                                    {
+                                        Name = "Toggle",
+                                        Text = settings.StoryCheat.Value ? "开" : "关",
+                                        onValueChanged = (bool value , Toggle toggle) =>
+                                        {
+                                            storyTyps.SetActive(value);
+                                            settings.StoryCheat.Value = value;
+                                            toggle.Text = value ? "开" : "关";
+                                            allChoose.Interactable = true;
+
+                                            (toggle.Parent?.Parent as Container).Element.PreferredSize = new List<float>{ 0 , value ? 102 : 50 };
+                                            (toggle.Parent?.Parent as Container).BoxElement.Apply((toggle.Parent?.Parent as Container).Element);
+                                        },
+                                        PreferredSize = { 50 , 50 },
+                                        isOn = settings.StoryCheat.Value
+                                    },
+                                    allChoose,
+                                }
+                            },
+                            storyTyps
+                        }
+                    });
+                    storyTyps.SetActive(settings.StoryCheat.Value);
+
+
 
                     var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
                     i.SetInstance(Func_More_Scroll);
@@ -294,7 +556,6 @@ namespace TaiwuEditor
                 }
             }
         }
-
 #endif
     }
 
@@ -308,10 +569,10 @@ namespace TaiwuEditor
         // 基本功能页面设置
         private static readonly string[] basicUISettingNames =
         {
-            "锁定一月行动不减",  //0
-            "快速读书（对残缺篇章有效）", //1
-            "修习单击全满", //2
-            "奇遇直接到达目的地",  //3
+            "",  //0
+            "", //1
+            "", //2
+            "",  //3
             "身上物品永不超重（仓库无效）", //4
             "见面关系全满", //5
             "见面印象最深(换衣服会重置印象)", //6
@@ -327,7 +588,7 @@ namespace TaiwuEditor
         {
             new StoryTyp(new HashSet<int>{101,102,103,104,105,106,107,108,109,110,111,112}, "外道巢穴"),
             new StoryTyp(new HashSet<int>{1,10001,10005,10006},"促织高鸣"),
-            new StoryTyp(new HashSet<int>{2,3,4,5},"静谧竹庐/深谷出口/英雄猴杰/古墓仙人"),
+            //new StoryTyp(new HashSet<int>{2,3,4,5},"静谧竹庐/深谷出口/英雄猴杰/古墓仙人"),
             new StoryTyp(new HashSet<int>{6,7,8},"大片血迹"),
             new StoryTyp(new HashSet<int>{11001,11002,11003,11004,11005,11006,11007,11008,11009,11010,11011,11012,11013,11014},"奇书"),
             new StoryTyp(new HashSet<int>{3007,3014,3107,3114,3207,3214,3307,3314,3407,3414,3421,3428,4004,4008,4012,4016,4020,
@@ -353,11 +614,16 @@ namespace TaiwuEditor
         public void Init(ConfigFile config)
         {
             Config = config;
-            hotKey = Config.Bind("Hotkey", "OpenUI", new KeyboardShortcut(KeyCode.F6, new KeyCode[] { KeyCode.LeftControl }),"打开窗口的快捷键");
+            Hotkey = Config.Bind("Hotkey", "OpenUI", new KeyboardShortcut(KeyCode.F6, new KeyCode[] { KeyCode.LeftControl }),"打开窗口的快捷键");
             customLockValue = Config.Bind<int[]>("Cheat", "customLockValue", null, "自定义锁定值");
             includedStoryTyps = Config.Bind<bool[]>("Cheat", "includedStoryTyps", null, "需要直达终点的奇遇的类型");
-            pagesPerFastRead = Config.Bind<int>("Cheat", "pagesPerFastRead", 10, "快速读书每次篇数");
+            PagesPerFastRead = Config.Bind<int>("Cheat", "PagesPerFastRead", 10, "快速读书每次篇数");
             basicUISettings = Config.Bind<bool[]>("Cheat", "basicUISettings", null, "基本功能页面设置");
+
+            DayTimeMax = Config.Bind<bool>("Cheat", "DayTimeMax", false, "行动力锁定");
+            ReadBookCheat = Config.Bind<bool>("Cheat", "ReadBookCheat", false, "快速读书（对残缺篇章有效）");
+            PracticeMax = Config.Bind<bool>("Cheat", "PracticeMax", false, "修习单击全满");
+            StoryCheat = Config.Bind<bool>("Cheat", "StoryCheat", false, "奇遇直接到达目的地");
 
             Config.SaveOnConfigSet = true;
 
@@ -398,6 +664,11 @@ namespace TaiwuEditor
         public StoryTyp GetStoryTyp(int index) => index < storyTyps.Length ? storyTyps[index] : null;
 
         /// <summary>
+        /// 奇遇类型列表
+        /// </summary>
+        public List<StoryTyp> StoryTypsList => storyTyps.ToList();
+
+        /// <summary>
         /// 获取自定义锁定值的名称
         /// </summary>
         /// <param name="index"></param>
@@ -413,7 +684,7 @@ namespace TaiwuEditor
         /// <summary>
         /// 快速读书每次篇数
         /// </summary>
-        public ConfigEntry<int> pagesPerFastRead;
+        public ConfigEntry<int> PagesPerFastRead;
 
         /// <summary>
         /// 需要直达终点的奇遇的类型
@@ -428,7 +699,27 @@ namespace TaiwuEditor
         /// <summary>
         /// 打开修改器窗口的快捷键
         /// </summary>
-        public ConfigEntry<KeyboardShortcut> hotKey;
+        public ConfigEntry<KeyboardShortcut> Hotkey;
+
+        /// <summary>
+        /// 行动力设定
+        /// </summary>
+        public ConfigEntry<bool> DayTimeMax;
+
+        /// <summary>
+        /// 读书修改
+        /// </summary>
+        public ConfigEntry<bool> ReadBookCheat;
+
+        /// <summary>
+        /// 修习单击全满
+        /// </summary>
+        public ConfigEntry<bool> PracticeMax;
+
+        /// <summary>
+        /// 机遇到达目的地
+        /// </summary>
+        public ConfigEntry<bool> StoryCheat;
 
         public void Save()
         {
