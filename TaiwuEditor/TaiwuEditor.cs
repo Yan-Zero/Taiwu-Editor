@@ -15,6 +15,8 @@ using TaiwuUIKit.GameObjects;
 using UnityUIKit.Core;
 using System.IO;
 using System.Linq;
+using UnityUIKit.Components;
+using UnityUIKit.Core.GameObjects;
 
 namespace TaiwuEditor
 {
@@ -169,7 +171,8 @@ namespace TaiwuEditor
                                 {
                                     Direction = Direction.Vertical,
                                     Spacing = 2,
-                                    Padding = { 10 }
+                                    Padding = { 10 },
+                                    ForceExpandChildWidth = true
                                 }
                             }),
                             (Func_More_Scroll = new BaseScroll()
@@ -179,7 +182,8 @@ namespace TaiwuEditor
                                 {
                                     Direction = Direction.Vertical,
                                     Spacing = 2,
-                                    Padding = { 10 }
+                                    Padding = { 10 },
+                                    ForceExpandChildWidth = true
                                 },
                                 DefaultActive = false
                             })
@@ -229,7 +233,7 @@ namespace TaiwuEditor
                         },
                         Group =
                         {
-                            Spacing = 10,
+                            Spacing = 2,
                             Direction = Direction.Horizontal
                         },
                         Children =
@@ -394,19 +398,22 @@ namespace TaiwuEditor
                             })
                         }
                     });
+                    PagesSlider.Interactable = settings.ReadBookCheat.Value;
 
-
-                    Container storyTyps = new Container
+                    BoxGridGameObject storyTyps = new BoxGridGameObject
                     {
                         Name = "StoryTypes",
-                        Group =
+                        Grid =
                         {
-                            Spacing = 2,
-                            Direction = Direction.Horizontal
+                            StartAxis = Direction.Horizontal,
+                            Constraint = UnityEngine.UI.GridLayoutGroup.Constraint.FixedColumnCount,
+                            ConstraintCount = 5,
+                            CellSize = new Vector2(0 , 50),
+                            AutoWidth = true
                         },
-                        Element =
+                        SizeFitter =
                         {
-                            PreferredSize = { 0 , 50 }
+                            VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
                         }
                     };
                     for(int index = 0;index < settings.StoryTypsList.Count;index ++)
@@ -420,16 +427,16 @@ namespace TaiwuEditor
                                 Spacing = 2,
                                 Direction = Direction.Horizontal
                             },
+                            Element =
+                            {
+                                PreferredSize = { 0 , 50 }
+                            },
                             Children =
                             {
                                 new TaiwuLabel
                                 {
                                     Name = $"Text-{storyType.Name}",
                                     Text = storyType.Name,
-                                    Element =
-                                    {
-                                        PreferredSize = { 0 , 0 }
-                                    },
                                     UseBoldFont = true,
                                     UseOutline = true
                                 },
@@ -473,17 +480,19 @@ namespace TaiwuEditor
                             }
                         }
                     };
-                    Func_Base_Scroll.Add("奇遇直接到达目的地", new Container
+                    BoxAutoSizeModelGameObject storyBoxMain;
+                    Func_Base_Scroll.Add("奇遇直接到达目的地",(storyBoxMain = new BoxAutoSizeModelGameObject
                     {
                         Name = "Box_奇遇直接到达目的地",
                         Group =
                         {
                             Spacing = 2,
-                            Direction = Direction.Vertical
+                            Direction = Direction.Vertical,
+                            ForceExpandChildWidth = true
                         },
-                        Element =
+                        SizeFitter =
                         {
-                            PreferredSize = { 0 , settings.StoryCheat.Value ? 102 : 50 }
+                            VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
                         },
                         Children =
                         {
@@ -521,9 +530,6 @@ namespace TaiwuEditor
                                             settings.StoryCheat.Value = value;
                                             toggle.Text = value ? "开" : "关";
                                             allChoose.Interactable = true;
-
-                                            (toggle.Parent?.Parent as Container).Element.PreferredSize = new List<float>{ 0 , value ? 102 : 50 };
-                                            (toggle.Parent?.Parent as Container).BoxElement.Apply((toggle.Parent?.Parent as Container).Element);
                                         },
                                         PreferredSize = { 50 , 50 },
                                         isOn = settings.StoryCheat.Value
@@ -533,10 +539,8 @@ namespace TaiwuEditor
                             },
                             storyTyps
                         }
-                    });
+                    }));
                     storyTyps.SetActive(settings.StoryCheat.Value);
-
-
 
                     var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
                     i.SetInstance(Func_More_Scroll);
