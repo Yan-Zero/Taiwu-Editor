@@ -23,16 +23,18 @@ namespace TaiwuEditor
         {
             private static bool Prefix(int[] baseEventDate)
             {
-                // 最大好感
-                if (TaiwuEditor.enabled && TaiwuEditor.settings.basicUISettings.Value[5])
+                /// <summary>最大好感</summary>
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.MaxRelationship.Value)
                 {
                     MessageEventManager.Instance.MainEventData = (int[])baseEventDate.Clone();
+
                     // 主事件ID
                     int mainEventId = baseEventDate[2];
                     // 事件类型
                     int eventType = int.Parse(DateFile.instance.eventDate[mainEventId][2]);
                     //int num2 = DateFile.instance.MianActorID();
                     //int num3 = (num != 0) ? ((num != -1) ? num : num2) : baseEventDate[1];
+
                     if (eventType == 0) // 事件类型是与NPC互动
                     {
                         // baseEventDate[1]是互动的NPC的ID
@@ -56,7 +58,7 @@ namespace TaiwuEditor
 
                 /// <summary>最大印象</summary>
                 /// <see cref="DateFile.ChangeActorLifeFace"/>
-                if (TaiwuEditor.enabled && TaiwuEditor.settings.basicUISettings.Value[6])
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.MaxImpression.Value)
                 {
                     int mainEventId = baseEventDate[2];
                     int eventType = int.Parse(DateFile.instance.eventDate[mainEventId][2]);
@@ -110,7 +112,7 @@ namespace TaiwuEditor
         {
             private static void Postfix(ref int __result)
             {
-                if (TaiwuEditor.enabled && TaiwuEditor.settings.basicUISettings.Value[7])
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.VigilanceCheat.Value)
                 {
                     __result = 0;
                 }
@@ -125,7 +127,7 @@ namespace TaiwuEditor
         {
             private static bool Prefix(int ___studySkillId, int ___studySkillTyp, ref BuildingWindow __instance)
             {
-                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.basicUISettings.Value[2] || ___studySkillId <= 0 || ___studySkillTyp <= 0 || ___studySkillTyp > 17)
+                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.PracticeMax.Value || ___studySkillId <= 0 || ___studySkillTyp <= 0 || ___studySkillTyp > 17)
                 {
                     return true;
                 }
@@ -186,7 +188,11 @@ namespace TaiwuEditor
         {
             private static bool Prefix(ref StorySystem __instance, ref bool ___keepHiding)
             {
-                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.basicUISettings.Value[3])
+#if DEBUG
+                TaiwuEditor.Logger.LogInfo($"OpenStory: StoryId: {__instance.storySystemStoryId}");
+#endif
+
+                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.StoryCheat.Value)
                 {
                     return true;
                 }
@@ -200,9 +206,6 @@ namespace TaiwuEditor
                 }
 
                 int storyId = __instance.storySystemStoryId;
-#if DEBUG
-                TaiwuEditor.Logger.LogInfo($"OpenStory: StoryId: {storyId}");
-#endif
                 if (storyId > 0)
                 {
                     bool storyIdExist = false;
@@ -257,7 +260,7 @@ namespace TaiwuEditor
         {
             private static void Postfix(ref int key, ref int __result)
             {
-                if (TaiwuEditor.enabled && TaiwuEditor.settings.basicUISettings.Value[4] && DateFile.instance.mianActorId == key)
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.InfWeightBearing.Value && DateFile.instance.mianActorId == key)
                 {
                     __result = 1000000000;
                 }
@@ -275,7 +278,7 @@ namespace TaiwuEditor
 #if DEBUG
                 TaiwuEditor.Logger.LogInfo($"[TaiwuEditor]快速读书: id: {___readBookId}，SkillTyp: {___studySkillTyp}");
 #endif
-                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.basicUISettings.Value[1] || ___studySkillTyp < 1 || ___studySkillTyp > 17 || ___readBookId < 1)
+                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.ReadBookCheat.Value || ___studySkillTyp < 1 || ___studySkillTyp > 17 || ___readBookId < 1)
                 {
                     return true;
                 }
@@ -296,12 +299,12 @@ namespace TaiwuEditor
         {
             private static bool Prefix(int gangId, ref int __result)
             {
-                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.basicUISettings.Value[8])
+                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.LockGangPartValue.Value)
                 {
                     return true;
                 }
                 // 太吾村没有支持度
-                __result = (gangId == 16) ? 0 : (TaiwuEditor.settings.customLockValue.Value[0] == 0) ? DateFile.instance.GetMaxWorldValue() : TaiwuEditor.settings.customLockValue.Value[0] * 10;
+                __result = (gangId == 16) ? 0 : (TaiwuEditor.settings.CustomLockValue.Value[0] == 0) ? DateFile.instance.GetMaxWorldValue() : TaiwuEditor.settings.CustomLockValue.Value[0] * 10;
                 return false;
             }
         }
@@ -315,11 +318,11 @@ namespace TaiwuEditor
             // 返回锁定的值
             private static bool Prefix(ref int __result)
             {
-                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.basicUISettings.Value[9])
+                if (!TaiwuEditor.enabled || !TaiwuEditor.settings.LockBasePartValue.Value)
                 {
                     return true;
                 }
-                __result = (TaiwuEditor.settings.customLockValue.Value[1] == 0) ? DateFile.instance.GetMaxWorldValue() : TaiwuEditor.settings.customLockValue.Value[1] * 10;
+                __result = (TaiwuEditor.settings.CustomLockValue.Value[1] == 0) ? DateFile.instance.GetMaxWorldValue() : TaiwuEditor.settings.CustomLockValue.Value[1] * 10;
                 return false;
             }
         }
@@ -333,7 +336,7 @@ namespace TaiwuEditor
             // 阻止地区恩义减少
             private static bool Prefix(ref int value)
             {
-                if (TaiwuEditor.enabled && TaiwuEditor.settings.basicUISettings.Value[9] && value < 0)
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.LockBasePartValue.Value && value < 0)
                 {
                     value = 0;
                 }
@@ -341,22 +344,24 @@ namespace TaiwuEditor
             }
         }
 
-        /// <summary>
-        /// 防止首次调用<see cref="ActorMenu.instance"/>时人物菜单自动激活造成错误
-        /// </summary>
-        /// <remarks>用<see cref="Harmony.Patch"/>加载，只在其他mod没有patch
-        /// 这个方法时使用避免重复加载
-        /// </remarks>
-        internal static class ActorMenu_Awake_Hook
-        {
-            private static void Postfix(ActorMenu __instance)
-            {
-#if DEBUG
-                TaiwuEditor.Logger.LogInfo("TaiwuEditor.ActorMenu_Awake_Patch patched");
-#endif
-                __instance.actorMenu.SetActive(false);
 
+        /// <summary>
+        /// 锁定默认战斗距离
+        /// </summary>
+        [HarmonyPatch(typeof(BattleSystem), "Initialize")]
+        private static class BattleSystem_Initialize_Patch
+        {
+            private static void Postfix(BattleSystem __instance)
+            {
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.LockCombatRange.Value)
+                    RuntimeCongfig.SetNeedRange.Invoke(__instance, new object[3]
+                        {
+                            true,
+                            TaiwuEditor.settings.CustomLockValue.Value[2],
+                            false
+                        });
             }
         }
+
     }
 }

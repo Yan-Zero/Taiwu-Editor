@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -38,8 +39,8 @@ namespace TaiwuEditor
         /// <summary>功能选项卡</summary>
         private static readonly string[] funcTab =
         {
-            "<color=#FFA500>基本功能</color>",
             "<color=#FFA500>属性修改</color>",
+            "<color=#FFA500>基本功能</color>",
             //"<color=#FFA500>功法</color>"
         };
         /// <summary>属性资源修改选项卡</summary>
@@ -200,11 +201,6 @@ namespace TaiwuEditor
             if (Opened)
             {
                 ActorPropertyHelper.Instance.Update(actorId);
-            }
-
-            if (modSettings.Hotkey.Value.IsDown())
-            {
-                ToggleWindow(!Opened);
             }
         }
 
@@ -369,16 +365,11 @@ namespace TaiwuEditor
             SetFuncMenu();
             DrawList();
             GUILayout.FlexibleSpace();
-            GUILayout.Label($"<color=#8FBAE7>[CTRL + F10]</color> 打开 UnityModManager 修改当前快捷键：<color=#F28234>{modSettings.Hotkey.Value.ToString()}</color>" +
-                $"          <color=#8FBAE7>[CTRL + 鼠标左键]</color>   拖动窗口", commentStyle, GUILayout.Width(mWindowWidth));
+            GUILayout.Label($"<color=#8FBAE7>[CTRL + 鼠标左键]</color>   拖动窗口", commentStyle, GUILayout.Width(mWindowWidth));
             GUILayout.Space(5f);
             if (GUILayout.Button("关闭", buttonStyle, GUILayout.Width(closeBtnWidth)))
             {
                 ToggleWindow(false);
-            }
-            if (GUILayout.Button("保存", buttonStyle, GUILayout.Width(closeBtnWidth)))
-            {
-                modSettings.Save();
             }
             if (Input.GetKey(KeyCode.LeftControl))
             {
@@ -392,7 +383,9 @@ namespace TaiwuEditor
         private void SetFuncMenu()
         {
             GUILayout.Label("<color=#87CEEB>功能选择：</color>", labelStyle, GUILayout.Width(mWindowWidth));
+            funcChoose = 0;
             var funcChooseTmp = GUILayout.SelectionGrid(funcChoose, funcTab, funcTab.Length, buttonStyle, GUILayout.Width(mWindowWidth));
+            
             // 每次功能界面切换重置各修改框内的数值为游戏数值
             if (funcChoose != funcChooseTmp && funcChoose == 1)
             {
@@ -404,83 +397,19 @@ namespace TaiwuEditor
             switch (funcChoose)
             {
                 case 0:
-                    BasicFuncUI();
+                    BasicPropertiesUI();
                     break;
                 case 1:
-                    BasicPropertiesUI();
+                    {
+                        RuntimeCongfig.TaiwuEditor.ToggleUI = true;
+                        ToggleWindow(false);
+                    }
                     break;
                 case 2:
                     GongFaEditorUI();
                     break;
             }
         }
-
-        /// <summary>
-        /// 基本功能界面
-        /// </summary>
-        private void BasicFuncUI()
-        {
-            scrollPosition[0] = GUILayout.BeginScrollView(scrollPosition[0], GUILayout.MinWidth(mWindowWidth));
-            GUILayout.BeginVertical("Box");
-            for (int i = 0; i < modSettings.basicUISettings.Value.Length; i++)
-            {
-                modSettings.basicUISettings.Value[i] = GUILayout.Toggle(modSettings.basicUISettings.Value[i], modSettings.GetBasicSettingName(i), toggleStyle);
-                switch (i)
-                {
-                    case 1:
-                        if (modSettings.basicUISettings.Value[i])
-                        {
-                            GUILayout.Label($"每次阅读<color=#F28234>{modSettings.PagesPerFastRead.Value}</color>篇(只对功法类书籍有效，技艺类书籍会全部读完)", labelStyle);
-                            modSettings.PagesPerFastRead.Value = (int)GUILayout.HorizontalScrollbar(modSettings.PagesPerFastRead.Value, 1, 11, 1);
-                        }
-                        break;
-                    case 3:
-                        if (modSettings.basicUISettings.Value[i] && modSettings.includedStoryTyps != null && modSettings.includedStoryTyps.Value.Length == modSettings.includedStoryTyps.Value.Length)
-                        {
-                            GUILayout.BeginHorizontal("Box");
-                            if (GUILayout.Button("<color=#F28234>全选</color>", buttonStyle))
-                            {
-                                for (int j = 0; j < modSettings.includedStoryTyps.Value.Length; j++)
-                                {
-                                    modSettings.includedStoryTyps.Value[j] = true;
-                                }
-                            }
-                            for (int j = 0; j < modSettings.includedStoryTyps.Value.Length; j++)
-                            {
-                                modSettings.includedStoryTyps.Value[j] = GUILayout.Toggle(modSettings.includedStoryTyps.Value[j], modSettings.GetStoryTyp(j).Name, toggleStyle);
-                            }
-                            GUILayout.EndHorizontal();
-                        }
-                        break;
-                    case 8:
-                    case 9:
-                        int choice = i - 8;
-                        if (modSettings.basicUISettings.Value[i] && choice > -1 && choice < modSettings.customLockValue.Value.Length)
-                        {
-                            string choiceName = modSettings.GetLockValueName(choice);
-                            GUILayout.Label($"自定义最大{choiceName}(范围0-100)\n<color=#F28234>设置为0则根据剑冢世界进度自动设定最大{choiceName}(推荐)</color>", labelStyle);
-                            GUILayout.BeginHorizontal();
-                            tmpCustomLockValue[choice] = GUILayout.TextField(tmpCustomLockValue[choice], textFieldStyle, GUILayout.Width(ActorPropertyHelper.fieldHelperTextWidth));
-                            if (GUILayout.Button("确定", buttonStyle, GUILayout.Width(ActorPropertyHelper.fieldHelperBtnWidth)))
-                            {
-                                if (HelperBase.TryParseInt(tmpCustomLockValue[choice], out int value))
-                                {
-                                    modSettings.customLockValue.Value[choice] = value;
-                                }
-                                else
-                                {
-                                    tmpCustomLockValue[choice] = modSettings.customLockValue.Value[choice].ToString();
-                                }
-                            }
-                            GUILayout.EndHorizontal();
-                        }
-                        break;
-                }
-            }
-            GUILayout.EndVertical();
-            GUILayout.EndScrollView();
-        }
-
         /// <summary>
         /// 设置人物属性修改功能
         /// </summary>
@@ -819,7 +748,7 @@ namespace TaiwuEditor
         /// 打开/关闭修改器窗口
         /// </summary>
         /// <param name="toOpen">True则打开窗口，false关闭窗口</param>
-        private void ToggleWindow(bool toOpen)
+        public void ToggleWindow(bool toOpen)
         {
             if (!TaiwuEditor.enabled && toOpen)
             {
@@ -866,10 +795,10 @@ namespace TaiwuEditor
         /// </summary>
         private void UpdateTmpValue()
         {
-            tmpCustomLockValue = tmpCustomLockValue ?? new string[modSettings.customLockValue.Value.Length];
+            tmpCustomLockValue = tmpCustomLockValue ?? new string[modSettings.CustomLockValue.Value.Length];
             for (int i = 0; i < tmpCustomLockValue.Length; i++)
             {
-                tmpCustomLockValue[i] = modSettings.customLockValue.Value[i].ToString();
+                tmpCustomLockValue[i] = modSettings.CustomLockValue.Value[i].ToString();
             }
         }
 
@@ -920,10 +849,12 @@ namespace TaiwuEditor
     public static class RuntimeCongfig
     {
         public static TaiwuEditor TaiwuEditor;
+        public static MethodInfo SetNeedRange;
 
         public static void Init()
         {
             ImageConfig.Init();
+            SetNeedRange = typeof(BattleSystem).GetMethod("SetNeedRange", BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
         public static class ImageConfig
