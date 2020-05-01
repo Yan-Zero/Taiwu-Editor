@@ -9,10 +9,42 @@ namespace TaiwuEditor
     public static class Patches
     {
         public static readonly Harmony harmony = new Harmony("Yan.TaiwuEditor");
+        public static readonly Type PatchesType = typeof(Patches);
+
+        /// <summary>
+        /// 无限特性点数
+        /// </summary>
+        /// <param name="__result"></param>
+        public static void NewGame_UpdateAbility_Postfix(ref int __result)
+        {
+            if(TaiwuEditor.enabled && TaiwuEditor.settings.InfAbilityP.Value)
+            {
+                __result = 10;
+            }
+        }
+
+        /// <summary>
+        /// 时钟用的
+        /// </summary>
+        /// <param name="__instance"></param>
+        public static void ui_TopBar_OnInit_Postfix(ui_TopBar __instance)
+        {
+            if (TaiwuEditor.enabled)
+            {
+                __instance.transform.Find("MissionBack/MissionNameBack/MissionNameText").gameObject.AddComponent<Clock_Text>();
+                TaiwuEditor.Logger.LogInfo(__instance.transform.Find("MissionBack/MissionNameBack/MissionNameText"));
+                TaiwuEditor.Logger.LogInfo(__instance.transform.Find("MissionBack/MissionNameBack/MissionNameText").gameObject.GetComponent<Clock_Text>());
+
+            }
+        }
+
 
         public static void Init()
         {
             harmony.PatchAll();
+
+            harmony.Patch(AccessTools.Method(typeof(NewGame), "GetAbilityP"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "NewGame_UpdateAbility_Postfix")));
+            harmony.Patch(AccessTools.Method(typeof(ui_TopBar), "OnInit"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "ui_TopBar_OnInit_Postfix")));
         }
 
         /// <summary>
@@ -188,9 +220,8 @@ namespace TaiwuEditor
         {
             private static bool Prefix(ref StorySystem __instance, ref bool ___keepHiding)
             {
-#if DEBUG
-                TaiwuEditor.Logger.LogInfo($"OpenStory: StoryId: {__instance.storySystemStoryId}");
-#endif
+                if (RuntimeConfig.DebugMode)
+                    TaiwuEditor.Logger.LogInfo($"OpenStory: StoryId: {__instance.storySystemStoryId}");
 
                 if (!TaiwuEditor.enabled || !TaiwuEditor.settings.StoryCheat.Value)
                 {
@@ -346,22 +377,28 @@ namespace TaiwuEditor
 
 
         /// <summary>
-        /// 锁定默认战斗距离
+        /// 设置默认战斗距离
         /// </summary>
         [HarmonyPatch(typeof(BattleSystem), "Initialize")]
         private static class BattleSystem_Initialize_Patch
         {
             private static void Postfix(BattleSystem __instance)
             {
-                if (TaiwuEditor.enabled && TaiwuEditor.settings.LockCombatRange.Value)
-                    RuntimeCongfig.SetNeedRange.Invoke(__instance, new object[3]
+                if (TaiwuEditor.enabled && TaiwuEditor.settings.ChangeDefalutCombatRange.Value)
+                {
+                    RuntimeConfig.SetNeedRange.Invoke(__instance, new object[3]
                         {
                             true,
                             TaiwuEditor.settings.CustomLockValue.Value[2],
                             false
                         });
+
+                    if (TaiwuEditor.settings.ChangeCombatRange.Value)
+                    {
+                        __instance.UpdateBattleRange(TaiwuEditor.settings.CustomLockValue.Value[2], true, 1, -1);
+                    }
+                }
             }
         }
-
     }
 }

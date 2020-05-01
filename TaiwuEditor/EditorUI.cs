@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using HarmonyLib;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -401,15 +402,13 @@ namespace TaiwuEditor
                     break;
                 case 1:
                     {
-                        RuntimeCongfig.TaiwuEditor.ToggleUI = true;
+                        RuntimeConfig.TaiwuEditor.ToggleUI = true;
                         ToggleWindow(false);
                     }
                     break;
-                case 2:
-                    GongFaEditorUI();
-                    break;
             }
         }
+
         /// <summary>
         /// 设置人物属性修改功能
         /// </summary>
@@ -457,26 +456,6 @@ namespace TaiwuEditor
                 var tmpRect = GUILayoutUtility.GetLastRect();
                 Main.logger.Log($"tmprect2: {tmpRect.x} {tmpRect.y} {tmpRect.height} {tmpRect.width}");
             }*/
-        }
-
-        private void GongFaEditorUI()
-        {
-            DateFile instance = DateFile.instance;
-            if (instance == null || instance.mianActorId == 0)
-            {
-                GUILayout.Box("未载入存档", boxStyle, GUILayout.Width(mWindowWidth));
-                return;
-            }
-            GUILayout.BeginHorizontal();
-            GongFaHelper.Instance.Editor.GongFaEditBar();
-            GongFaHelper.Instance.Editor.GongFaAddBar();
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            scrollPosition[2] = GUILayout.BeginScrollView(scrollPosition[2], GUILayout.MinWidth(mWindowWidth * 0.5f));
-            GUILayout.EndScrollView();
-            scrollPosition[3] = GUILayout.BeginScrollView(scrollPosition[3], GUILayout.MinWidth(mWindowWidth * 0.5f));
-            GUILayout.EndScrollView();
-            GUILayout.EndHorizontal();
         }
 
         /// <summary>
@@ -846,26 +825,28 @@ namespace TaiwuEditor
         }
     }
 
-    public static class RuntimeCongfig
+    public class ClickHelper : MonoBehaviour, IPointerClickHandler
     {
-        public static TaiwuEditor TaiwuEditor;
-        public static MethodInfo SetNeedRange;
+        public Action<MonoBehaviour> OnClick;
 
-        public static void Init()
+        public void OnPointerClick(PointerEventData eventData)
         {
-            ImageConfig.Init();
-            SetNeedRange = typeof(BattleSystem).GetMethod("SetNeedRange", BindingFlags.Instance | BindingFlags.NonPublic);
+            OnClick.Invoke(this);
+        }
+    }
+
+    public class Clock_Text : MonoBehaviour
+    {
+        private Text Text;
+
+        void Awake()
+        {
+            Text = gameObject.GetComponent<Text>();
         }
 
-        public static class ImageConfig
+        void OnGUI()
         {
-            public static Image BackgroundImage;
-            public static Image Button_Brown;
-
-            public static void Init()
-            {
-                BackgroundImage = Resources.Load<GameObject>("OldScenePrefabs/YesOrNoWindow").transform.Find("WindowBody").GetComponent<Image>();
-            }
+            Text.text = $"手记({DateTime.Now.ToString("HH:mm:ss")})";
         }
     }
 }
