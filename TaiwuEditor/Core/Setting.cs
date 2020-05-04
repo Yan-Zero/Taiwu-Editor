@@ -19,6 +19,20 @@ namespace TaiwuEditor
     {
         private ConfigFile Config;
 
+        public HotkeyConfig Hotkey; 
+
+        public class HotkeyConfig
+        {
+            public void Init(ConfigFile Config)
+            {
+                OpenUI = Config.Bind("Hotkey", "OpenUI", new KeyboardShortcut(KeyCode.F6, new KeyCode[] { KeyCode.LeftControl }), "打开窗口");
+                BattleMustWin = Config.Bind("Hotkey", "BattleMustWin", new KeyboardShortcut(KeyCode.K, new KeyCode[] { KeyCode.LeftControl }), "战斗必胜");
+            }
+
+            public ConfigEntry<KeyboardShortcut> OpenUI;
+            public ConfigEntry<KeyboardShortcut> BattleMustWin;
+        }
+
         /// <summary>
         /// 奇遇类型
         /// </summary>
@@ -44,7 +58,9 @@ namespace TaiwuEditor
         {
             "门派支持度",
             "地区恩义",
-            "默认战斗距离"
+            "默认战斗距离",
+            "蛐蛐品级限定",
+            "建筑工作效率上限"
         };
 
         /// <summary>
@@ -54,7 +70,10 @@ namespace TaiwuEditor
         public void Init(ConfigFile config)
         {
             Config = config;
-            Hotkey = Config.Bind("Hotkey", "OpenUI", new KeyboardShortcut(KeyCode.F6, new KeyCode[] { KeyCode.LeftControl }), "打开窗口的快捷键");
+
+            Hotkey = new HotkeyConfig();
+            Hotkey.Init(Config);
+
             CustomLockValue = Config.Bind<int[]>("Cheat", "customLockValue", null, "自定义锁定值");
             includedStoryTyps = Config.Bind<bool[]>("Cheat", "includedStoryTyps", null, "需要直达终点的奇遇的类型");
             PagesPerFastRead = Config.Bind<int>("Cheat", "PagesPerFastRead", 10, "快速读书每次篇数");
@@ -73,6 +92,14 @@ namespace TaiwuEditor
             ChangeCombatRange = Config.Bind<bool>("Cheat", "ChangeCombatRange", false, "锁定战斗距离");
             ChangeDefalutCombatRange = Config.Bind<bool>("Cheat", "LockCombatRange", false, "默认战斗距离");
             InfAbilityP = Config.Bind<bool>("Cheat", "InfAbilityP", false, "无限特性点数");
+            GetAllQuqu = Config.Bind<bool>("Cheat", "GetAllQuqu", false, "蛐蛐一网打尽");
+            GetQuquNoMiss = Config.Bind<bool>("Cheat", "GetQuquNoMiss", false, "蛐蛐捕捉不会失手");
+            BattleMustWin = Config.Bind<bool>("Cheat", "BattleMustWin", false, "战斗必胜");
+            ManPowerNoLimit = Config.Bind<bool>("Cheat", "ManPowerNoLimit", false, "人力限制解除");
+            InfManPower = Config.Bind<bool>("Cheat", "InfManPower", false, "无限人力");
+            BuildingMaxLevelCheat = Config.Bind<bool>("Cheat", "BuildingMaxLevelCheat", false, "建筑等级上限修改");
+            BuildingLevelPctNoLimit = Config.Bind<bool>("Cheat", "BuildingLevelPctNoLimit", false, "建筑工作效率限制解除");
+
 
             Config.SaveOnConfigSet = true;
 
@@ -83,12 +110,17 @@ namespace TaiwuEditor
             }
 
             // 初始化锁定值
-            if (CustomLockValue.Value == null || CustomLockValue.Value.Length != lockValueName.Length)
-            {
+            if (CustomLockValue.Value == null)
                 CustomLockValue.Value = new int[lockValueName.Length];
-                CustomLockValue.Value[2] = 20;
+            else if (CustomLockValue.Value.Length < lockValueName.Length)
+            {
+                var i = new int[lockValueName.Length];
+                for(int index = 0; index < CustomLockValue.Value.Length; index++)
+                {
+                    i[index] = CustomLockValue.Value[index];
+                }
+                CustomLockValue.Value = i;
             }
-
         }
 
         /// <summary>
@@ -119,13 +151,10 @@ namespace TaiwuEditor
         /// (index:0)门派支持度值
         /// (index:1)地区恩义值
         /// (index:2)默认战斗距离
+        /// (index:3)🦗品级限定
+        /// (index:4)建筑工作效率上限
         /// </summary>
         public ConfigEntry<int[]> CustomLockValue;
-
-        /// <summary>
-        /// 打开修改器窗口的快捷键
-        /// </summary>
-        public ConfigEntry<KeyboardShortcut> Hotkey;
 
         /// <summary>
         /// 行动力设定
@@ -192,6 +221,41 @@ namespace TaiwuEditor
         /// </summary>
         public ConfigEntry<bool> InfAbilityP;
 
+        /// <summary>
+        /// 蛐蛐全部捕捉
+        /// </summary>
+        public ConfigEntry<bool> GetAllQuqu;
+
+        /// <summary>
+        /// 捕捉蛐蛐不会失手
+        /// </summary>
+        public ConfigEntry<bool> GetQuquNoMiss;
+
+        /// <summary>
+        /// 战斗必胜
+        /// </summary>
+        public ConfigEntry<bool> BattleMustWin;
+
+        /// <summary>
+        /// 人力上限解除
+        /// </summary>
+        public ConfigEntry<bool> ManPowerNoLimit;
+
+        /// <summary>
+        /// 建筑工作效率限制解除
+        /// </summary>
+        public ConfigEntry<bool> BuildingLevelPctNoLimit;
+
+        /// <summary>
+        /// 锁定人力
+        /// </summary>
+        public ConfigEntry<bool> InfManPower;
+
+        /// <summary>
+        /// 建筑最大等级修改
+        /// </summary>
+        public ConfigEntry<bool> BuildingMaxLevelCheat;
+
         public void Save()
         {
             Config.Save();
@@ -203,11 +267,20 @@ namespace TaiwuEditor
         public static TaiwuEditor TaiwuEditor;
         public static MethodInfo SetNeedRange;
         public static bool DebugMode = false;
-        public static int CountClickTitle = 0;
 
         public static void Init()
         {
             SetNeedRange = AccessTools.Method(typeof(BattleSystem), "SetNeedRange");
+        }
+
+        public static class UI_Config
+        {
+            /// <summary>选择修改哪个人物的属性，0太吾，1上一个打开菜单的人物，2自定义人物</summary>
+            public static int PropertyChoose = 0;
+
+            /// <summary>想要修改属性的NPC ID</summary>
+            public static int ActorId = 0;
+
         }
     }
 
@@ -218,10 +291,12 @@ namespace TaiwuEditor
     {
         // 该类奇遇包含的奇遇Id
         private readonly HashSet<int> storyIds;
+
         /// <summary>
         /// 奇遇种类的名字
         /// </summary>
         public string Name { get; private set; }
+
         /// <summary>
         /// 奇遇种类
         /// </summary>
@@ -232,6 +307,7 @@ namespace TaiwuEditor
             this.storyIds = storyIds;
             Name = name;
         }
+
         /// <summary>
         /// 该种类奇遇是够包含某奇遇
         /// </summary>

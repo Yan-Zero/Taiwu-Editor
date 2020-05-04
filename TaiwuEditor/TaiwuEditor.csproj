@@ -99,18 +99,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\EditorUI.cs" />
+    <Compile Include="Core\UI\Func.Hotkey.cs" />
+    <Compile Include="Core\UI\Func.Base.cs" />
+    <Compile Include="Core\UI\Func.More.cs" />
     <Compile Include="GameObject\ToggleSliderBar.cs" />
     <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="Helper\ActorPropertyHelper.cs" />
-    <Compile Include="Helper\GongFaHelper.cs" />
-    <Compile Include="Helper\HelperBase.cs" />
+    <Compile Include="Core\Helper.cs" />
     <Compile Include="Core\Setting.cs" />
     <Compile Include="Core\TaiwuEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools\DropDownMenu.cs" />
-    <Compile Include="Tools\OptimizeScrollView.cs" />
-    <Compile Include="EditorUI.cs" />
+    <Compile Include="Script.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

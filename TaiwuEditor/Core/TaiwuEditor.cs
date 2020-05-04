@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using BepInEx.Configuration;
 using System.Runtime.InteropServices;
 using System;
-using Newtonsoft.Json;
 using UnityUIKit.GameObjects;
 using TaiwuUIKit.GameObjects;
 using UnityUIKit.Core;
@@ -18,14 +17,16 @@ using System.Linq;
 using UnityUIKit.Components;
 using UnityUIKit.Core.GameObjects;
 using TaiwuEditor.Core;
+using TaiwuEditor.Core.UI;
 
 namespace TaiwuEditor
 {
     [BepInPlugin("Yan.TaiwuEditor", "TaiwuEditor", TaiwuEditor.version)]
+    [BepInProcess("The Scroll Of Taiwu Alpha V1.0.exe")]
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.1.1.0";
+        public const string version = "1.3.0.0";
 
         /// <summary>日志</summary>
         public static new ManualLogSource Logger;
@@ -39,8 +40,6 @@ namespace TaiwuEditor
         /// <summary>用于锁定每月行动点数的计时器</summary>
         private static Timer timer;
 
-        /// <summary>UI类是否已经创建</summary>
-        private static bool uiIsShow = false;
 
         private void Awake()
         {
@@ -54,17 +53,12 @@ namespace TaiwuEditor
             RuntimeConfig.Init();
             PrepareGUI();
 
-            if (!uiIsShow && EditorUIOld.Load(settings))
-            {
-                uiIsShow = true;
-                Patches.Init();
+            Patches.Init();
 
-                // 用于锁定每月行动点数（每秒重置一次行动点数）
-                timer = new Timer(500);
-                timer.Elapsed += DayTimeLock;
-                timer.Start();
-            }
-            enabled = uiIsShow;
+            // 用于锁定每月行动点数（每秒重置一次行动点数）
+            timer = new Timer(500);
+            timer.Elapsed += DayTimeLock;
+            timer.Start();
         }
 
         /// <summary>
@@ -88,11 +82,8 @@ namespace TaiwuEditor
         private TaiwuWindows windows;
         private BaseScroll Func_Base_Scroll;
         private BaseScroll Func_More_Scroll;
+        private BaseScroll Func_Hotkey_Scroll;
 
-        /// <summary>
-        /// 时代之泪
-        /// 实现属性修改的功能后记得删掉
-        /// </summary>
         public bool ToggleUI = false;
 
         /// <summary>
@@ -166,20 +157,31 @@ namespace TaiwuEditor
                                         UseOutline = true,
                                         onValueChanged = (bool value,Toggle Toggle) =>
                                         {
-                                            //Func_More_Scroll.SetActive(value);
-                                            if(value)
-                                            {
-                                                try
-                                                {
-                                                    ToggleUI = true;
-                                                    EditorUIOld.Instance.ToggleWindow(true);
-                                                    (Toggle?.Parent.Children[1] as Toggle).isOn = true;
-                                                }
-                                                catch(Exception ex)
-                                                {
-                                                    Logger.LogError(ex);
-                                                }
-                                            }
+                                            Func_More_Scroll.SetActive(value);
+                                            //if(value)
+                                            //{
+                                            //    try
+                                            //    {
+                                            //        ToggleUI = true;
+                                            //        EditorUIOld.Instance.ToggleWindow(true);
+                                            //        (Toggle?.Parent.Children[1] as Toggle).isOn = true;
+                                            //    }
+                                            //    catch(Exception ex)
+                                            //    {
+                                            //        Logger.LogError(ex);
+                                            //    }
+                                            //}
+                                        }
+                                    },
+                                    new TaiwuToggle()
+                                    {
+                                        Name = "Hotkey.Func",
+                                        Text = "快捷键管理",
+                                        UseBoldFont = true,
+                                        UseOutline = true,
+                                        onValueChanged = (bool value,Toggle Toggle) =>
+                                        {
+                                            Func_Hotkey_Scroll.SetActive(value);
                                         }
                                     }
                                 }
@@ -206,6 +208,18 @@ namespace TaiwuEditor
                                     ForceExpandChildWidth = true
                                 },
                                 DefaultActive = false
+                            }),
+                            (Func_Hotkey_Scroll = new BaseScroll()
+                            {
+                                Name = "Func_Hotkey_Scroll",
+                                Group=
+                                {
+                                    Direction = Direction.Vertical,
+                                    Spacing = 15,
+                                    Padding = { 10 },
+                                    ForceExpandChildWidth = true
+                                },
+                                DefaultActive = false
                             })
                         },
                         Element =
@@ -222,14 +236,17 @@ namespace TaiwuEditor
         private void Update()
         {
             // UI Hotkey
-            if (settings.Hotkey.Value.IsDown() || ToggleUI)
+            if (settings.Hotkey.OpenUI.Value.IsDown() || ToggleUI)
             {
                 ToggleUI = false;
                 if (overlay.Created)
                 {
                     overlay.RectTransform.SetAsLastSibling();
                     if (overlay.IsActive)
-                        windows.CloseButton.Click();
+                    {
+                        overlay.SetActive(false);
+                        settings.Save();
+                    }
                     else
                     {
                         overlay.SetActive(true);
@@ -247,12 +264,14 @@ namespace TaiwuEditor
 
 
                     //基础功能 UI
-                    EditorUI.BaseFuncToggle(Func_Base_Scroll, settings);
-                    EditorUI.StoryCheatUI(Func_Base_Scroll, settings);
-                    EditorUI.ReadBookCheatUI(Func_Base_Scroll, settings);
-                    EditorUI.LockGangPartValueUI(Func_Base_Scroll, settings);
-                    EditorUI.LockBasePartValueUI(Func_Base_Scroll, settings);
-
+                    EditorUI.BaseUI.BaseFuncToggle(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.StoryCheatUI(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.ReadBookCheatUI(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.GetAllQuquUI(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.LockGangPartValueUI(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.LockBasePartValueUI(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.ChangeDefalutCombatRangeUI(Func_Base_Scroll, settings);
+                    EditorUI.BaseUI.BuildingLevelPctLimitUI(Func_Base_Scroll, settings);
 
                     //属性修改
                     var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
@@ -260,28 +279,45 @@ namespace TaiwuEditor
 
                     Func_More_Scroll.Add("未载入存档", new BaseFrame()
                     {
-                        Name = "Box_未载入存档",
+                        Name = "未载入存档",
                         Children =
                         {
                             new BaseText()
                             {
-                                Name = "Text 未载入存档",
+                                Name = "Text",
                                 Text = "未载入存档"
                             }
-                        }
+                        },
+                        DefaultActive = false
                     });
+                    EditorUI.MoreUI.TopOfFuncMoreScroll(Func_More_Scroll);
+                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 61, 67, "基本属性");
+                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 401, 408, "资源");
+                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 501, 517, "技艺资质");
+                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 501, 517, "功法资质");
+                    EditorUI.MoreUI.TaiwuField(Func_More_Scroll);
+                    EditorUI.MoreUI.DisplayHealthAge(Func_More_Scroll);
+                    EditorUI.MoreUI.DisplayXXField(Func_More_Scroll);
 
                     var onTitleClick = (windows.Children[0] as TaiwuTitle).Get<ClickHelper>();
-                    onTitleClick.OnClick = delegate
+                    onTitleClick.OnClick = (ClickHelper ch) =>
                     {
-                        RuntimeConfig.CountClickTitle ++;
-                        if(RuntimeConfig.CountClickTitle == 5)
+                        if(ch.ClickCount == 5)
                         {
                             RuntimeConfig.DebugMode = !RuntimeConfig.DebugMode;
-                            RuntimeConfig.CountClickTitle = 0;
+                            ch.ClickCount = 0;
                             Logger.LogInfo("Debug Mode : " + (RuntimeConfig.DebugMode ? "On" : "Off"));
                         }
                     };
+
+                    windows.CloseButton.OnClick = delegate
+                    {
+                        ToggleUI = true;
+                    };
+
+
+                    //快捷键窗口
+                    EditorUI.HotkeyUI.Hotkey_UI(Func_Hotkey_Scroll, settings.Hotkey);
                 }
             }
         }
@@ -293,22 +329,4 @@ namespace TaiwuEditor
         }
     }
 
-    /// <summary>
-    /// 转换器支持
-    /// </summary>
-    public static class TypeConverterSupporter
-    {
-        public static void Init()
-        {
-            TypeConverter converter = new TypeConverter
-            {
-                ConvertToString = ((object obj, Type type) => JsonConvert.SerializeObject(obj)),
-                ConvertToObject = ((string str, Type type) => JsonConvert.DeserializeObject(str, type))
-
-            };
-            TomlTypeConverter.AddConverter(typeof(int[]), converter);
-            TomlTypeConverter.AddConverter(typeof(bool[]), converter);
-        }
-
-    }
 }

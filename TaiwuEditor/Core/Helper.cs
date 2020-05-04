@@ -5,12 +5,15 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using GameData;
+using BepInEx.Configuration;
+using System;
+using Newtonsoft.Json;
 
 namespace TaiwuEditor
 {
-    internal abstract class HelperBase
+    public static class Helper
     {
-        protected static readonly Dictionary<int, string> textColors = new Dictionary<int, string>
+        public static readonly Dictionary<int, string> textColors = new Dictionary<int, string>
         {
             { 10000, "<color=#323232FF>" },
             { 10001, "<color=#4B4B4BFF>" },
@@ -32,39 +35,73 @@ namespace TaiwuEditor
             { 20011, "<color=#EDA723FF>" },
             { -1, "</color>" }
         };
-        /// <summary>标签的样式</summary>
-        public static GUIStyle LabelStyle { get; set; }
-        /// <summary>按钮的样式</summary>
-        public static GUIStyle ButtonStyle { get; set; }
-        /// <summary>输入框的样式</summary>
-        public static GUIStyle TextFieldStyle { get; set; }
-        /// <summary>选项的样式</summary>
-        public static GUIStyle ToggleStyle { get; set; }
-        /// <summary>当前编辑的角色ID</summary>
-        protected int currentActorId = -1;
+        /// <summary>属性ID名称</summary>
+        public static readonly Dictionary<int, string> ActorFieldNames = new Dictionary<int, string>()
+        {
+            { -1, "历练"},
+            { 11, "年龄"},
+            { 12, "健康"},
+            { 13, "基础寿命"},
+            { 61, "膂力"},
+            { 62, "体质"},
+            { 63, "灵敏"},
+            { 64, "根骨"},
+            { 65, "悟性"},
+            { 66, "定力"},
+            {401, "食材"},
+            {402, "木材"},
+            {403, "金石"},
+            {404, "织物"},
+            {405, "草药"},
+            {406, "金钱"},
+            {407, "威望"},
+            {501, "音律"},
+            {502, "弈棋"},
+            {503, "诗书"},
+            {504, "绘画"},
+            {505, "术数"},
+            {506, "品鉴"},
+            {507, "锻造"},
+            {508, "制木"},
+            {509, "医术"},
+            {510, "毒术"},
+            {511, "织锦"},
+            {512, "巧匠"},
+            {513, "道法"},
+            {514, "佛学"},
+            {515, "厨艺"},
+            {516, "杂学"},
+            {601, "内功"},
+            {602, "身法"},
+            {603, "绝技"},
+            {604, "拳掌"},
+            {605, "指法"},
+            {606, "腿法"},
+            {607, "暗器"},
+            {608, "剑法"},
+            {609, "刀法"},
+            {610, "长兵"},
+            {611, "奇门"},
+            {612, "软兵"},
+            {613, "御射"},
+            {614, "乐器"},
+            {706, "无属性内力"}
+        };
 
-        protected HelperBase() { }
-
-        public abstract void Update(int actorId);
 
         /// <summary>
         /// 治疗解毒理气
         /// </summary>
-        /// <param name="instance">DateFile实例</param>
-        /// <param name="actorId">要处理的角色ID</param>
+        /// <param name="ActorId">要处理的角色ID</param>
         /// <param name="func">功能选择，0疗伤，1祛毒，2调理内息</param>
         /// <param name="battle">是否处理战斗中的伤口、中毒和内息紊乱</param>
-        public static void CureHelper(DateFile instance, int actorId, int func, bool battle = true)
+        public static void CureHelper(int func, int? ActorId = null, bool battle = true)
         {
-            if (instance == null)
-            {
-                return;
-            }
-
+            int actorId = ActorId ?? RuntimeConfig.UI_Config.ActorId;
             switch (func)
             {
                 case 0:
-                    if (instance.actorInjuryDate != null && instance.actorInjuryDate.TryGetValue(actorId, out Dictionary<int, int> injuries))
+                    if (DateFile.instance.actorInjuryDate != null && DateFile.instance.actorInjuryDate.TryGetValue(actorId, out Dictionary<int, int> injuries))
                     {
                         var injuryIds = new List<int>(injuries.Keys);
                         for (int i = 0; i < injuryIds.Count; i++)
@@ -72,8 +109,8 @@ namespace TaiwuEditor
                             injuries.Remove(injuryIds[i]);
                         }
                     }
-                    if (battle && instance.ActorIsInBattle(actorId) != 0 && instance.battleActorsInjurys != null
-                        && instance.battleActorsInjurys.TryGetValue(actorId, out Dictionary<int, int[]> battleInjuries))
+                    if (battle && DateFile.instance.ActorIsInBattle(actorId) != 0 && DateFile.instance.battleActorsInjurys != null
+                        && DateFile.instance.battleActorsInjurys.TryGetValue(actorId, out Dictionary<int, int[]> battleInjuries))
                     {
                         var battleInjuriesIds = new List<int>(battleInjuries.Keys);
                         for (int i = 0; i < battleInjuriesIds.Count; i++)
@@ -83,14 +120,14 @@ namespace TaiwuEditor
                     }
                     break;
                 case 1:
-                    if (Characters.HasChar(actorId))
+                    if (GameData.Characters.HasChar(actorId))
                         for (int i = 0; i < 6; i++)
                         {
-                            Characters.SetCharProperty(actorId, 51 + i, "0");
+                            GameData.Characters.SetCharProperty(actorId, 51 + i, "0");
                         }
 
-                    if (battle && instance.ActorIsInBattle(actorId) != 0 && instance.battleActorsPoisons != null
-                        && instance.battleActorsPoisons.TryGetValue(actorId, out int[] poisons))
+                    if (battle && DateFile.instance.ActorIsInBattle(actorId) != 0 && DateFile.instance.battleActorsPoisons != null
+                        && DateFile.instance.battleActorsPoisons.TryGetValue(actorId, out int[] poisons))
                     {
                         for (int i = 0; i < poisons.Length; i++)
                         {
@@ -99,17 +136,43 @@ namespace TaiwuEditor
                     }
                     break;
                 case 2:
-                    if (Characters.HasChar(actorId))
+                    if (GameData.Characters.HasChar(actorId))
                     {
-                        Characters.SetCharProperty(actorId, 39, "0");
+                        GameData.Characters.SetCharProperty(actorId, 39, "0");
                     }
-                    if (battle && instance.ActorIsInBattle(actorId) != 0 && instance.battleActorsMianQi != null)
+                    if (battle && DateFile.instance.ActorIsInBattle(actorId) != 0 && DateFile.instance.battleActorsMianQi != null)
                     {
-                        instance.battleActorsMianQi[actorId] = 0;
+                        DateFile.instance.battleActorsMianQi[actorId] = 0;
                     }
                     break;
             }
         }
+
+
+        /// <summary>
+        /// 将数据设定为游戏数据
+        /// </summary>
+        /// <param name="resid"></param>
+        /// <param name="value"></param>
+        public static void ActorSetFieldValue(int resid, string value)
+        {
+            if (DateFile.instance != null && RuntimeConfig.UI_Config.ActorId != -1)
+            {
+                if (int.TryParse(value, out int intValue) && intValue >= 0)
+                {
+                    switch (resid)
+                    {
+                        case -1:
+                            DateFile.instance.gongFaExperienceP = intValue;
+                            break;
+                        default:
+                            GameData.Characters.SetCharProperty(RuntimeConfig.UI_Config.ActorId, resid, value);
+                            break;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// 获取角色生活信息
@@ -538,7 +601,7 @@ namespace TaiwuEditor
             where TValue1 : IDictionary<Tkey2, string>
         {
             value = -1;
-            return iDictionary.TryGetValue(key1, out var value1) && value1.TryGetValue(key2, out string text) && HelperBase.TryParseInt(text, out value);
+            return iDictionary.TryGetValue(key1, out var value1) && value1.TryGetValue(key2, out string text) && Helper.TryParseInt(text, out value);
         }
 
         /// <summary>
@@ -555,87 +618,25 @@ namespace TaiwuEditor
         public static bool TryGetValue<T, Tkey>(this T iDictionary, Tkey key, out int value) where T : IDictionary<Tkey, string>
         {
             value = -1;
-            return iDictionary.TryGetValue(key, out string text) && HelperBase.TryParseInt(text, out value);
+            return iDictionary.TryGetValue(key, out string text) && Helper.TryParseInt(text, out value);
         }
     }
 
-    // 借用Sth4nothing的反射类
-    internal static class ReflectionMethod
+    /// <summary>
+    /// 转换器支持
+    /// </summary>
+    public static class TypeConverterSupporter
     {
-        private const BindingFlags Flags = BindingFlags.Instance
-                                           | BindingFlags.Static
-                                           | BindingFlags.NonPublic
-                                           | BindingFlags.Public;
-
-        /// <summary>
-        /// 调用实例中的方法并返回结果
-        /// </summary>
-        /// <typeparam name="TSource">实例的类型</typeparam>
-        /// <typeparam name="TResult">返回值类型</typeparam>
-        /// <param name="instance">类实例</param>
-        /// <param name="method">类实例方法的名称</param>
-        /// <param name="args">类实例方法的参数</param>
-        /// <returns>方法返回值</returns>
-        public static TResult Invoke<TSource, TResult>(this TSource instance, string method, params object[] args) => (TResult)typeof(TSource).GetMethod(method, Flags)?.Invoke(instance, args);
-
-        /// <summary>
-        /// 调用实例中的方法
-        /// </summary>
-        /// <typeparam name="T">实例的类型</typeparam>
-        /// <param name="instance">类实例</param>
-        /// <param name="method">类实例方法的名称</param>
-        /// <param name="args">类实例方法的参数</param>
-        public static void Invoke<T>(this T instance, string method, params object[] args) => typeof(T).GetMethod(method, Flags)?.Invoke(instance, args);
-
-        /// <summary>
-        /// 调用实例中的方法并返回结果
-        /// </summary>
-        /// <typeparam name="T">实例的类型</typeparam>
-        /// <param name="instance">类实例</param>
-        /// <param name="method">类实例方法的名称</param>
-        /// <param name="argTypes">类实例方法的参数的类型</param>
-        /// <param name="args">类实例方法的参数</param>
-        /// <returns>方法返回值</returns>
-        public static object Invoke<T>(this T instance, string method, System.Type[] argTypes, params object[] args)
+        public static void Init()
         {
-            argTypes = argTypes ?? new System.Type[0];
-            var methods = typeof(T).GetMethods(Flags).Where(m =>
+            TypeConverter converter = new TypeConverter
             {
-                if (m.Name != method)
-                {
-                    return false;
-                }
+                ConvertToString = ((object obj, Type type) => JsonConvert.SerializeObject(obj)),
+                ConvertToObject = ((string str, Type type) => JsonConvert.DeserializeObject(str, type))
 
-                return m.GetParameters()
-                    .Select(p => p.ParameterType)
-                    .SequenceEqual(argTypes);
-            });
-
-            if (methods.Count() != 1)
-            {
-                throw new AmbiguousMatchException("cannot find method to invoke");
-            }
-
-            return methods.First()?.Invoke(instance, args);
+            };
+            TomlTypeConverter.AddConverter(typeof(int[]), converter);
+            TomlTypeConverter.AddConverter(typeof(bool[]), converter);
         }
-
-        /// <summary>
-        /// 获取类实例中域(Field)的值
-        /// </summary>
-        /// <typeparam name="TSource">实例的类型</typeparam>
-        /// <typeparam name="TResult">返回值类型</typeparam>
-        /// <param name="instance">类实例</param>
-        /// <param name="field"></param>
-        /// <returns>域的值</returns>
-        public static TResult GetValue<TSource, TResult>(this TSource instance, string field) => (TResult)typeof(TSource).GetField(field, Flags)?.GetValue(instance);
-
-        /// <summary>
-        /// 获取类实例中域(Field)的值
-        /// </summary>
-        /// <typeparam name="T">实例的类型</typeparam>
-        /// <param name="instance">类实例</param>
-        /// <param name="field">域名称</param>
-        /// <returns>域的值</returns>
-        public static object GetValue<T>(this T instance, string field) => typeof(T).GetField(field, Flags)?.GetValue(instance);
     }
 }

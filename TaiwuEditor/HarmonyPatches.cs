@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using GameData;
+using UnityEngine;
+using Random = UnityEngine.Random;
+using System.Linq;
+using System.Reflection.Emit;
 
 namespace TaiwuEditor
 {
@@ -11,13 +15,174 @@ namespace TaiwuEditor
         public static readonly Harmony harmony = new Harmony("Yan.TaiwuEditor");
         public static readonly Type PatchesType = typeof(Patches);
 
+        public static void Init()
+        {
+            harmony.PatchAll();
+
+            harmony.Patch(AccessTools.Method(typeof(NewGame), "GetAbilityP"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "NewGame_UpdateAbility_Postfix")));
+            harmony.Patch(AccessTools.Method(typeof(ui_TopBar), "OnInit"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "ui_TopBar_OnInit_Postfix")));
+            harmony.Patch(AccessTools.Method(typeof(GetQuquWindow), "GetQuquButton"), new HarmonyMethod(AccessTools.Method(PatchesType, "GetQuquButton_Prefix")));
+            harmony.Patch(AccessTools.Method(typeof(BattleSystem), "Update"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "BattleSystem_Update_Postfix")));
+            harmony.Patch(AccessTools.Method(typeof(UIDate), "GetMaxManpower"), new HarmonyMethod(AccessTools.Method(PatchesType, "UIDate_GetMaxManpower_Prefix")));
+            harmony.Patch(AccessTools.Method(typeof(UIDate), "GetUseManPower"), new HarmonyMethod(AccessTools.Method(PatchesType, "UIDate_GetUseManPower_Prefix")));
+            harmony.Patch(AccessTools.Method(typeof(DateFile), "LoadGameConfigs"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "DataFile_LoadGameConfigs_Postfix")));
+            harmony.Patch(AccessTools.Method(typeof(DateFile), "GetBuildingLevelPct"), null, null,new HarmonyMethod(AccessTools.Method(PatchesType, "DataFile_GetBuildingLevelPct_Transpiler")));
+
+        }
+
+        /// <summary>
+        /// 蛐蛐修改
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private static bool GetQuquButton_Prefix(GetQuquWindow __instance,int index, ref bool ___startGetQuqu, ref bool ___startFirstTime, ref bool ___getQuquEnd)
+        {
+            if (!TaiwuEditor.enabled || !TaiwuEditor.settings.GetQuquNoMiss.Value)
+                return true;
+
+            if (___startGetQuqu || ___startFirstTime)
+            {
+                ___startGetQuqu = false;
+
+                if (RuntimeConfig.DebugMode)
+                {
+                    int num = 10 + __instance.cricketDate[index][6] - Mathf.Min(__instance.cricketDate[index][3] * 5, 40);
+                    TaiwuEditor.Logger.LogInfo(index + ":" + __instance.cricketDate[index][6] + "|" + num);
+                }
+
+                if(TaiwuEditor.settings.GetAllQuqu.Value)
+                    GetAllQuqu(__instance);
+                else
+                    AccessTools.Method(__instance.GetType(), "GetQuqu").Invoke(__instance,new object[] { index });
+
+                ___getQuquEnd = true;
+            }
+            return false;
+        }
+        private static void GetAllQuqu(GetQuquWindow __instance)
+        {
+            int MainActorID = DateFile.instance.MianActorID();
+            List<int[]> QuquList = new List<int[]>();
+            for (int i = 0; i < __instance.placeImage.Length; i++)
+            {
+                int newThing = DateFile.instance.MakeNewItem(int.Parse(DateFile.instance.cricketPlaceDate[__instance.cricketDate[i][0]][102]));
+                int colorId = __instance.cricketDate[i][1];
+                int partId = __instance.cricketDate[i][2];
+                __instance.MakeQuqu(newThing, colorId, partId);
+                int ququDate = __instance.GetQuquDate(newThing, 93, true);
+                DateFile.instance.getQuquTrun += ququDate;
+                DateFile.instance.AddActorScore(501, 100 + Mathf.Abs(ququDate) * 5);
+                int num3 = int.Parse(DateFile.instance.GetItemDate(newThing, 8, true));
+                if (Random.Range(0, 100) < num3 * 2)
+                {
+                    DateFile.instance.ChangeItemHp(MainActorID, newThing, -1, 0, true);
+                    __instance.QuquAddInjurys(newThing);
+                    QuquList.Add(new int[2]
+                    {
+                        newThing,
+                        1
+                    });
+                    QuquList.Add(new int[2]
+                    {
+                        96,
+                        Random.Range(1, num3)
+                    });
+                }
+                else if (Random.Range(0, 100) < 10)
+                {
+                    int num4 = DateFile.instance.MakRandQuqu((num3 - 1) * 3);
+                    DateFile.instance.ChangeItemHp(MainActorID, newThing, -(int.Parse(DateFile.instance.GetItemDate(newThing, 901, true)) / 2), 0, true);
+                    DateFile.instance.ChangeItemHp(MainActorID, num4, -(int.Parse(DateFile.instance.GetItemDate(num4, 901, true)) / 2), 0, true);
+                    QuquList.Add(new int[2]
+                    {
+                        newThing,
+                        1
+                    });
+                    QuquList.Add(new int[2]
+                    {
+                        num4,
+                        1
+                    });
+                }
+                else
+                {
+                    QuquList.Add(new int[2]
+                    {
+                        newThing,
+                        1
+                    });
+                }
+            }
+
+            var NewQuquList = new List<int[]>();
+            foreach (var i in QuquList)
+            {
+                if(int.Parse(DateFile.instance.GetItemDate(i[0], 8)) < (10 - TaiwuEditor.settings.CustomLockValue.Value[3]))
+                {
+                    var value = int.Parse(Characters.GetCharProperty(MainActorID, 406)) + int.Parse(DateFile.instance.GetItemDate(i[0], 905));
+                    Characters.SetCharProperty(MainActorID, 406, value.ToString());
+                    Items.RemoveItem(i[0]);
+                }
+                else
+                {
+                    NewQuquList.Add(i);
+                }
+            }
+            
+            DateFile.instance.GetItem(DateFile.instance.MianActorID(), NewQuquList, newItem: false, 0);
+        }
+
+        /// <summary>
+        /// 战斗必胜修改
+        /// </summary>
+        /// <param name="__instance"></param>
+        private static void BattleSystem_Update_Postfix(BattleSystem __instance)
+        {
+            if (!TaiwuEditor.enabled || !TaiwuEditor.settings.BattleMustWin.Value)
+                return;
+            if(TaiwuEditor.settings.Hotkey.BattleMustWin.Value.IsDown())
+            {
+                __instance.SetRealDamage(isActor: false, 0, 15, 1000000, __instance.ActorId(isActor: false), __instance.largeSize, getWin: true);
+            }
+        }
+
+        /// <summary>
+        /// 人力无上限
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="__result"></param>
+        /// <returns></returns>
+        private static bool UIDate_GetMaxManpower_Prefix(UIDate __instance, ref int __result)
+        {
+            if (!TaiwuEditor.enabled || !TaiwuEditor.settings.ManPowerNoLimit.Value)
+                return true;
+            int value = __instance.GetBaseMaxManpower() + __instance.GetHomeManpower();
+            __result = value < 5 ? 5 : value;
+            return false;
+        }
+
+        /// <summary>
+        /// 无限人力
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="__result"></param>
+        /// <returns></returns>
+        private static bool UIDate_GetUseManPower_Prefix(UIDate __instance, ref int __result)
+        {
+            if (!TaiwuEditor.enabled || !TaiwuEditor.settings.InfManPower.Value)
+                return true;
+            __result = __instance.GetMaxManpower();
+            return false;
+        }
+
         /// <summary>
         /// 无限特性点数
         /// </summary>
         /// <param name="__result"></param>
-        public static void NewGame_UpdateAbility_Postfix(ref int __result)
+        private static void NewGame_UpdateAbility_Postfix(ref int __result)
         {
-            if(TaiwuEditor.enabled && TaiwuEditor.settings.InfAbilityP.Value)
+            if (TaiwuEditor.enabled && TaiwuEditor.settings.InfAbilityP.Value)
             {
                 __result = 10;
             }
@@ -27,24 +192,68 @@ namespace TaiwuEditor
         /// 时钟用的
         /// </summary>
         /// <param name="__instance"></param>
-        public static void ui_TopBar_OnInit_Postfix(ui_TopBar __instance)
+        private static void ui_TopBar_OnInit_Postfix(ui_TopBar __instance)
         {
             if (TaiwuEditor.enabled)
             {
-                __instance.transform.Find("MissionBack/MissionNameBack/MissionNameText").gameObject.AddComponent<Clock_Text>();
-                TaiwuEditor.Logger.LogInfo(__instance.transform.Find("MissionBack/MissionNameBack/MissionNameText"));
-                TaiwuEditor.Logger.LogInfo(__instance.transform.Find("MissionBack/MissionNameBack/MissionNameText").gameObject.GetComponent<Clock_Text>());
-
+                if (__instance.transform.Find("MissionBack/MissionNameBack/MissionNameText").gameObject.GetComponent<Clock_Text>() == null)
+                    __instance.transform.Find("MissionBack/MissionNameBack/MissionNameText").gameObject.AddComponent<Clock_Text>();
             }
         }
 
 
-        public static void Init()
+        private static void DataFile_LoadGameConfigs_Postfix()
         {
-            harmony.PatchAll();
+            if (TaiwuEditor.enabled)
+            {
+                if(TaiwuEditor.settings.BuildingMaxLevelCheat.Value)
+                {
+                    BuildingMaxLevelChangeApply();
+                }
+            }
+        }
+        public static void BuildingMaxLevelChangeApply()
+        {
+            if (DateFile.instance)
+            {
+                DateFile.instance.basehomePlaceDate[1001][1] = "60";
+                DateFile.instance.basehomePlaceDate[1004][1] = "999";
+                DateFile.instance.basehomePlaceDate[1005][1] = "999";
+            }
+        }
+        public static void BuildingMaxLevelChangeCancel()
+        {
+            if(DateFile.instance)
+            {
+                DateFile.instance.basehomePlaceDate[1001][1] = "20";
+                DateFile.instance.basehomePlaceDate[1004][1] = "20";
+                DateFile.instance.basehomePlaceDate[1005][1] = "20";
+            }
+        }
 
-            harmony.Patch(AccessTools.Method(typeof(NewGame), "GetAbilityP"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "NewGame_UpdateAbility_Postfix")));
-            harmony.Patch(AccessTools.Method(typeof(ui_TopBar), "OnInit"), null, new HarmonyMethod(AccessTools.Method(PatchesType, "ui_TopBar_OnInit_Postfix")));
+
+        private static IEnumerable<CodeInstruction> DataFile_GetBuildingLevelPct_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var MathfClamp = AccessTools.Method(typeof(Mathf), "Clamp",new Type[] { typeof(int), typeof(int), typeof(int) });
+            foreach (var instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Call && instruction.operand as MethodInfo == MathfClamp)
+                {
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(PatchesType, "DataFile_GetBuildingLevelPct_Clamp"));
+                }
+                else
+                {
+                    yield return instruction;
+                }
+            }
+        }
+        private static int DataFile_GetBuildingLevelPct_Clamp(int value, int min, int max)
+        {
+            if(!TaiwuEditor.enabled || !TaiwuEditor.settings.BuildingLevelPctNoLimit.Value)
+            {
+                return Mathf.Clamp(value, min, max);
+            }
+            return Mathf.Clamp(value, min, Mathf.Max(TaiwuEditor.settings.CustomLockValue.Value[4] * 5, max));
         }
 
         /// <summary>
@@ -264,7 +473,7 @@ namespace TaiwuEditor
                     TaiwuEditor.Logger.LogInfo($"OpenStory: StoryPlayer: {StorySystem.instance.storyPlayer.name}");
                     TaiwuEditor.Logger.LogInfo($"OpenStory: StoryPlayer_placeid: {StorySystem.instance.storyPlayer.parent.parent.parent.name}");
 #endif
-                    if (HelperBase.EventSetup(StorySystem.StoryBaseManager, storyEndEventId,
+                    if (Helper.EventSetup(StorySystem.StoryBaseManager, storyEndEventId,
                                               __instance.storySystemPartId, __instance.storySystemPlaceId,
                                               __instance.storySystemStoryId))
                     {
@@ -315,7 +524,7 @@ namespace TaiwuEditor
                 }
                 else
                 {
-                    HelperBase.EasyReadV2(___readBookId, ___studySkillTyp, TaiwuEditor.settings.PagesPerFastRead.Value);
+                    Helper.EasyReadV2(___readBookId, ___studySkillTyp, TaiwuEditor.settings.PagesPerFastRead.Value);
                     __instance.UpdateReadBookWindow();
                     return false;
                 }
