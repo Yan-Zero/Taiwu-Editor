@@ -51,13 +51,9 @@ namespace TaiwuEditor
                 return;
             }
             if (NameValue != null)
-            {
                 NameValue.Text = $"<color=#FFA500>{DateFile.instance.GetActorName(RuntimeConfig.UI_Config.ActorId)}</color>";
-            }
             if (ActorID_InputField != null && ActorID_InputField.ReadOnly)
-            {
                 ActorID_InputField.Text = RuntimeConfig.UI_Config.ActorId.ToString();
-            }
             if (NeedUpdate)
             {
                 foreach(var tab in DataFields)
@@ -84,15 +80,13 @@ namespace TaiwuEditor
             }
         }
 
-
         public void SetInstance(BaseScroll instance)
         {
             this.instance = instance;
         }
 
-
         /// <summary>
-        /// 获取游戏属性数据到修改框数值缓存
+        /// 获取游戏属性数据到修改框
         /// </summary>
         /// <param name="resid">字段</param>
         /// <param name="ActorID">角色ID</param>
@@ -222,6 +216,7 @@ namespace TaiwuEditor
 
             ValueLabel.Text = Core.UI.EditorUI.HotkeyUI.Hotkey_ToString(filed.Value);
             Button.Text = "修改快捷键";
+            FinalKey = KeyCode.None;
             KeyCodes = new Dictionary<KeyCode, bool>();
         }
 

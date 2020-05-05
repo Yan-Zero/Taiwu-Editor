@@ -21,12 +21,15 @@ using TaiwuEditor.Core.UI;
 
 namespace TaiwuEditor
 {
-    [BepInPlugin("Yan.TaiwuEditor", "TaiwuEditor", TaiwuEditor.version)]
+    [BepInPlugin(TaiwuEditor.GUID, "TaiwuEditor", TaiwuEditor.version)]
     [BepInProcess("The Scroll Of Taiwu Alpha V1.0.exe")]
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.3.0.0";
+        public const string version = "1.4.0.0";
+
+        /// <summary>GUID</summary>
+        public const string GUID = "0.Yan.TaiwuEditor";
 
         /// <summary>日志</summary>
         public static new ManualLogSource Logger;
@@ -44,16 +47,15 @@ namespace TaiwuEditor
         private void Awake()
         {
             DontDestroyOnLoad(this);
-
             TypeConverterSupporter.Init();
+
             settings.Init(Config);
             Logger = base.Logger;
-
             RuntimeConfig.TaiwuEditor = this;
+
+            HarmonyPatches.Init();
             RuntimeConfig.Init();
             PrepareGUI();
-
-            Patches.Init();
 
             // 用于锁定每月行动点数（每秒重置一次行动点数）
             timer = new Timer(500);
@@ -231,8 +233,6 @@ namespace TaiwuEditor
             };
         }
 
-        private const int wideOfLabel = 200;
-
         private void Update()
         {
             // UI Hotkey
@@ -273,6 +273,22 @@ namespace TaiwuEditor
                     EditorUI.BaseUI.ChangeDefalutCombatRangeUI(Func_Base_Scroll, settings);
                     EditorUI.BaseUI.BuildingLevelPctLimitUI(Func_Base_Scroll, settings);
 
+                    var onTitleClick = (windows.Children[0] as TaiwuTitle).Get<ClickHelper>();
+                    onTitleClick.OnClick = (ClickHelper ch) =>
+                    {
+                        if (ch.ClickCount == 5)
+                        {
+                            RuntimeConfig.DebugMode = !RuntimeConfig.DebugMode;
+                            ch.ClickCount = 0;
+                            Logger.LogInfo("Debug Mode : " + (RuntimeConfig.DebugMode ? "On" : "Off"));
+                        }
+                    };
+                    windows.CloseButton.OnClick = delegate
+                    {
+                        ToggleUI = true;
+                    };
+
+
                     //属性修改
                     var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
                     i.SetInstance(Func_More_Scroll);
@@ -294,26 +310,11 @@ namespace TaiwuEditor
                     EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 61, 67, "基本属性");
                     EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 401, 408, "资源");
                     EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 501, 517, "技艺资质");
-                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 501, 517, "功法资质");
+                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 601, 614, "功法资质");
                     EditorUI.MoreUI.TaiwuField(Func_More_Scroll);
                     EditorUI.MoreUI.DisplayHealthAge(Func_More_Scroll);
                     EditorUI.MoreUI.DisplayXXField(Func_More_Scroll);
-
-                    var onTitleClick = (windows.Children[0] as TaiwuTitle).Get<ClickHelper>();
-                    onTitleClick.OnClick = (ClickHelper ch) =>
-                    {
-                        if(ch.ClickCount == 5)
-                        {
-                            RuntimeConfig.DebugMode = !RuntimeConfig.DebugMode;
-                            ch.ClickCount = 0;
-                            Logger.LogInfo("Debug Mode : " + (RuntimeConfig.DebugMode ? "On" : "Off"));
-                        }
-                    };
-
-                    windows.CloseButton.OnClick = delegate
-                    {
-                        ToggleUI = true;
-                    };
+                    Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
 
 
                     //快捷键窗口

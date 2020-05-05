@@ -81,8 +81,6 @@ namespace TaiwuEditor.Core.UI
                         Func_Hotkey_Scroll.Add(i, Container);
                     }
                 }
-
-
             }
 
             public static string Hotkey_ToString(KeyboardShortcut KeyboardShortcut)
@@ -94,13 +92,10 @@ namespace TaiwuEditor.Core.UI
                     result += $" + {KeyboardShortcut.MainKey}";
                 }
                 else
-                {
                     result = KeyboardShortcut.MainKey.ToString();
-                }
 
                 return result;
             }
-
         }
     }
 }

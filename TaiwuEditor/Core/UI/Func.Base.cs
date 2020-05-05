@@ -738,11 +738,11 @@ namespace TaiwuEditor.Core.UI
                                         settings.BuildingMaxLevelCheat.Value = value;
                                         if(value)
                                         {
-                                            Patches.BuildingMaxLevelChangeApply();
+                                            HarmonyPatches.BuildingMaxLevelChangeApply();
                                         }
                                         else
                                         {
-                                            Patches.BuildingMaxLevelChangeCancel();
+                                            HarmonyPatches.BuildingMaxLevelChangeCancel();
                                         }
                                     },
                                     UseBoldFont = true,
