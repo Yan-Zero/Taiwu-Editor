@@ -20,7 +20,7 @@ namespace TaiwuEditor
                 {
                     TargetType = typeof(NewGame),
                     TargetMethonName = "GetAbilityP",
-                    Prefix = AccessTools.Method(PatchesType,"NewGame_UpdateAbility_Postfix")
+                    Postfix = AccessTools.Method(PatchesType,"NewGame_UpdateAbility_Postfix")
                 }},
             { "时钟", new PatchHandle
             {
@@ -123,7 +123,7 @@ namespace TaiwuEditor
                 TargetType = typeof(BattleSystem),
                 TargetMethonName = "Initialize",
                 Postfix = AccessTools.Method(PatchesType,"BattleSystem_Initialize_Postfix")
-            }}
+            }},
         };
 
         public static void Init()
@@ -329,9 +329,7 @@ namespace TaiwuEditor
             if (TaiwuEditor.enabled)
             {
                 if(TaiwuEditor.settings.BuildingMaxLevelCheat.Value)
-                {
                     BuildingMaxLevelChangeApply();
-                }
             }
         }
         public static void BuildingMaxLevelChangeApply()

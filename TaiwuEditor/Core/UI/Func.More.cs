@@ -230,7 +230,7 @@ namespace TaiwuEditor.Core.UI
                         VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
                     }
                 };
-                for (int resid = residBegin; resid < residEnd; resid++)
+                for (int resid = residBegin; resid <= residEnd; resid++)
                 {
                     actorFields.Children.Add(new Container
                     {

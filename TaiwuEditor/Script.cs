@@ -173,7 +173,7 @@ namespace TaiwuEditor
         {
             if(Monitored)
             {
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Mouse0))
                 {
                     Monitored = false;
                     KeyCodes = new Dictionary<KeyCode, bool>();

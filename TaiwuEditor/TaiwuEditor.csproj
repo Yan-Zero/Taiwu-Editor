@@ -115,6 +115,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)bin\Release" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins" /Y</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)bin\Release\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
