@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\core\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.18.6527.35959, Culture=neutral, processorArchitecture=MSIL">
@@ -41,12 +41,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\core\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -62,36 +62,36 @@
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.JSONSerializeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll Of Taiwu Alpha V1.0_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityUIKit">
@@ -102,6 +102,7 @@
     <Compile Include="Core\UI\Func.Hotkey.cs" />
     <Compile Include="Core\UI\Func.Base.cs" />
     <Compile Include="Core\UI\Func.More.cs" />
+    <Compile Include="Core\UI\Func.Relation.cs" />
     <Compile Include="GameObject\ToggleSliderBar.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Core\Helper.cs" />
@@ -115,6 +116,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)bin\Release\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins" /Y</PostBuildEvent>
+    <PostBuildEvent>echo copying dll file to bie plugins dir
+setlocal
+if not exist "F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" echo no targets dir found &amp; goto END
+if not exist "$(ProjectDir)bin\Release\TaiwuEditor.dll" echo find no release dlls &amp; goto COPYDEBUG
+copy "$(ProjectDir)bin\Release\*.dll" "F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
+goto END
+:COPYDEBUG
+if not exist "$(ProjectDir)bin\Debug\TaiwuEditor.dll" echo find no debug dlls &amp; goto END
+copy "$(ProjectDir)bin\Debug\*.dll" "F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
+echo using debug dlls
+:END</PostBuildEvent>
   </PropertyGroup>
 </Project>
