@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>..\lib\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.18.6527.35959, Culture=neutral, processorArchitecture=MSIL">
@@ -41,12 +41,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>..\lib\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Taiwu_mods\build\dlls\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -62,36 +62,36 @@
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.JSONSerializeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\Taiwu_mods\build\dlls\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\lib\Unity\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityUIKit">
@@ -99,17 +99,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\UI\Func.Hotkey.cs" />
-    <Compile Include="Core\UI\Func.Base.cs" />
-    <Compile Include="Core\UI\Func.More.cs" />
-    <Compile Include="Core\UI\Func.Relation.cs" />
+    <Compile Include="GameObject\ItemShower.cs" />
+    <Compile Include="UI\EditorUI.cs" />
+    <Compile Include="UI\Func.AddItem.cs" />
+    <Compile Include="UI\Func.Hotkey.cs" />
+    <Compile Include="UI\Func.Base.cs" />
+    <Compile Include="UI\Func.More.cs" />
     <Compile Include="GameObject\ToggleSliderBar.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Core\Helper.cs" />
     <Compile Include="Core\Setting.cs" />
     <Compile Include="Core\TaiwuEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Script.cs" />
+    <Compile Include="UI\Script\TabFuncAddItem.cs" />
+    <Compile Include="UI\Script\TabFuncMore.cs" />
+    <Compile Include="UI\Script\KeyboardMonitor.cs" />
+    <Compile Include="UI\Script\Misc.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -118,13 +123,13 @@
   <PropertyGroup>
     <PostBuildEvent>echo copying dll file to bie plugins dir
 setlocal
-if not exist "F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" echo no targets dir found &amp; goto END
+if not exist "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" echo no targets dir found &amp; goto END
 if not exist "$(ProjectDir)bin\Release\TaiwuEditor.dll" echo find no release dlls &amp; goto COPYDEBUG
-copy "$(ProjectDir)bin\Release\*.dll" "F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
+copy "$(ProjectDir)bin\Release\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
 goto END
 :COPYDEBUG
 if not exist "$(ProjectDir)bin\Debug\TaiwuEditor.dll" echo find no debug dlls &amp; goto END
-copy "$(ProjectDir)bin\Debug\*.dll" "F:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
+copy "$(ProjectDir)bin\Debug\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
 echo using debug dlls
 :END</PostBuildEvent>
   </PropertyGroup>

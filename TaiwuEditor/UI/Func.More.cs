@@ -4,22 +4,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaiwuEditor.MGO;
+using TaiwuEditor.Script;
 using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
 
-namespace TaiwuEditor.Core.UI
+namespace TaiwuEditor.UI
 {
     public static partial class EditorUI
     {
         public static class MoreUI
         {
+            public static void Init(BaseScroll Func_More_Scroll)
+            {
+                var i = RuntimeConfig.UI_Tab_Instance.Func_More_Scroll.AddComponent<TabFuncMore>();
+                i.SetInstance(RuntimeConfig.UI_Tab_Instance.Func_More_Scroll);
+
+                Func_More_Scroll.Add("未载入存档", new BaseFrame()
+                {
+                    Name = "未载入存档",
+                    Children =
+                            {
+                                new BaseText()
+                                {
+                                    Name = "Text",
+                                    Text = "未载入存档"
+                                }
+                            },
+                    DefaultActive = false
+                });
+
+                TopOfFuncMoreScroll(Func_More_Scroll);
+                DisplayDataFields(Func_More_Scroll, 61, 66, "基本属性");
+                DisplayDataFields(Func_More_Scroll, 401, 407, "资源");
+                DisplayDataFields(Func_More_Scroll, 501, 516, "技艺资质");
+                DisplayDataFields(Func_More_Scroll, 601, 614, "功法资质");
+                TaiwuField(Func_More_Scroll);
+                DisplayHealthAge(Func_More_Scroll);
+                DisplayXXField(Func_More_Scroll);
+
+                RuntimeConfig.UI_Tab_Instance.Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
+            }
+
             //属性修改
             public static void TopOfFuncMoreScroll(BaseScroll Func_More_Scroll)
             {
-                Func_More_Scroll.Get<EditorBoxMore>().ActorID_InputField = new TaiwuInputField
+                Func_More_Scroll.Get<TabFuncMore>().ActorID_InputField = new TaiwuInputField
                 {
                     Name = "ActorIdInputField",
                     Text = DateFile.instance.mianActorId.ToString(),
@@ -30,7 +62,7 @@ namespace TaiwuEditor.Core.UI
                     OnEndEdit = (string Value, UnityUIKit.GameObjects.InputField IF) =>
                     {
                         RuntimeConfig.UI_Config.ActorId = int.Parse(Value) > -1 ? int.Parse(Value) : DateFile.instance.mianActorId;
-                        Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                        Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                     }
                 };
 
@@ -70,8 +102,8 @@ namespace TaiwuEditor.Core.UI
                                 {
                                     RuntimeConfig.UI_Config.PropertyChoose = 0;
                                     RuntimeConfig.UI_Config.ActorId = DateFile.instance.mianActorId;
-                                    Func_More_Scroll.Get<EditorBoxMore>().ActorID_InputField.ReadOnly = true;
-                                    Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                                    Func_More_Scroll.Get<TabFuncMore>().ActorID_InputField.ReadOnly = true;
+                                    Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                                 }
                             },
                             UseBoldFont = true
@@ -87,8 +119,8 @@ namespace TaiwuEditor.Core.UI
                                 {
                                     RuntimeConfig.UI_Config.PropertyChoose = 1;
                                     RuntimeConfig.UI_Config.ActorId = (ActorMenu.instance.actorId == 0) ? DateFile.instance.mianActorId : ActorMenu.instance.actorId;
-                                    Func_More_Scroll.Get<EditorBoxMore>().ActorID_InputField.ReadOnly = true;
-                                    Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                                    Func_More_Scroll.Get<TabFuncMore>().ActorID_InputField.ReadOnly = true;
+                                    Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                                 }
                             },
                             UseBoldFont = true
@@ -103,8 +135,8 @@ namespace TaiwuEditor.Core.UI
                                 if(value)
                                 {
                                     RuntimeConfig.UI_Config.PropertyChoose = 2;
-                                    Func_More_Scroll.Get<EditorBoxMore>().ActorID_InputField.ReadOnly = false;
-                                    Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                                    Func_More_Scroll.Get<TabFuncMore>().ActorID_InputField.ReadOnly = false;
+                                    Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                                 }
                             },
                             UseBoldFont = true
@@ -159,7 +191,7 @@ namespace TaiwuEditor.Core.UI
                                         PreferredSize = { wideOfLabel , 0 }
                                     }
                                 },
-                                Func_More_Scroll.Get<EditorBoxMore>().ActorID_InputField
+                                Func_More_Scroll.Get<TabFuncMore>().ActorID_InputField
                             }
                         },
                         new Container
@@ -187,7 +219,7 @@ namespace TaiwuEditor.Core.UI
                                         PreferredSize = { wideOfLabel , 0 }
                                     }
                                 },
-                                (Func_More_Scroll.Get<EditorBoxMore>().NameValue = new TaiwuLabel
+                                (Func_More_Scroll.Get<TabFuncMore>().NameValue = new TaiwuLabel
                                 {
                                     Name = "NameValue",
                                     UseBoldFont = true,
@@ -314,7 +346,7 @@ namespace TaiwuEditor.Core.UI
                         actorFields
                     }
                 });
-                Func_More_Scroll.Get<EditorBoxMore>().DataFields.Add(actorFields);
+                Func_More_Scroll.Get<TabFuncMore>().DataFields.Add(actorFields);
                 actorFields.SetActive(false);
             }
 
@@ -430,7 +462,7 @@ namespace TaiwuEditor.Core.UI
                         }
                     }
                 });
-                Func_More_Scroll.Get<EditorBoxMore>().DataFields.Add(actorFields);
+                Func_More_Scroll.Get<TabFuncMore>().DataFields.Add(actorFields);
                 Func_More_Scroll.ContentChildren[$"Char-Field:{"太吾专属"}"].Children[2].SetActive(false);
                 actorFields.SetActive(false);
             }
@@ -596,7 +628,7 @@ namespace TaiwuEditor.Core.UI
                         }
                     }
                 });
-                Func_More_Scroll.Get<EditorBoxMore>().DataFields.Add(actorFields);
+                Func_More_Scroll.Get<TabFuncMore>().DataFields.Add(actorFields);
                 actorFields.SetActive(false);
                 var temp = Func_More_Scroll.ContentChildren[$"Char-Field:{"健康年龄"}"];
                 for (int i = 1; i < temp.Children.Count; i++)
@@ -651,7 +683,7 @@ namespace TaiwuEditor.Core.UI
                             OnClick = delegate
                             {
                                 Helper.SetActorXXValue(DateFile.instance, RuntimeConfig.UI_Config.ActorId, 0);
-                                Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                                Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                             }
                         },
                         new TaiwuButton
@@ -662,7 +694,7 @@ namespace TaiwuEditor.Core.UI
                             OnClick = delegate
                             {
                                 Helper.SetActorXXValue(DateFile.instance, RuntimeConfig.UI_Config.ActorId, 100);
-                                Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                                Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                             }
                         },
                         new TaiwuButton
@@ -673,7 +705,7 @@ namespace TaiwuEditor.Core.UI
                             OnClick = delegate
                             {
                                 Helper.SetActorXXValue(DateFile.instance, RuntimeConfig.UI_Config.ActorId, 200);
-                                Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
+                                Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
                             }
                         }
                     }

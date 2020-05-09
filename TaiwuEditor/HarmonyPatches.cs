@@ -7,6 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Linq;
 using System.Reflection.Emit;
+using TaiwuEditor.Script;
 
 namespace TaiwuEditor
 {
@@ -713,8 +714,6 @@ namespace TaiwuEditor
         public void Unpatch(Harmony harmony, HarmonyPatchType patchType = HarmonyPatchType.All)
         {
             List<MethodInfo> patches = new List<MethodInfo>();
-            if(patchType == HarmonyPatchType.All)
-                patchType = HarmonyPatchType.Prefix | HarmonyPatchType.Postfix | HarmonyPatchType.Transpiler;
 
             if((patchType & HarmonyPatchType.Prefix) == HarmonyPatchType.Prefix)
             {
@@ -741,7 +740,7 @@ namespace TaiwuEditor
 
         public enum HarmonyPatchType
         {
-            All = 0,
+            All = 0b111,
             Prefix = 1,
             Postfix = 2,
             Transpiler = 4,

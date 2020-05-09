@@ -16,8 +16,8 @@ using System.IO;
 using System.Linq;
 using UnityUIKit.Components;
 using UnityUIKit.Core.GameObjects;
-using TaiwuEditor.Core;
-using TaiwuEditor.Core.UI;
+using TaiwuEditor.Script;
+using TaiwuEditor.UI;
 
 namespace TaiwuEditor
 {
@@ -26,7 +26,7 @@ namespace TaiwuEditor
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.4.1.0";
+        public const string version = "1.5.0.0";
 
         /// <summary>GUID</summary>
         public const string GUID = "0.Yan.TaiwuEditor";
@@ -79,139 +79,7 @@ namespace TaiwuEditor
             }
         }
 
-        private static Container.CanvasContainer overlay = null;
-        private static TaiwuWindows windows;
-        private static BaseScroll Func_Base_Scroll;
-        private static BaseScroll Func_More_Scroll;
-        private static BaseScroll Func_Hotkey_Scroll;
-
         public static bool ToggleUI = false;
-
-        /// <summary>
-        /// 初始化UI
-        /// </summary>
-        private static void PrepareGUI()
-        {
-            Func_Base_Scroll = new BaseScroll()
-            {
-                Name = "Func_Base_Scroll",
-                Group =
-                {
-                    Direction = Direction.Vertical,
-                    Spacing = 15,
-                    Padding = { 10 },
-                    ForceExpandChildWidth = true
-                }
-            };
-            Func_More_Scroll = new BaseScroll()
-            {
-                Name = "Func_More_Scroll",
-                Group =
-                {
-                    Direction = Direction.Vertical,
-                    Spacing = 15,
-                    Padding = { 10 },
-                    ForceExpandChildWidth = true
-                },
-                DefaultActive = false
-            };
-            Func_Hotkey_Scroll = new BaseScroll()
-            {
-                Name = "Func_Hotkey_Scroll",
-                Group =
-                {
-                    Direction = Direction.Vertical,
-                    Spacing = 15,
-                    Padding = { 10 },
-                    ForceExpandChildWidth = true
-                },
-                DefaultActive = false
-            };
-            overlay = new Container.CanvasContainer()
-            {
-                Name = "TaiwuEditor.Canvas",
-                Group =
-                {
-                    Padding = { 0 },
-                },
-                Children =
-                {
-                    (windows = new TaiwuWindows()
-                    {
-                        Name = "TaiwuEditor.Windows",
-                        Title = $"太吾修改器 {TaiwuEditor.version}",
-                        Direction = Direction.Vertical,
-                        Spacing = 10,
-                        Group =
-                        {
-                            ChildrenAlignment = TextAnchor.UpperCenter,
-                        },
-                        Children =
-                        {
-                            new ToggleGroup()
-                            {
-                                Name = "Func.Choose",
-                                Group =
-                                {
-                                    Direction = Direction.Horizontal,
-                                    Spacing = 5
-                                },
-                                Element =
-                                {
-                                    PreferredSize = { 0 , 50 }
-                                },
-                                Children =
-                                {
-                                    new TaiwuLabel()
-                                    {
-                                        Name = "Text",
-                                        Text = "功能选择",
-                                        Element =
-                                        {
-                                            PreferredSize = { 150 , 0 }
-                                        },
-                                        UseOutline = true,
-                                        UseBoldFont = true
-                                    },
-                                    new TaiwuToggle()
-                                    {
-                                        Name = "Base.Func",
-                                        Text = "基础功能",
-                                        UseBoldFont = true,
-                                        UseOutline = true,
-                                        onValueChanged = (bool value,Toggle Toggle) => Func_Base_Scroll.SetActive(value),
-                                        isOn = true
-                                    },
-                                    new TaiwuToggle()
-                                    {
-                                        Name = "More.Func",
-                                        Text = "属性修改",
-                                        UseBoldFont = true,
-                                        UseOutline = true,
-                                        onValueChanged = (bool value,Toggle Toggle) => Func_More_Scroll.SetActive(value),
-                                    },
-                                    new TaiwuToggle()
-                                    {
-                                        Name = "Hotkey.Func",
-                                        Text = "快捷键管理",
-                                        UseBoldFont = true,
-                                        UseOutline = true,
-                                        onValueChanged = (bool value,Toggle Toggle) => Func_Hotkey_Scroll.SetActive(value),
-                                    }
-                                }
-                            },
-                            Func_Base_Scroll,
-                            Func_More_Scroll,
-                            Func_Hotkey_Scroll
-                        },
-                        Element =
-                        {
-                            PreferredSize = { 1400, 1000 }
-                        },
-                    }),
-                }
-            };
-        }
 
         private void Update()
         {
@@ -219,42 +87,54 @@ namespace TaiwuEditor
             if (settings.Hotkey.OpenUI.Value.IsDown() || ToggleUI)
             {
                 ToggleUI = false;
-                if (overlay != null && overlay.Created)
+                if (RuntimeConfig.UI_Config.overlay != null && RuntimeConfig.UI_Config.overlay.Created)
                 {
-                    overlay.RectTransform.SetAsLastSibling();
-                    if (overlay.IsActive)
+                    RuntimeConfig.UI_Config.overlay.RectTransform.SetAsLastSibling();
+                    if (RuntimeConfig.UI_Config.overlay.IsActive)
                     {
-                        overlay.SetActive(false);
+                        RuntimeConfig.UI_Config.overlay.SetActive(false);
                         settings.Save();
                     }
                     else
                     {
-                        overlay.SetActive(true);
+                        RuntimeConfig.UI_Config.overlay.SetActive(true);
                         AudioManager.instance.PlaySE("SE_BUTTONDEFAULT");
                     }
                 }
                 else
                 {
-                    PrepareGUI();
+                    EditorUI.PrepareGUI();
 
                     var parent = GameObject.Find("/UIRoot/Canvas/UIPopup").transform;
-                    overlay.SetParent(parent);
-                    overlay.GameObject.layer = 5;
-                    overlay.RectTransform.anchorMax = new Vector2(0.5f,0.5f);
-                    overlay.RectTransform.anchorMin = new Vector2(0.5f,0.5f);
-                    overlay.RectTransform.anchoredPosition = Vector2.zero;
+                    RuntimeConfig.UI_Config.overlay.SetParent(parent);
+                    RuntimeConfig.UI_Config.overlay.GameObject.layer = 5;
+                    RuntimeConfig.UI_Config.overlay.RectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                    RuntimeConfig.UI_Config.overlay.RectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                    RuntimeConfig.UI_Config.overlay.RectTransform.anchoredPosition = Vector2.zero;
 
-                    //基础功能 UI
-                    EditorUI.BaseUI.BaseFuncToggle(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.StoryCheatUI(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.ReadBookCheatUI(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.GetAllQuquUI(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.LockGangPartValueUI(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.LockBasePartValueUI(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.ChangeDefalutCombatRangeUI(Func_Base_Scroll, settings);
-                    EditorUI.BaseUI.BuildingLevelPctLimitUI(Func_Base_Scroll, settings);
+                    try
+                    {
+                        EditorUI.TryInit(settings);
+                    }
+                    catch(Exception ex)
+                    {
+                        Logger.LogError(ex);
 
-                    var onTitleClick = windows.TaiwuTitle.Get<ClickHelper>();
+                        //基础功能 UI
+                        EditorUI.BaseUI.Init(RuntimeConfig.UI_Tab_Instance.Func_Base_Scroll, settings);
+
+                        //属性修改
+                        EditorUI.MoreUI.Init(RuntimeConfig.UI_Tab_Instance.Func_More_Scroll);
+
+                        //图鉴添加物品
+                        EditorUI.AddItem.Init(RuntimeConfig.UI_Tab_Instance.Func_AddItem_Container, settings);
+
+                        //快捷键窗口
+                        EditorUI.HotkeyUI.Init(RuntimeConfig.UI_Tab_Instance.Func_Hotkey_Scroll, settings);
+
+                    }
+
+                    var onTitleClick = RuntimeConfig.UI_Config.windows.TaiwuTitle.Get<ClickHelper>();
                     onTitleClick.OnClick = (ClickHelper ch) =>
                     {
                         if (ch.ClickCount % 5 == 0)
@@ -266,46 +146,13 @@ namespace TaiwuEditor
                         if (ch.ClickCount > 10000)
                             ch.ClickCount = 0;
                     };
-                    windows.CloseButton.OnClick = delegate
+                    RuntimeConfig.UI_Config.windows.CloseButton.OnClick = delegate
                     {
                         ToggleUI = true;
                     };
-
-                    //属性修改
-                    var i = Func_More_Scroll.AddComponent<EditorBoxMore>();
-                    i.SetInstance(Func_More_Scroll);
-
-                    Func_More_Scroll.Add("未载入存档", new BaseFrame()
-                    {
-                        Name = "未载入存档",
-                        Children =
-                        {
-                            new BaseText()
-                            {
-                                Name = "Text",
-                                Text = "未载入存档"
-                            }
-                        },
-                        DefaultActive = false
-                    });
-                    EditorUI.MoreUI.TopOfFuncMoreScroll(Func_More_Scroll);
-                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 61, 66, "基本属性");
-                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 401, 407, "资源");
-                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 501, 516, "技艺资质");
-                    EditorUI.MoreUI.DisplayDataFields(Func_More_Scroll, 601, 614, "功法资质");
-                    EditorUI.MoreUI.TaiwuField(Func_More_Scroll);
-                    EditorUI.MoreUI.DisplayHealthAge(Func_More_Scroll);
-                    EditorUI.MoreUI.DisplayXXField(Func_More_Scroll);
-
-
-                    //快捷键窗口
-                    EditorUI.HotkeyUI.Hotkey_UI(Func_Hotkey_Scroll, settings.Hotkey);
-
-                    Func_More_Scroll.Get<EditorBoxMore>().NeedUpdate = true;
                 }
             }
         }
-
 
         ~TaiwuEditor()
         {

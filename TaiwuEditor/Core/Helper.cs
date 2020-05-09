@@ -639,4 +639,14 @@ namespace TaiwuEditor
             TomlTypeConverter.AddConverter(typeof(bool[]), converter);
         }
     }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class MGOInfoAttribute : Attribute
+    {
+        public string Name;
+        public int Order;
+
+        public Type InitType = null;
+        public string InitTypeName = null;
+    }
 }

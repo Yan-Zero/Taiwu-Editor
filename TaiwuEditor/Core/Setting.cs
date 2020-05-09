@@ -7,8 +7,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityUIKit.GameObjects;
 
 namespace TaiwuEditor
 {
@@ -281,6 +283,28 @@ namespace TaiwuEditor
             /// <summary>想要修改属性的NPC ID</summary>
             public static int ActorId = 0;
 
+            /// <summary>
+            /// Canvas
+            /// </summary>
+            public static Container.CanvasContainer overlay = null;
+
+            /// <summary>
+            /// Main Windows
+            /// </summary>
+            public static TaiwuWindows windows;
+
+        }
+
+        public static class UI_Tab_Instance
+        {
+            [MGOInfo(Name = "基础功能", Order = 1, InitTypeName = "BaseUI")]
+            public static BaseScroll Func_Base_Scroll;
+            [MGOInfo(Name = "属性修改", Order = 2, InitTypeName = "MoreUI")]
+            public static BaseScroll Func_More_Scroll;
+            [MGOInfo(Name = "添加物品", Order = 3, InitTypeName = "AddItemUI")]
+            public static Container Func_AddItem_Container;
+            [MGOInfo(Name = "快捷键修改", Order = 4,InitTypeName = "HotkeyUI")]
+            public static BaseScroll Func_Hotkey_Scroll;
         }
     }
 

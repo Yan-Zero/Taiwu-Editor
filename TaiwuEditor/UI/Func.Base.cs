@@ -4,18 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaiwuEditor.MGO;
+using TaiwuEditor.Script;
 using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
 
-namespace TaiwuEditor.Core.UI
+namespace TaiwuEditor.UI
 {
     public static partial class EditorUI
     {
         public static class BaseUI
         {
+            public static void Init(BaseScroll Func_Base_Scroll, Settings settings)
+            {
+                BaseFuncToggle(Func_Base_Scroll, settings);
+                StoryCheatUI(Func_Base_Scroll, settings);
+                ReadBookCheatUI(Func_Base_Scroll, settings);
+                GetAllQuquUI(Func_Base_Scroll, settings);
+                LockGangPartValueUI(Func_Base_Scroll, settings);
+                LockBasePartValueUI(Func_Base_Scroll, settings);
+                ChangeDefalutCombatRangeUI(Func_Base_Scroll, settings);
+                BuildingLevelPctLimitUI(Func_Base_Scroll, settings);
+            }
+
             //基础功能
             public static void ReadBookCheatUI(BaseScroll Func_Base_Scroll, Settings settings)
             {

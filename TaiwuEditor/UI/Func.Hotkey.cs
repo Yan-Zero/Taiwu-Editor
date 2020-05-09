@@ -7,20 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaiwuEditor.MGO;
+using TaiwuEditor.Script;
 using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
 
-namespace TaiwuEditor.Core.UI
+namespace TaiwuEditor.UI
 {
     public static partial class EditorUI
     {
-        public static readonly int wideOfLabel = 200;
-
         public static class HotkeyUI
         {
+            public static void Init(BaseScroll Func_Hotkey_Scroll, Settings settings)
+            {
+                Hotkey_UI(Func_Hotkey_Scroll, settings.Hotkey);
+            }
+
             //快捷键
             public static void Hotkey_UI(BaseScroll Func_Hotkey_Scroll, Settings.HotkeyConfig HotkeyConfig)
             {

@@ -13,9 +13,9 @@ using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
 
-namespace TaiwuEditor
+namespace TaiwuEditor.Script
 {
-    public class EditorBoxMore : MonoBehaviour
+    public class TabFuncMore : MonoBehaviour
     {
         private BaseScroll instance;
 
@@ -129,114 +129,6 @@ namespace TaiwuEditor
             }
 
             return result;
-        }
-    }
-
-    public class ClickHelper : MonoBehaviour, IPointerClickHandler
-    {
-        public Action<ClickHelper> OnClick;
-        public int ClickCount = 0;
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            ClickCount++;
-            OnClick.Invoke(this);
-        }
-    }
-
-    public class Clock_Text : MonoBehaviour
-    {
-        private Text Text;
-
-        void Awake()
-        {
-            Text = gameObject.GetComponent<Text>();
-        }
-
-        void OnGUI()
-        {
-            Text.text = $"手记({DateTime.Now.ToString("HH:mm:ss")})";
-        }
-    }
-
-    public class KeyboardMonitor : MonoBehaviour
-    {
-        public bool Monitored = false;
-        public FieldInfo HotkeyField;
-
-        public Dictionary<KeyCode,bool> KeyCodes = new Dictionary<KeyCode, bool>();
-
-        public KeyCode FinalKey;
-        public TaiwuLabel ValueLabel;
-        public UnityUIKit.GameObjects.Button Button;
-
-        void Update()
-        {
-            if(Monitored)
-            {
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    Monitored = false;
-                    KeyCodes = new Dictionary<KeyCode, bool>();
-                    FinalKey = KeyCode.None;
-                    Button.Text = "修改快捷键";
-                }
-                else
-                    foreach (var i in KeyboardShortcut.AllKeyCodes)
-                    {
-                        if (Input.GetKeyDown(i))
-                        {
-                            KeyCodes[i] = true;
-                            FinalKey = i;
-                        }
-                        if (Input.GetKeyUp(i))
-                        {
-                            KeyCodes[i] = false;
-                            if (FinalKey == i)
-                            {
-                                Monitored = false;
-                                SetHotkey();
-                                break;
-                            }
-                        }
-                    }
-            }
-        }
-
-        public void SetHotkey()
-        {
-            var filed = HotkeyField.GetValue(TaiwuEditor.settings.Hotkey) as ConfigEntry<KeyboardShortcut>;
-            List<KeyCode> Modifiers = new List<KeyCode>();
-            KeyCodes[FinalKey] = false;
-            foreach (var i in KeyCodes)
-            {
-                if(i.Value)
-                    Modifiers.Add(i.Key);
-            }
-            filed.Value = new KeyboardShortcut(FinalKey, Modifiers.ToArray());
-
-            ValueLabel.Text = Core.UI.EditorUI.HotkeyUI.Hotkey_ToString(filed.Value);
-            Button.Text = "修改快捷键";
-            FinalKey = KeyCode.None;
-            KeyCodes = new Dictionary<KeyCode, bool>();
-        }
-
-        public void Monitoring(FieldInfo ConfigField, TaiwuLabel Label, UnityUIKit.GameObjects.Button bt)
-        {
-            Monitored = !Monitored;
-            if (Monitored)
-            {
-                HotkeyField = ConfigField;
-                ValueLabel = Label;
-                Button = bt;
-                bt.Text = "请按下按键";
-            }
-            else
-            {
-                Monitored = false;
-                KeyCodes = new Dictionary<KeyCode, bool>();
-                FinalKey = KeyCode.None;
-                Button.Text = "修改快捷键";
-            }
         }
     }
 }
