@@ -74,7 +74,7 @@ namespace TaiwuEditor.Script
                 Name = "ItemShowerHandle",
                 Grid =
                 {
-                    CellSize = { x = 0, y = 50 },
+                    CellSize = { x = 0, y = 75 },
                     Spacing = { x = 5 , y = 5 },
                     AutoWidth = true,
                     Constraint = UnityEngine.UI.GridLayoutGroup.Constraint.FixedColumnCount,

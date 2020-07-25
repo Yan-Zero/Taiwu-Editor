@@ -125,11 +125,11 @@
 setlocal
 if not exist "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" echo no targets dir found &amp; goto END
 if not exist "$(ProjectDir)bin\Release\TaiwuEditor.dll" echo find no release dlls &amp; goto COPYDEBUG
-copy "$(ProjectDir)bin\Release\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
+copy "$(ProjectDir)bin\Release\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\TaiwuEditor\" /Y
 goto END
 :COPYDEBUG
 if not exist "$(ProjectDir)bin\Debug\TaiwuEditor.dll" echo find no debug dlls &amp; goto END
-copy "$(ProjectDir)bin\Debug\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\" /Y
+copy "$(ProjectDir)bin\Debug\*.dll" "E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\BepInEx\plugins\TaiwuEditor\" /Y
 echo using debug dlls
 :END</PostBuildEvent>
   </PropertyGroup>
