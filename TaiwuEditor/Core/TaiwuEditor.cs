@@ -18,15 +18,17 @@ using UnityUIKit.Components;
 using UnityUIKit.Core.GameObjects;
 using TaiwuEditor.Script;
 using TaiwuEditor.UI;
+using YanLib.ModHelper;
 
 namespace TaiwuEditor
 {
     [BepInPlugin(TaiwuEditor.GUID, "TaiwuEditor", TaiwuEditor.version)]
     [BepInProcess("The Scroll Of Taiwu Alpha V1.0.exe")]
+    [BepInDependency("0.0Yan.Lib")]
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.6.0.0";
+        public const string version = "1.6.2.0";
 
         /// <summary>GUID</summary>
         public const string GUID = "0.Yan.TaiwuEditor";
@@ -43,6 +45,8 @@ namespace TaiwuEditor
         /// <summary>用于锁定每月行动点数的计时器</summary>
         private static Timer timer;
 
+        public static ModHelper Mod;
+
 
         private void Awake()
         {
@@ -54,6 +58,8 @@ namespace TaiwuEditor
 
             HarmonyPatches.Init();
             RuntimeConfig.Init();
+
+            Mod = new ModHelper(GUID, "太吾修改器");
 
             // 用于锁定每月行动点数（每秒重置一次行动点数）
             timer = new Timer(500);

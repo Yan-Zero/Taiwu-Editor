@@ -26,6 +26,8 @@
             <param name="charId"></param>
             <param name="type"></param>
             <param name="value"></param>
+            <param name="partId"></param>
+            <param name="placeId"></param>
             <returns></returns>
         </member>
         <member name="M:YanLib.Core.RuntimeConfig.AllocateKey(System.String,System.Int32)">
@@ -50,6 +52,38 @@
             <summary>
             存档保存时的行为
             </summary>
+        </member>
+        <member name="T:YanLib.Settings">
+            <summary>
+            Mod设置类
+            </summary>
+        </member>
+        <member name="F:YanLib.Settings.Hotkey">
+            <summary>
+            快捷键设置
+            </summary>
+        </member>
+        <member name="T:YanLib.Settings.HotkeyConfig">
+            <summary>
+            快捷键设置类
+            </summary>
+        </member>
+        <member name="M:YanLib.Settings.HotkeyConfig.Init(BepInEx.Configuration.ConfigFile)">
+            <summary>
+            初始化
+            </summary>
+            <param name="Config"></param>
+        </member>
+        <member name="F:YanLib.Settings.HotkeyConfig.OpenUI">
+            <summary>
+            打开/关闭 UI 的快捷键
+            </summary>
+        </member>
+        <member name="M:YanLib.Settings.Init(BepInEx.Configuration.ConfigFile)">
+            <summary>
+            加载配置
+            </summary>
+            <param name="config"></param>
         </member>
         <member name="T:YanLib.DataManipulator.Actor">
             <summary>
@@ -190,44 +224,6 @@
             </summary>
             <param name="DataJson"></param>
         </member>
-        <member name="T:YanLib.DataManipulator.ModHelper">
-            <summary>
-            用来方便 Mod 工作的
-            </summary>
-        </member>
-        <member name="P:YanLib.DataManipulator.ModHelper.GUID">
-            <summary>
-            Mod 的 GUID
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.ModHelper.SaveData">
-            <summary>
-            游戏存档时调用
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.ModHelper.NewData">
-            <summary>
-            新建游戏时调用
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.ModHelper.LoadData">
-            <summary>
-            加载存档时调用
-            </summary>
-        </member>
-        <member name="M:YanLib.DataManipulator.ModHelper.#ctor(System.String)">
-            <summary>
-            新建 ModHelper 实例
-            </summary>
-            <param name="_GUID">Mod 的 GUID</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.ModHelper.GetActorKey(System.Int32)">
-            <summary>
-            返回一个专属的 Key 用以储存信息
-            </summary>
-            <param name="Key">Mod 内部使用的 Key 值，例如 1 2 3</param>
-            <returns></returns>
-        </member>
         <member name="T:YanLib.YanLib">
             <summary>
             Mod 入口
@@ -241,6 +237,14 @@
         </member>
         <member name="F:YanLib.YanLib.Logger">
             <summary>日志</summary>
+        </member>
+        <member name="F:YanLib.YanLib.settings">
+            <summary>Yan Lib 的设置</summary>
+        </member>
+        <member name="F:YanLib.YanLib.ToggleUI">
+            <summary>
+            开/关 UI
+            </summary>
         </member>
         <member name="T:YanLib.TypeConverterSupporter">
             <summary>
@@ -338,6 +342,65 @@
         <member name="F:YanLib.PatchHandler.HarmonyPatchType.Transpiler">
             <summary>
             Transpiler
+            </summary>
+        </member>
+        <member name="T:YanLib.ModHelper.ModHelper">
+            <summary>
+            用来方便 Mod 工作的
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ModHelper.GUID">
+            <summary>
+            Mod 的 GUID
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ModHelper.Name">
+            <summary>
+            Mod 的名字
+            </summary>
+        </member>
+        <member name="F:YanLib.ModHelper.ModHelper.SaveData">
+            <summary>
+            游戏存档时调用
+            </summary>
+        </member>
+        <member name="F:YanLib.ModHelper.ModHelper.NewData">
+            <summary>
+            新建游戏时调用
+            </summary>
+        </member>
+        <member name="F:YanLib.ModHelper.ModHelper.LoadData">
+            <summary>
+            加载存档时调用
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ModHelper.SettingUI">
+            <summary>
+            Mod 的设置
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ModHelper.#ctor(System.String,System.String)">
+            <summary>
+            新建 ModHelper 实例
+            </summary>
+            <param name="_GUID">Mod 的 GUID</param>
+            <param name="ModName">Mod 显示的名字</param>
+        </member>
+        <member name="M:YanLib.ModHelper.ModHelper.GetActorDataKey(System.Int32)">
+            <summary>
+            返回一个专属的 Key 用以储存信息
+            </summary>
+            <param name="Key">Mod 内部使用的 Key 值，例如 1 2 3</param>
+            <returns></returns>
+        </member>
+        <member name="T:YanLib.UI.SettingUI">
+            <summary>
+            设置界面的 UI
+            </summary>
+        </member>
+        <member name="M:YanLib.UI.SettingUI.PrepareGUI">
+            <summary>
+            初始化UI
             </summary>
         </member>
     </members>

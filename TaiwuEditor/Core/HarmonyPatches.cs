@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 using System.Linq;
 using System.Reflection.Emit;
 using TaiwuEditor.Script;
+using YanLib;
 
 namespace TaiwuEditor
 {
@@ -15,115 +16,133 @@ namespace TaiwuEditor
     {
         public static readonly Harmony harmony = new Harmony(TaiwuEditor.GUID);
         public static readonly Type PatchesType = typeof(HarmonyPatches);
-        public static readonly Dictionary<string,PatchHandle> PatchHandles = new Dictionary<string, PatchHandle>
+        public static readonly Dictionary<string, YanLib.PatchHandler> PatchHandles = new Dictionary<string, PatchHandler>
         {
-            { "无限特质点", new PatchHandle
+            { "无限特质点", new PatchHandler
                 {
                     TargetType = typeof(NewGame),
                     TargetMethonName = "GetAbilityP",
                     Postfix = AccessTools.Method(PatchesType,"NewGame_UpdateAbility_Postfix")
                 }},
-            { "时钟", new PatchHandle
+            { "时钟", new PatchHandler
             {
                 TargetType = typeof(ui_TopBar),
                 TargetMethonName = "OnInit",
                 Postfix = AccessTools.Method(PatchesType,"ui_TopBar_OnInit_Postfix")
             }},
-            { "蛐蛐作弊", new PatchHandle
+            { "蛐蛐作弊", new PatchHandler
             {
                 TargetType = typeof(GetQuquWindow),
                 TargetMethonName = "GetQuquButton",
                 Prefix = AccessTools.Method(PatchesType,"GetQuquButton_Prefix")
             }},
-            { "战斗距离", new PatchHandle
+            { "战斗距离", new PatchHandler
             {
                 TargetType = typeof(BattleSystem),
                 TargetMethonName = "Update",
                 Postfix = AccessTools.Method(PatchesType,"BattleSystem_Update_Postfix")
             }},
-            { "人力无限制", new PatchHandle
+            { "人力无限制", new PatchHandler
             {
                 TargetType = typeof(UIDate),
                 TargetMethonName = "GetMaxManpower",
                 Prefix = AccessTools.Method(PatchesType,"UIDate_GetMaxManpower_Prefix")
             }},
-            { "无消耗人力", new PatchHandle
+            { "无消耗人力", new PatchHandler
             {
                 TargetType = typeof(UIDate),
                 TargetMethonName = "GetUseManPower",
                 Prefix = AccessTools.Method(PatchesType,"UIDate_GetUseManPower_Prefix")
             }},
-            { "建筑修改", new PatchHandle
+            { "建筑修改", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "LoadGameConfigs",
                 Postfix = AccessTools.Method(PatchesType,"DataFile_LoadGameConfigs_Postfix")
             }},
-            { "建筑最大运营", new PatchHandle
+            { "建筑最大运营", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "GetBuildingLevelPct",
                 Transpiler = AccessTools.Method(PatchesType,"DataFile_GetBuildingLevelPct_Transpiler")
             }},
-            { "最大好感和最大印象", new PatchHandle
+            { "最大好感和最大印象", new PatchHandler
             {
                 TargetType = typeof(ui_MessageWindow),
                 TargetMethonName = "SetMassageWindow",
                 Prefix = AccessTools.Method(PatchesType,"ui_MessageWindow_SetMassageWindow_Prefix")
             }},
-            { "锁定戒心", new PatchHandle
+            { "锁定戒心", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "GetActorWariness",
                 Postfix = AccessTools.Method(PatchesType,"DateFile_GetActorWariness_Postfix")
             }},
-            { "快速修习", new PatchHandle
+            { "快速修习", new PatchHandler
             {
                 TargetType = typeof(BuildingWindow),
                 TargetMethonName = "StudySkillUp",
                 Prefix = AccessTools.Method(PatchesType,"BuildingWindow_StudySkillUp_Prefix")
             }},
-            { "快速阅读", new PatchHandle
+            { "快速阅读", new PatchHandler
             {
                 TargetType = typeof(BuildingWindow),
                 TargetMethonName = "StartReadBook",
                 Prefix = AccessTools.Method(PatchesType,"BuildingWindow_StartReadBook_Prefix")
             }},
-            { "无限负重", new PatchHandle
+            { "无限负重", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "GetMaxItemSize",
                 Postfix = AccessTools.Method(PatchesType,"DateFile_GetMaxItemSize_Postfix")
             }},
-            { "奇遇直接到达目的地", new PatchHandle
+            { "奇遇直接到达目的地", new PatchHandler
             {
                 TargetType = typeof(StorySystem),
                 TargetMethonName = "OpenStory",
                 Prefix = AccessTools.Method(PatchesType,"StorySystem_OpenStory_Prefix")
             }},
-            { "门派恩义", new PatchHandle
+            { "门派恩义", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "GetGangPartValue",
                 Prefix = AccessTools.Method(PatchesType,"DateFile_GetGangPartValue_Prefix")
             }},
-            { "地区恩义", new PatchHandle
+            { "地区恩义", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "GetBasePartValue",
                 Prefix = AccessTools.Method(PatchesType,"DateFile_GetBasePartValue_Prefix")
             }},
-            { "地区恩义无消耗", new PatchHandle
+            { "地区恩义无消耗", new PatchHandler
             {
                 TargetType = typeof(DateFile),
                 TargetMethonName = "SetGangValue",
                 Prefix = AccessTools.Method(PatchesType,"DateFile_SetGangValue_Prefix")
             }},
-            { "战斗距离修改", new PatchHandle
+            { "战斗距离修改", new PatchHandler
             {
                 TargetType = typeof(BattleSystem),
                 TargetMethonName = "Initialize",
                 Postfix = AccessTools.Method(PatchesType,"BattleSystem_Initialize_Postfix")
+            }},
+            { "加载书本数据", new PatchHandler
+            {
+                TargetType = typeof(DateFile),
+                TargetMethonName = "LoadDate",
+                Prefix = AccessTools.Method(typeof(SwitchBook),"DateFile_LoadDate_Prefix")
+            }},
+            { "人物包裹中的功法书籍", new PatchHandler
+            {
+                TargetType = typeof(SetItem),
+                TargetMethonName = "SetActorMenuItemIcon",
+                Postfix = AccessTools.Method(typeof(SwitchBook),"SetItem_SetActorMenuItemIcon_Postfix")
+            }},
+            { "人物装备中的功法书籍", new PatchHandler
+            {
+                TargetType = typeof(SetItem),
+                TargetMethonName = "SetActorEquipIcon",
+                Postfix = AccessTools.Method(typeof(SwitchBook),"SetItem_SetActorEquipIcon_Postfix")
             }}
         };
 
@@ -688,62 +707,7 @@ namespace TaiwuEditor
                 }
             }
         }
-    }
 
-    public class PatchHandle
-    {
-        public Type TargetType;
-        public string TargetMethonName;
 
-        public MethodInfo Prefix;
-        public MethodInfo Postfix;
-        public MethodInfo Transpiler;
-
-        public void Patch(Harmony harmony)
-        {
-            harmony.Patch(AccessTools.Method(TargetType, TargetMethonName), GetHarmonyMethod(Prefix), GetHarmonyMethod(Postfix), GetHarmonyMethod(Transpiler));
-        }
-
-        private HarmonyMethod GetHarmonyMethod(MethodInfo method)
-        {
-            if (method == null)
-                return null;
-            return new HarmonyMethod(method);
-        }
-
-        public void Unpatch(Harmony harmony, HarmonyPatchType patchType = HarmonyPatchType.All)
-        {
-            List<MethodInfo> patches = new List<MethodInfo>();
-
-            if((patchType & HarmonyPatchType.Prefix) == HarmonyPatchType.Prefix)
-            {
-                if (Prefix != null)
-                    patches.Add(Prefix);
-            }
-            if ((patchType & HarmonyPatchType.Postfix) == HarmonyPatchType.Postfix)
-            {
-                if (Postfix != null)
-                    patches.Add(Postfix);
-            }
-            if ((patchType & HarmonyPatchType.Transpiler) == HarmonyPatchType.Transpiler)
-            {
-                if (Transpiler != null)
-                    patches.Add(Transpiler);
-            }
-
-            if(patches.Count != 0)
-                foreach (var i in patches)
-                {
-                    harmony.Unpatch(AccessTools.Method(TargetType, TargetMethonName), i);
-                }
-        }
-
-        public enum HarmonyPatchType
-        {
-            All = 0b111,
-            Prefix = 1,
-            Postfix = 2,
-            Transpiler = 4,
-        }
     }
 }

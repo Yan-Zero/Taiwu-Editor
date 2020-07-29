@@ -103,14 +103,15 @@
     <Compile Include="GameObject\ColorBox.cs" />
     <Compile Include="GameObject\ColorBoxGroup.cs" />
     <Compile Include="GameObject\ItemShower.cs" />
+    <Compile Include="Helper\SwitchTheBook.cs" />
     <Compile Include="UI\EditorUI.cs" />
     <Compile Include="UI\Func.AddItem.cs" />
     <Compile Include="UI\Func.Hotkey.cs" />
     <Compile Include="UI\Func.Base.cs" />
     <Compile Include="UI\Func.More.cs" />
     <Compile Include="GameObject\ToggleSliderBar.cs" />
-    <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="Core\Helper.cs" />
+    <Compile Include="Core\HarmonyPatches.cs" />
+    <Compile Include="Helper\Helper.cs" />
     <Compile Include="Core\Setting.cs" />
     <Compile Include="Core\TaiwuEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

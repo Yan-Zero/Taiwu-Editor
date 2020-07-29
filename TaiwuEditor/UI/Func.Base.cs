@@ -772,6 +772,200 @@ namespace TaiwuEditor.UI
                         },
                     }
                 });
+                Func_Base_Scroll.Add("单击切换功法正逆", new Container()
+                {
+                    Name = "单击切换功法正逆",
+                    Element =
+                    {
+                        PreferredSize = { 0 , 50 }
+                    },
+                    Group =
+                    {
+                        Spacing = 5,
+                        Direction = Direction.Horizontal
+                    },
+                    Children =
+                    {
+                        new Container()
+                        {
+                            Name = "单击切换功法正逆",
+                            Group =
+                            {
+                                Spacing = 2,
+                                Direction = Direction.Horizontal
+                            },
+                            Children =
+                            {
+                                new TaiwuLabel()
+                                {
+                                    Name = "Text",
+                                    Text = "单击切换功法书本正逆",
+                                    Element =
+                                    {
+                                        PreferredSize = { 0 , 0 }
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true
+                                },
+                                new TaiwuToggle()
+                                {
+                                    Name = "Toggle",
+                                    Text = settings.SwitchTheBook.Value ? "开" : "关",
+                                    Element =
+                                    {
+                                        PreferredSize = { 50 , 50 }
+                                    },
+                                    isOn = settings.SwitchTheBook.Value,
+                                    onValueChanged = (bool value,Toggle toggle) =>
+                                    {
+                                        toggle.Text = value ? "开" : "关";
+                                        settings.SwitchTheBook.Value = value;
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true,
+                                    TipTitle = "单击切换功法书本正逆",
+                                    TipContant = "开启后，点击功法书，将会切换手抄真传。"
+                                }
+                            }
+                        },
+                        /*
+                        new Container()
+                        {
+                            Name = "解除人力上限",
+                            Group =
+                            {
+                                Spacing = 2,
+                                Direction = Direction.Horizontal
+                            },
+                            Children =
+                            {
+                                new TaiwuLabel()
+                                {
+                                    Name = "Text",
+                                    Text = "解除人力上限",
+                                    Element =
+                                    {
+                                        PreferredSize = { 0 , 0 }
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true
+                                },
+                                new TaiwuToggle()
+                                {
+                                    Name = "Toggle",
+                                    Text = settings.ManPowerNoLimit.Value ? "开" : "关",
+                                    Element =
+                                    {
+                                        PreferredSize = { 50 , 50 }
+                                    },
+                                    isOn = settings.ManPowerNoLimit.Value,
+                                    onValueChanged = (bool value,Toggle toggle) =>
+                                    {
+                                        toggle.Text = value ? "开" : "关";
+                                        settings.ManPowerNoLimit.Value = value;
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true,
+                                    TipTitle = "解除人力上限",
+                                    TipContant = "开启后，人力将无上限（即没有最大值，同时最小值也成了 5 ）。"
+                                }
+                            }
+                        },
+                        new Container()
+                        {
+                            Name = "无人力消耗",
+                            Group =
+                            {
+                                Spacing = 2,
+                                Direction = Direction.Horizontal
+                            },
+                            Children =
+                            {
+                                new TaiwuLabel()
+                                {
+                                    Name = "Text",
+                                    Text = "无人力消耗",
+                                    Element =
+                                    {
+                                        PreferredSize = { 0 , 0 }
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true
+                                },
+                                new TaiwuToggle()
+                                {
+                                    Name = "Toggle",
+                                    Text = settings.InfManPower.Value ? "开" : "关",
+                                    Element =
+                                    {
+                                        PreferredSize = { 50 , 50 }
+                                    },
+                                    isOn = settings.InfManPower.Value,
+                                    onValueChanged = (bool value,Toggle toggle) =>
+                                    {
+                                        toggle.Text = value ? "开" : "关";
+                                        settings.InfManPower.Value = value;
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true,
+                                    TipTitle = "无人力消耗",
+                                    TipContant = "开启后，人力将一直是最大值。"
+                                }
+                            }
+                        },
+                        new Container()
+                        {
+                            Name = "建筑等级上限修改",
+                            Group =
+                            {
+                                Spacing = 2,
+                                Direction = Direction.Horizontal
+                            },
+                            Children =
+                            {
+                                new TaiwuLabel()
+                                {
+                                    Name = "Text",
+                                    Text = "建筑等级上限修改",
+                                    Element =
+                                    {
+                                        PreferredSize = { 0 , 0 }
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true
+                                },
+                                new TaiwuToggle()
+                                {
+                                    Name = "Toggle",
+                                    Text = settings.BuildingMaxLevelCheat.Value ? "开" : "关",
+                                    Element =
+                                    {
+                                        PreferredSize = { 50 , 50 }
+                                    },
+                                    isOn = settings.BuildingMaxLevelCheat.Value,
+                                    onValueChanged = (bool value,Toggle toggle) =>
+                                    {
+                                        toggle.Text = value ? "开" : "关";
+                                        settings.BuildingMaxLevelCheat.Value = value;
+                                        if(value)
+                                        {
+                                            HarmonyPatches.BuildingMaxLevelChangeApply();
+                                        }
+                                        else
+                                        {
+                                            HarmonyPatches.BuildingMaxLevelChangeCancel();
+                                        }
+                                    },
+                                    UseBoldFont = true,
+                                    UseOutline = true,
+                                    TipTitle = "建筑等级上限修改",
+                                    TipContant = "开启后，部分建筑的等级上限将变大。"
+                                }
+                            }
+                        },
+                        */
+                    }
+                });
             }
 
             public static void LockGangPartValueUI(BaseScroll Func_Base_Scroll, Settings settings)
@@ -991,7 +1185,7 @@ namespace TaiwuEditor.UI
 
             public static void MoveOrDelNPC(BaseScroll Func_Base_Scroll, Settings settings)
             {
-                Func_Base_Scroll.Add("移动/删除 NPC",new Container()
+                Func_Base_Scroll.Add("移动 NPC",new Container()
                 {
                     Name = "Move Or Del NPC",
                     Element =
@@ -1061,47 +1255,7 @@ namespace TaiwuEditor.UI
                                     DateFile.instance.MoveToPlace(place[0],place[1],ActorID,true);
 
                             }
-                        },
-                        new TaiwuButton
-                        {
-                            Name = "1",
-                            Text = "删除 NPC(还需要点 1 次)",
-                            Element =
-                            {
-                                PreferredSize = { 250 , 0 }
-                            },
-                            UseBoldFont = true,
-                            FontColor = Color.white,
-                            OnClick = (Button bt) =>
-                            {
-                                if(bt.Name != "0")
-                                {
-                                    bt.FontColor = Color.red;
-                                    bt.Name = "0";
-                                    bt.Text = "删除 NPC(！！！)";
-                                    return;
-                                }
-                                
-                                var name_ID = bt.Parent.Children[1] as InputField;
-                                name_ID.Text = name_ID.Text.Replace(" ","");
-                                List<int> ActorIDs = new List<int>();
-                                if(int.TryParse(name_ID.Text,out int id))
-                                    ActorIDs.Add(id);
-                                else
-                                    foreach(int ActorID in Characters.GetAllCharIds())
-                                        if(DateFile.instance.GetActorName(ActorID) == name_ID.Text)
-                                            ActorIDs.Add(ActorID);
-
-                                foreach(var ActorID in ActorIDs)
-                                    YanLib.DataManipulator.Actor.DelActor(ActorID);
-
-
-                                name_ID.Text = "";
-                                bt.FontColor = Color.white;
-                                bt.Name = "1";
-                                bt.Text = "删除 NPC(还需要点 1 次)";
-                            }
-                        },
+                        }
                     }
                 });
             }

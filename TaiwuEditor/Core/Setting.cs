@@ -102,6 +102,7 @@ namespace TaiwuEditor
             InfManPower = Config.Bind<bool>("Cheat", "InfManPower", false, "无限人力");
             BuildingMaxLevelCheat = Config.Bind<bool>("Cheat", "BuildingMaxLevelCheat", false, "建筑等级上限修改");
             BuildingLevelPctNoLimit = Config.Bind<bool>("Cheat", "BuildingLevelPctNoLimit", false, "建筑工作效率限制解除");
+            SwitchTheBook = Config.Bind<bool>("Cheat", "SwitchTheBook", false, "单击切换正逆");
 
 
             Config.SaveOnConfigSet = true;
@@ -258,6 +259,12 @@ namespace TaiwuEditor
         /// 建筑最大等级修改
         /// </summary>
         public ConfigEntry<bool> BuildingMaxLevelCheat;
+
+        /// <summary>
+        /// 单机切换正逆
+        /// </summary>
+        public ConfigEntry<bool> SwitchTheBook;
+
 
         public void Save()
         {
