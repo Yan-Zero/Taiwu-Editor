@@ -26,7 +26,7 @@ namespace TaiwuEditor
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.5.0.0";
+        public const string version = "1.6.0.0";
 
         /// <summary>GUID</summary>
         public const string GUID = "0.Yan.TaiwuEditor";
@@ -47,7 +47,6 @@ namespace TaiwuEditor
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            TypeConverterSupporter.Init();
 
             settings.Init(Config);
             Logger = base.Logger;
@@ -83,6 +82,13 @@ namespace TaiwuEditor
 
         private void Update()
         {
+            // ESC 键
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (RuntimeConfig.UI_Config.overlay != null && RuntimeConfig.UI_Config.overlay.Created && RuntimeConfig.UI_Config.overlay.IsActive)
+                    ToggleUI = true;
+            }
+
             // UI Hotkey
             if (settings.Hotkey.OpenUI.Value.IsDown() || ToggleUI)
             {
@@ -105,7 +111,7 @@ namespace TaiwuEditor
                 {
                     EditorUI.PrepareGUI();
 
-                    var parent = GameObject.Find("/UIRoot/Canvas/UIPopup").transform;
+                    var parent =  UnityEngine.GameObject.Find("/UIRoot/Canvas/UIPopup").transform;
                     RuntimeConfig.UI_Config.overlay.SetParent(parent);
                     RuntimeConfig.UI_Config.overlay.GameObject.layer = 5;
                     RuntimeConfig.UI_Config.overlay.RectTransform.anchorMax = new Vector2(0.5f, 0.5f);

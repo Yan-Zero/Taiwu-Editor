@@ -11,6 +11,7 @@ using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityUIKit.GameObjects;
+using YanLib;
 
 namespace TaiwuEditor
 {
@@ -66,9 +67,9 @@ namespace TaiwuEditor
         };
 
         /// <summary>
-        /// 检查Mod设置类中的成员是否初始化，若没有初始化则初始化
+        /// 初始化
         /// </summary>
-        /// <param name="storyTyps"></param>
+        /// <param name="config"></param>
         public void Init(ConfigFile config)
         {
             Config = config;
@@ -281,7 +282,7 @@ namespace TaiwuEditor
             public static int PropertyChoose = 0;
 
             /// <summary>想要修改属性的NPC ID</summary>
-            public static int ActorId = 0;
+            public static int ActorId = -1;
 
             /// <summary>
             /// Canvas

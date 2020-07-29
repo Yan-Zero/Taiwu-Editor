@@ -100,6 +100,8 @@ namespace TaiwuEditor.Script
         private List<Dictionary<int, string>> searchItem(string NameOrID)
         {
             var result = new Dictionary<int,Dictionary<int, string>>();
+            if (string.IsNullOrEmpty(NameOrID))
+                return new List<Dictionary<int, string>>();
 
             if (int.TryParse(NameOrID, out int Id))
             {

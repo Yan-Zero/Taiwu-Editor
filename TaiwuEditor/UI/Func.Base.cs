@@ -1,6 +1,9 @@
-﻿using System;
+﻿using GameData;
+using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using TaiwuEditor.MGO;
@@ -10,6 +13,7 @@ using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
+using YanLib;
 
 namespace TaiwuEditor.UI
 {
@@ -27,6 +31,7 @@ namespace TaiwuEditor.UI
                 LockBasePartValueUI(Func_Base_Scroll, settings);
                 ChangeDefalutCombatRangeUI(Func_Base_Scroll, settings);
                 BuildingLevelPctLimitUI(Func_Base_Scroll, settings);
+                MoveOrDelNPC(Func_Base_Scroll, settings);
             }
 
             //基础功能
@@ -64,17 +69,17 @@ namespace TaiwuEditor.UI
                 {
                     Name = "StoryTypes",
                     Grid =
-                        {
-                            StartAxis = Direction.Horizontal,
-                            Constraint = UnityEngine.UI.GridLayoutGroup.Constraint.FixedColumnCount,
-                            ConstraintCount = 5,
-                            CellSize = new Vector2(0 , 50),
-                            AutoWidth = true
-                        },
+                    {
+                        StartAxis = Direction.Horizontal,
+                        Constraint = UnityEngine.UI.GridLayoutGroup.Constraint.FixedColumnCount,
+                        ConstraintCount = 5,
+                        CellSize = new Vector2(0 , 50),
+                        AutoWidth = true
+                    },
                     SizeFitter =
-                        {
-                            VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
-                        }
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    }
                 };
                 for (int index = 0; index < settings.StoryTypsList.Count; index++)
                 {
@@ -83,14 +88,14 @@ namespace TaiwuEditor.UI
                     {
                         Name = $"Type-{storyType.Name}",
                         Group =
-                            {
-                                Spacing = 2,
-                                Direction = Direction.Horizontal
-                            },
+                        {
+                            Spacing = 2,
+                            Direction = Direction.Horizontal
+                        },
                         Element =
-                            {
-                                PreferredSize = { 0 , 50 }
-                            },
+                        {
+                            PreferredSize = { 0 , 50 }
+                        },
                         Children =
                             {
                                 new TaiwuLabel
@@ -144,15 +149,15 @@ namespace TaiwuEditor.UI
                 {
                     Name = "奇遇直接到达目的地",
                     Group =
-                        {
-                            Spacing = 2,
-                            Direction = Direction.Vertical,
-                            ForceExpandChildWidth = true
-                        },
+                    {
+                        Spacing = 2,
+                        Direction = Direction.Vertical,
+                        ForceExpandChildWidth = true
+                    },
                     SizeFitter =
-                        {
-                            VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
-                        },
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    },
                     Children =
                         {
                             new Container
@@ -981,6 +986,123 @@ namespace TaiwuEditor.UI
                     Toggle_TipContant = "将上限设定为指定值。",
                     Slider_TipTitle = "工作效率上限",
                     Slider_TipContant = "地区恩义将会锁定为指定值（如果开启作弊）。",
+                });
+            }
+
+            public static void MoveOrDelNPC(BaseScroll Func_Base_Scroll, Settings settings)
+            {
+                Func_Base_Scroll.Add("移动/删除 NPC",new Container()
+                {
+                    Name = "Move Or Del NPC",
+                    Element =
+                    {
+                        PreferredSize = { 0 , 50 }
+                    },
+                    Group =
+                    {
+                        Spacing = 5,
+                        Direction = Direction.Horizontal
+                    },
+                    Children =
+                    {
+                        new TaiwuLabel
+                        {
+                            Name = "Label",
+                            Element =
+                                {
+                                    PreferredSize = { wideOfLabel , 0 }
+                                },
+                            UseBoldFont = true,
+                            Text = "人物名字/ID"
+                        },
+                        new TaiwuInputField
+                        {
+                            Name = "Input",
+                            Placeholder = "请输入人物名称或 ID",
+                            OnValueChanged = (string Text,InputField IF) =>
+                            {
+                                if(string.IsNullOrWhiteSpace(Text))
+                                {
+                                    (IF.Parent.Children[2] as Button).UnityButton.interactable = false;
+                                    (IF.Parent.Children[3] as Button).UnityButton.interactable = false;
+                                }
+                                else
+                                {
+                                    (IF.Parent.Children[2] as Button).UnityButton.interactable = true;
+                                    (IF.Parent.Children[3] as Button).UnityButton.interactable = true;
+                                }
+                            },
+                            Text = "10001"
+                        },
+                        new TaiwuButton
+                        {
+                            Name = "Move",
+                            Text = "移动",
+                            Element =
+                            {
+                                PreferredSize = { 100 , 0 }
+                            },
+                            UseBoldFont = true,
+                            FontColor = Color.white,
+                            OnClick = (Button bt) =>
+                            {
+                                var name_ID = bt.Parent.Children[1] as InputField;
+                                List<int> ActorIDs = new List<int>();
+                                name_ID.Text = name_ID.Text.Replace(" ","");
+                                if(int.TryParse(name_ID.Text,out int id))
+                                    ActorIDs.Add(id);
+                                else
+                                    foreach(int ActorID in Characters.GetAllCharIds())
+                                        if(DateFile.instance.GetActorName(ActorID) == name_ID.Text)
+                                            ActorIDs.Add(ActorID);
+
+                                var place = DateFile.instance.GetActorAtPlace(DateFile.instance.mianActorId);
+                                foreach(var ActorID in ActorIDs)
+                                    DateFile.instance.MoveToPlace(place[0],place[1],ActorID,true);
+
+                            }
+                        },
+                        new TaiwuButton
+                        {
+                            Name = "1",
+                            Text = "删除 NPC(还需要点 1 次)",
+                            Element =
+                            {
+                                PreferredSize = { 250 , 0 }
+                            },
+                            UseBoldFont = true,
+                            FontColor = Color.white,
+                            OnClick = (Button bt) =>
+                            {
+                                if(bt.Name != "0")
+                                {
+                                    bt.FontColor = Color.red;
+                                    bt.Name = "0";
+                                    bt.Text = "删除 NPC(！！！)";
+                                    return;
+                                }
+                                
+                                var name_ID = bt.Parent.Children[1] as InputField;
+                                name_ID.Text = name_ID.Text.Replace(" ","");
+                                List<int> ActorIDs = new List<int>();
+                                if(int.TryParse(name_ID.Text,out int id))
+                                    ActorIDs.Add(id);
+                                else
+                                    foreach(int ActorID in Characters.GetAllCharIds())
+                                        if(DateFile.instance.GetActorName(ActorID) == name_ID.Text)
+                                            ActorIDs.Add(ActorID);
+
+                                foreach(var ActorID in ActorIDs)
+                                    YanLib.DataManipulator.Actor.DelActor(ActorID);
+
+
+                                name_ID.Text = "";
+                                bt.FontColor = Color.white;
+                                bt.Name = "1";
+                                bt.Text = "删除 NPC(还需要点 1 次)";
+                            }
+                        },
+                    }
                 });
             }
         }

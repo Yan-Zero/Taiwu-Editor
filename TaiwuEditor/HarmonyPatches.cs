@@ -124,7 +124,7 @@ namespace TaiwuEditor
                 TargetType = typeof(BattleSystem),
                 TargetMethonName = "Initialize",
                 Postfix = AccessTools.Method(PatchesType,"BattleSystem_Initialize_Postfix")
-            }},
+            }}
         };
 
         public static void Init()

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Image = UnityEngine.UI.Image;
 using TaiwuEditor.MGO;
 using TaiwuEditor.Script;
 using TaiwuUIKit.GameObjects;
@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
+using GameData;
+using TaiwuEditor.GameObject;
 
 namespace TaiwuEditor.UI
 {
@@ -17,6 +19,47 @@ namespace TaiwuEditor.UI
     {
         public static class MoreUI
         {
+            public static readonly Image ButtonLeft;
+            public static readonly string[] AppName = new string[]
+            {
+                "体型(未实装)",
+                "鼻子",
+                "特征",
+                "眼睛",
+                "眉毛",
+                "嘴巴",
+                "胡须",
+                "发型",
+            };
+            public static readonly string[] AppColorName = new string[]
+            {
+                "皮肤颜色",
+                "眉毛颜色",
+                "眼睛颜色",
+                "嘴唇颜色",
+                "胡须颜色",
+                "特征颜色",
+                "头发颜色",
+                "衣服颜色",
+            };
+            public static readonly int[] KeyTable = new int[]
+            {
+                0,
+                2,
+                3,
+                4,
+                6,
+                7,
+                8,
+                9
+            };
+
+            static MoreUI()
+            {
+                var Image = UnityEngine.Object.Instantiate(Resources.Load<UnityEngine.GameObject>("OldScenePrefabs/NewGameMenu").transform.Find("NewGameBack/FaceView/FaceBack/FaceSettingHolder/NoseNameBack/FaceIdTextBack/FaceIdDownButton"));
+                ButtonLeft = Image.GetComponent<Image>();
+            }
+
             public static void Init(BaseScroll Func_More_Scroll)
             {
                 var i = RuntimeConfig.UI_Tab_Instance.Func_More_Scroll.AddComponent<TabFuncMore>();
@@ -37,6 +80,7 @@ namespace TaiwuEditor.UI
                 });
 
                 TopOfFuncMoreScroll(Func_More_Scroll);
+                AppChange(Func_More_Scroll);
                 DisplayDataFields(Func_More_Scroll, 61, 66, "基本属性");
                 DisplayDataFields(Func_More_Scroll, 401, 407, "资源");
                 DisplayDataFields(Func_More_Scroll, 501, 516, "技艺资质");
@@ -749,6 +793,351 @@ namespace TaiwuEditor.UI
                 });
                 actorFields.SetActive(false);
             }
+
+            public static void AppChange(BaseScroll Func_More_Scroll)
+            {
+                Func_More_Scroll.Get<TabFuncMore>().Male = new TaiwuToggle()
+                {
+                    Name = "MaleToggle,6",
+                    UseBoldFont = false,
+                    Text = "男",
+                    FontColor = new Color(0.725f, 0.490f, 0.294f, 1),
+                    Element =
+                    {
+                        PreferredSize = { 60 , 60 }
+                    },
+                    onValueChanged = (bool value, Toggle tg) =>
+                    {
+                        if (value)
+                            Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.Gender = 1;
+                    }
+                };
+                Func_More_Scroll.Get<TabFuncMore>().Female = new TaiwuToggle()
+                {
+                    Name = "FemaleToggle,7",
+                    UseBoldFont = false,
+                    Text = "女",
+                    FontColor = new Color(0.725f, 0.490f, 0.294f, 1),
+                    Element =
+                    {
+                        PreferredSize = { 60 , 60 }
+                    },
+                    onValueChanged = (bool value,Toggle tg) =>
+                    {
+                        if (value)
+                            Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.Gender = 2;
+                    }
+                };
+                ToggleGroup TG = new ToggleGroup
+                {
+                    Name = "Gender",
+                    Group =
+                    {
+                        Direction = Direction.Horizontal,
+                        Spacing = 10,
+                    },
+                    Element =
+                    {
+                        PreferredSize = { 0 , 80 }
+                    },
+                    Children =
+                    {
+                        Func_More_Scroll.Get<TabFuncMore>().Male,
+                        Func_More_Scroll.Get<TabFuncMore>().Female,
+                    }
+                };
+                foreach(var child in TG.Children)
+                {
+                    if (!(child is TaiwuToggle))
+                        continue;
+                    TaiwuEditor.Logger.LogInfo(child.Name);
+                    var toggle = child as TaiwuToggle;
+                    //设置字体
+                    toggle.Label._Text.FontSize = 18;
+                    toggle.Label._Text.Alignment = TextAnchor.LowerCenter;
+                    toggle.Create();
+
+                    var SourceToggle = UnityEngine.Object.Instantiate(Resources.Load<UnityEngine.GameObject>("OldScenePrefabs/NewGameMenu").transform.Find("NewGameBack/FaceView/AgeBack/" + toggle.Name));
+                    var image = SourceToggle.GetComponent<Image>();
+                    toggle.Get<Image>().type = image.type;
+                    toggle.Get<Image>().sprite = image.sprite;
+                    toggle.Get<Image>().color = image.color;
+
+                    var bg = toggle.Get<UnityEngine.UI.Toggle>().graphic as Image;
+                    image = SourceToggle.GetComponent<UnityEngine.UI.Toggle>().graphic as Image;
+                    bg.type = image.type;
+                    bg.sprite = image.sprite;
+                    bg.color = image.color;
+
+                    image = SourceToggle.Find("Image").GetComponent<Image>();
+                    BoxModelGameObject BackgroundContainer;
+                    (BackgroundContainer = new BoxModelGameObject()
+                    {
+                        Name = "Image"
+                    }).SetParent(toggle);
+                    BackgroundContainer.RectTransform.SetAsFirstSibling();
+                    BackgroundContainer.RectTransform.sizeDelta = Vector2.zero;
+                    BackgroundContainer.RectTransform.anchorMin = Vector2.zero;
+                    BackgroundContainer.RectTransform.anchorMax = Vector2.one;
+                    BackgroundContainer.Get<UnityEngine.UI.LayoutElement>().ignoreLayout = true;
+                    bg = BackgroundContainer.Get<Image>();
+                    bg.type = image.type;
+                    bg.sprite = image.sprite;
+                    bg.color = image.color;
+
+                }
+                var Cont = new BoxAutoSizeModelGameObject()
+                {
+                    Name = "ChangeHolder",
+                    SizeFitter =
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    },
+                    Group =
+                    {
+                        Direction = Direction.Vertical,
+                        Spacing = 3
+                    },
+                    DefaultActive = false
+                };
+
+                for(int i = 0; i < 8; i++)
+                {
+                    Func_More_Scroll.Get<TabFuncMore>().ColorBoxGroups[i] = new ColorBoxGroup()
+                    {
+                        Name = $"{i}",
+                        Colors = DateFile.instance.faceColor[i].ToList(),
+                        onValueChanged = (int value,ColorBoxGroup clg) =>
+                        {
+                            Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.FaceColor[int.Parse(clg.Name)] = value;
+                            TaiwuEditor.Logger.LogInfo(value);
+                            Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.Apply();
+                        }
+                    };
+                    var leftButton = new TaiwuButton()
+                    {
+                        Text = "",
+                        Name = "Left",
+                        OnClick = (Button bt) =>
+                        {
+                            var key = int.Parse(bt.Parent.Name);
+                            var af = Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace;
+                            var MaxValue = SingletonObject.getInstance<DynamicSetSprite>().GetGroupLength("actorFace", af.AppGender - 1, 0, KeyTable[key]);
+                            if (af.FaceData[key] - 1 <  0)
+                                af.FaceData[key] = MaxValue - 1;
+                            else
+                                af.FaceData[key]--;
+                            var ValueLable = bt.Parent.Children.Find(it => it.Name == "Value") as TaiwuLabel;
+                            ValueLable.Text = $"{af.FaceData[key] + 1} / {MaxValue}";
+                            af.Apply();
+                        },
+                        Element =
+                        {
+                            PreferredSize = { 40 }
+                        }
+                    };
+                    leftButton.Get<Image>().type = ButtonLeft.type;
+                    leftButton.Get<Image>().sprite = ButtonLeft.sprite;
+                    leftButton.Get<Image>().color = ButtonLeft.color;
+                    leftButton.Get<UnityEngine.UI.Button>().image = leftButton.Get<Image>();
+                    var rightButton = new TaiwuButton()
+                    {
+                        Text = "",
+                        Name = "Right",
+                        OnClick = (Button bt) =>
+                        {
+                            var key = int.Parse(bt.Parent.Name);
+                            var af = Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace;
+                            
+                            var MaxValue = SingletonObject.getInstance<DynamicSetSprite>().GetGroupLength("actorFace", af.AppGender - 1, 0, KeyTable[key]);
+                            if (af.FaceData[key] + 1  >= MaxValue)
+                                af.FaceData[key] = 0;
+                            else
+                                af.FaceData[key]++;
+
+                            var ValueLable = bt.Parent.Children.Find(it => it.Name == "Value") as TaiwuLabel;
+                            ValueLable.Text = $"{af.FaceData[key] + 1} / {MaxValue}";
+
+                            af.Apply();
+                        },
+                        Element =
+                        {
+                            PreferredSize = { 40 }
+                        }
+                    };
+                    rightButton.Get<Image>().type = ButtonLeft.type;
+                    rightButton.Get<Image>().sprite = ButtonLeft.sprite;
+                    rightButton.Get<Image>().color = ButtonLeft.color;
+                    Vector3 scale = rightButton.RectTransform.localScale;
+                    scale.x = -1;
+                    rightButton.RectTransform.localScale = scale;
+                    rightButton.Get<PointerEnter>().xMirror = true;
+
+                    Cont.Children.Add(new Container()
+                    {
+                        Name = i.ToString(),
+                        Group =
+                        {
+                            Direction = Direction.Horizontal,
+                            Spacing = 5
+                        },
+                        Element =
+                        {
+                            PreferredSize = { 0 , 60 }
+                        },
+                        Children =
+                        {
+                            new TaiwuLabel()
+                            {
+                                Name = "Label",
+                                Text = AppName[i],
+                                Element =
+                                {
+                                    PreferredSize = { 150 ,50 }
+                                }
+                            },
+                            leftButton,
+                            (Func_More_Scroll.Get<TabFuncMore>().AppValueLable[i] = new TaiwuLabel()
+                            {
+                                Name = "Value",
+                                Text = "Value",
+                                Element =
+                                {
+                                    PreferredSize = { 100 , 50 }
+                                },
+                                BackgroundStyle = TaiwuLabel.Style.Value
+                            }),
+                            rightButton,
+                            new TaiwuLabel()
+                            {
+                                Name = "Color",
+                                Text = AppColorName[i],
+                                Element =
+                                {
+                                    PreferredSize = { 200 , 50 }
+                                }
+                            },
+                            Func_More_Scroll.Get<TabFuncMore>().ColorBoxGroups[i]
+                        }
+                    });
+                }
+
+                Func_More_Scroll.Add("AppChange", new BoxAutoSizeModelGameObject
+                {
+                    Name = "AppChange",
+                    Group =
+                    {
+                        Spacing = 5,
+                        Direction = Direction.Vertical
+                    },
+                    SizeFitter =
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    },
+                    Children =
+                    {
+                        new TaiwuButton
+                        {
+                            Name = "Button-Show",
+                            Text = "外貌修改",
+                            UseBoldFont = true,
+                            UseOutline = true,
+                            OnClick = (Button button) =>
+                            {
+                                for(int i = 1;i<button.Parent.Children.Count;i++)
+                                {
+                                    button.Parent.Children[i].SetActive(!button.Parent.Children[i].IsActive);
+                                }
+                            },
+                            Element =
+                            {
+                                PreferredSize = { 0 , 50 }
+                            }
+                        },
+                        new Container
+                        {
+                            Name = "AppChange",
+                            Group =
+                            {
+                                Direction = Direction.Horizontal
+                            },
+                            Element =
+                            {
+                                PreferredSize = { 0 , 300 }
+                            },
+                            Children =
+                            {
+                                (Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace = new TaiwuActorFace()
+                                {
+                                    Name = "Face"
+                                }),
+                                new Container
+                                {
+                                    Name = "Sex",
+                                    Group =
+                                    {
+                                        Direction = Direction.Vertical,
+                                        Spacing = 5
+                                    },
+                                    Children =
+                                    {
+                                        new TaiwuTitle
+                                        {
+                                            Name = "Title",
+                                            Text = "性别与生相",
+                                        },
+                                        TG,
+                                        (Func_More_Scroll.Get<TabFuncMore>().GenderChange = new TaiwuToggle()
+                                        {
+                                            Name = "GenderChange",
+                                            Text = "男生女相",
+                                            Element =
+                                            {
+                                                PreferredSize = { 0 , 60 }
+                                            },
+                                            onValueChanged = (bool value,Toggle tg) =>
+                                            {
+                                                if(value)
+                                                    Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.GenderChange = 1;
+                                                else
+                                                    Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.GenderChange = 0;
+                                            }
+                                        }),
+                                        new TaiwuButton()
+                                        {
+                                            Name = "SaveApp",
+                                            Text = "保存设置",
+                                            Element =
+                                            {
+                                                PreferredSize = { 0 , 60 }
+                                            },
+                                            OnClick = (Button bt) =>
+                                            {
+                                                var af = Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace;
+                                                var faceData = string.Join("|",af.FaceData);
+                                                Characters.SetCharProperty(RuntimeConfig.UI_Config.ActorId,995,faceData);
+                                                var faceColor = string.Join("|",af.FaceColor);
+                                                Characters.SetCharProperty(RuntimeConfig.UI_Config.ActorId,996,faceColor);
+                                                Characters.SetCharProperty(RuntimeConfig.UI_Config.ActorId,14, af.Gender.ToString());
+                                                Characters.SetCharProperty(RuntimeConfig.UI_Config.ActorId,17, af.GenderChange.ToString());
+
+                                                Func_More_Scroll.Get<TabFuncMore>().NeedUpdate = true;
+                                            }
+                                        }
+                                    }
+                                },
+                            },
+                            DefaultActive = false
+                        },
+                        Cont
+                    }
+                });
+
+
+
+            }
+
+
         }
     }
 }

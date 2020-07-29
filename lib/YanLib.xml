@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YanLib</name>
+    </assembly>
+    <members>
+        <member name="M:YanLib.Core.HarmonyPatches.DateFile_GetNewSocialId_Prefix(System.Int32@)">
+            <summary>
+            删除关系时候的逆向优化（
+            </summary>
+            <param name="__result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YanLib.Core.HarmonyPatches.DateFile_GetNewActorId_Prefix(System.Int32@)">
+            <summary>
+            删除人物时候的逆向优化（
+            </summary>
+            <param name="__result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YanLib.Core.HarmonyPatches.DateFile_LifeRecordParamToText_Prefix(System.String@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            修正穿越者们的经历
+            </summary>
+            <param name="__result"></param>
+            <param name="charId"></param>
+            <param name="type"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YanLib.Core.RuntimeConfig.AllocateKey(System.String,System.Int32)">
+            <summary>
+            分配 Key 返回分配到的 Key。
+            </summary>
+            <param name="GUID">GUID</param>
+            <param name="Key">Mod 内部的 Key</param>
+            <returns></returns>
+        </member>
+        <member name="M:YanLib.Core.RuntimeConfig.LoadData">
+            <summary>
+            加载当前存档中的配置
+            </summary>
+        </member>
+        <member name="M:YanLib.Core.RuntimeConfig.NewData">
+            <summary>
+            新建存档时创建基础配置
+            </summary>
+        </member>
+        <member name="M:YanLib.Core.RuntimeConfig.SaveData">
+            <summary>
+            存档保存时的行为
+            </summary>
+        </member>
+        <member name="T:YanLib.DataManipulator.Actor">
+            <summary>
+            对于角色的数据操作
+            </summary>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelActor(System.Int32)">
+            <summary>
+            删除角色，彻底的删除
+            </summary>
+            <param name="ActorID">被删的可怜人的 ID</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.GetSpecifiedLifeData(System.Int32,System.Int32)">
+            <summary>
+            获取 Actor 的关系
+            返回值：Key 为 关系的 ID，Value 为关系中的 ActorID
+            </summary>
+            <param name="ActorId">角色的 ID</param>
+            <param name="SocialTyp">关系的类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelSocial(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            删除关系
+            </summary>
+            <param name="SocialId">关系 ID</param>
+            <param name="ActorAId">发起者（即储存在谁那）</param>
+            <param name="SocialTyp">关系类型（饼：后期可能会去改成枚举）</param>
+            <param name="ActorBId">被移除掉的对像（默认为 ActorA ）</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,GameData.LifeRecords.LifeRecord)">
+            <summary>
+            删除角色生平经历
+            </summary>
+            <param name="ActorID">被删的角色 ID</param>
+            <param name="Record">对应的记录</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,GameData.LifeRecords.LifeRecord[])">
+            <summary>
+            删除角色生平经历
+            </summary>
+            <param name="ActorID">被删的角色 ID</param>
+            <param name="Records">被删掉的记录数组</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,System.Int32)">
+            <summary>
+            删除角色生平经历
+            </summary>
+            <param name="ActorID">被删的角色 ID</param>
+            <param name="RecordType">被删掉的记录类型</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            删除角色生平经历，只要对应内容匹配就会删掉
+            </summary>
+            <param name="ActorID">被删的角色 ID</param>
+            <param name="RecordType">-1 = 任意，被删掉的记录类型</param>
+            <param name="ParamType">-1 = 任意，参数类型</param>
+            <param name="ParamValue">必填，参数内容</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Collections.Generic.List{GameData.LifeRecords.LifeRecord},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            删除提供的记录中符合条件的记录
+            </summary>
+            <param name="LifeRecords"></param>
+            <param name="RecordType">-1 = 任意，被删掉的记录类型</param>
+            <param name="ParamType">-1 = 任意，参数类型</param>
+            <param name="ParamValue">必填，参数内容</param>
+            <returns></returns>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.GetLifeRecords(System.Int32,System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            获取角色生平经历
+            </summary>
+            <param name="ActorID">角色 ID</param>
+            <param name="RecordTypes">null 为任意，获取的记录类型</param>
+            <param name="ParamTypes">null 为任意，参数类型</param>
+            <param name="ParamValues">null 为任意，参数内容</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.DumpActorData(System.Int32,System.Boolean,System.Boolean,System.String)">
+            <summary>
+            导出人物数据
+            </summary>
+            <param name="ActorID">导出的角色</param>
+            <param name="DumpLifeRecord">是否导出记录</param>
+            <param name="FixedActorName">是否导出生平中角色 ID 对应的名字</param>
+            <param name="FileName">导出的名字</param>
+            <returns></returns>
+        </member>
+        <member name="T:YanLib.DataManipulator.Actor.ActorAllData">
+            <summary>
+            用以储存 Actor 的所有数据
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.LifeRecords">
+            <summary>
+            生平经历
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.LifeRecordFix">
+            <summary>
+            生平修正，储存着 ID 与对应的名字
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.InjuryData">
+            <summary>
+            受伤数据
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.StadyData">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.ItemsData">
+            <summary>
+            持有物品
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.EquipGongFas">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.GongFas">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.ActorData">
+            <summary>
+            独属于一个人的数据
+            </summary>
+        </member>
+        <member name="M:YanLib.DataManipulator.Actor.LoadActorData(System.String)">
+            <summary>
+            加载角色数据到存档中
+            </summary>
+            <param name="DataJson"></param>
+        </member>
+        <member name="T:YanLib.DataManipulator.ModHelper">
+            <summary>
+            用来方便 Mod 工作的
+            </summary>
+        </member>
+        <member name="P:YanLib.DataManipulator.ModHelper.GUID">
+            <summary>
+            Mod 的 GUID
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.ModHelper.SaveData">
+            <summary>
+            游戏存档时调用
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.ModHelper.NewData">
+            <summary>
+            新建游戏时调用
+            </summary>
+        </member>
+        <member name="F:YanLib.DataManipulator.ModHelper.LoadData">
+            <summary>
+            加载存档时调用
+            </summary>
+        </member>
+        <member name="M:YanLib.DataManipulator.ModHelper.#ctor(System.String)">
+            <summary>
+            新建 ModHelper 实例
+            </summary>
+            <param name="_GUID">Mod 的 GUID</param>
+        </member>
+        <member name="M:YanLib.DataManipulator.ModHelper.GetActorKey(System.Int32)">
+            <summary>
+            返回一个专属的 Key 用以储存信息
+            </summary>
+            <param name="Key">Mod 内部使用的 Key 值，例如 1 2 3</param>
+            <returns></returns>
+        </member>
+        <member name="T:YanLib.YanLib">
+            <summary>
+            Mod 入口
+            </summary>
+        </member>
+        <member name="F:YanLib.YanLib.version">
+            <summary>版本</summary>
+        </member>
+        <member name="F:YanLib.YanLib.GUID">
+            <summary>GUID</summary>
+        </member>
+        <member name="F:YanLib.YanLib.Logger">
+            <summary>日志</summary>
+        </member>
+        <member name="T:YanLib.TypeConverterSupporter">
+            <summary>
+            转换器支持
+            </summary>
+        </member>
+        <member name="T:YanLib.MGOInfoAttribute">
+            <summary>
+            用来标记界面的位置的
+            </summary>
+        </member>
+        <member name="F:YanLib.MGOInfoAttribute.Name">
+            <summary>
+            名字
+            </summary>
+        </member>
+        <member name="F:YanLib.MGOInfoAttribute.Order">
+            <summary>
+            位置
+            </summary>
+        </member>
+        <member name="F:YanLib.MGOInfoAttribute.InitType">
+            <summary>
+            界面初始化的类
+            </summary>
+        </member>
+        <member name="F:YanLib.MGOInfoAttribute.InitTypeName">
+            <summary>
+            初始化的函数名字
+            </summary>
+        </member>
+        <member name="T:YanLib.PatchHandler">
+            <summary>
+            Patch 用的
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.TargetType">
+            <summary>
+            Parch 的目标 Type
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.TargetMethonName">
+            <summary>
+            Parch 的目标函数
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.Prefix">
+            <summary>
+            前置
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.Postfix">
+            <summary>
+            后置
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.Transpiler">
+            <summary>
+            IL修改的
+            </summary>
+        </member>
+        <member name="M:YanLib.PatchHandler.Patch(HarmonyLib.Harmony)">
+            <summary>
+            Patch
+            </summary>
+            <param name="harmony">Harmony 实例</param>
+        </member>
+        <member name="M:YanLib.PatchHandler.Unpatch(HarmonyLib.Harmony,YanLib.PatchHandler.HarmonyPatchType)">
+            <summary>
+            取消 Patch
+            </summary>
+            <param name="harmony">Harmony 实例</param>
+            <param name="patchType">卸载的 Patch 类型</param>
+        </member>
+        <member name="T:YanLib.PatchHandler.HarmonyPatchType">
+            <summary>
+            Patch 类型
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.HarmonyPatchType.All">
+            <summary>
+            全部
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.HarmonyPatchType.Prefix">
+            <summary>
+            前置
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.HarmonyPatchType.Postfix">
+            <summary>
+            后置
+            </summary>
+        </member>
+        <member name="F:YanLib.PatchHandler.HarmonyPatchType.Transpiler">
+            <summary>
+            Transpiler
+            </summary>
+        </member>
+    </members>
+</doc>

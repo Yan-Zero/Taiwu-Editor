@@ -7,7 +7,6 @@ using UnityEngine;
 using GameData;
 using BepInEx.Configuration;
 using System;
-using Newtonsoft.Json;
 
 namespace TaiwuEditor
 {
@@ -620,33 +619,5 @@ namespace TaiwuEditor
             value = -1;
             return iDictionary.TryGetValue(key, out string text) && Helper.TryParseInt(text, out value);
         }
-    }
-
-    /// <summary>
-    /// 转换器支持
-    /// </summary>
-    public static class TypeConverterSupporter
-    {
-        public static void Init()
-        {
-            TypeConverter converter = new TypeConverter
-            {
-                ConvertToString = ((object obj, Type type) => JsonConvert.SerializeObject(obj)),
-                ConvertToObject = ((string str, Type type) => JsonConvert.DeserializeObject(str, type))
-
-            };
-            TomlTypeConverter.AddConverter(typeof(int[]), converter);
-            TomlTypeConverter.AddConverter(typeof(bool[]), converter);
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Field)]
-    public class MGOInfoAttribute : Attribute
-    {
-        public string Name;
-        public int Order;
-
-        public Type InitType = null;
-        public string InitTypeName = null;
     }
 }

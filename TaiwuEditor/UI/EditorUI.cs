@@ -5,6 +5,7 @@ using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.GameObjects;
+using YanLib;
 
 namespace TaiwuEditor.UI
 {
@@ -98,7 +99,7 @@ namespace TaiwuEditor.UI
                 {
                     field.SetValue(null, new Container()
                     {
-                        Name = "Func_AddItem_Scroll",
+                        Name = fieldName,
                         Group =
                         {
                             Direction = Direction.Vertical,
@@ -144,7 +145,7 @@ namespace TaiwuEditor.UI
                     toggleGroup.Children.Add(new TaiwuToggle()
                     {
                         Name = fieldName,
-                        Text = "属性修改",
+                        Text = info.Name ?? fieldName,
                         UseBoldFont = true,
                         UseOutline = true,
                         onValueChanged = (bool value, Toggle Toggle) =>

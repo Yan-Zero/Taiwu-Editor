@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TaiwuUIKit</name>
+    </assembly>
+    <members>
+        <member name="T:TaiwuUIKit.GameObjects.TaiwuActorFace">
+            <summary>
+            太吾的 Actor 相貌显示组件
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.FaceData">
+            <summary>
+            相貌数据
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.FaceColor">
+            <summary>
+            相貌的颜色
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.GenderChange">
+            <summary>
+            生相
+            0 = 本
+            1 = 男生女相/女生男相
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.Gender">
+            <summary>
+            性别, 1 或 2
+            不能为 0
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.ClothesIndex">
+            <summary>
+            衣服
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.Life">
+            <summary>
+            显示坟头还是相貌
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.FixSize">
+            <summary>
+            修正大小，False 是宽根据高变化，True 是高根据宽
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.AppGender">
+            <summary>
+            外貌是男是女， 1 男 2 女
+            </summary>
+        </member>
+        <member name="P:TaiwuUIKit.GameObjects.TaiwuActorFace.Age">
+            <summary>
+            年龄
+            </summary>
+        </member>
+        <member name="M:TaiwuUIKit.GameObjects.TaiwuActorFace.Create(System.Boolean)">
+            <summary>
+            创建对象
+            </summary>
+        </member>
+        <member name="M:TaiwuUIKit.GameObjects.TaiwuActorFace.Apply">
+            <summary>
+            应用修正
+            </summary>
+        </member>
+    </members>
+</doc>
