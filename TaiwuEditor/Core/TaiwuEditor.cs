@@ -139,7 +139,7 @@ namespace TaiwuEditor
                         EditorUI.MoreUI.Init(RuntimeConfig.UI_Tab_Instance.Func_More_Scroll);
 
                         //图鉴添加物品
-                        EditorUI.AddItem.Init(RuntimeConfig.UI_Tab_Instance.Func_AddItem_Container, settings);
+                        EditorUI.AddItemUI.Init(RuntimeConfig.UI_Tab_Instance.Func_AddItem_Container, settings);
 
                         //快捷键窗口
                         EditorUI.HotkeyUI.Init(RuntimeConfig.UI_Tab_Instance.Func_Hotkey_Scroll, settings);

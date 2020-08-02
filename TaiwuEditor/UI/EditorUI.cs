@@ -173,6 +173,8 @@ namespace TaiwuEditor.UI
                     if (info == null)
                         info = new MGOInfoAttribute();
 
+                    TaiwuEditor.Logger.LogInfo(field.Name);
+
                     Type InitType = null;
 
                     if(info.InitType != null)
@@ -185,11 +187,11 @@ namespace TaiwuEditor.UI
                     object[] parm = null;
                     if (init.GetParameters().Count() == 1)
                     {
-                        parm = new object[] { field };
+                        parm = new object[] { field.GetValue(null) };
                     }
                     else
                     {
-                        parm = new object[] { field, settings };
+                        parm = new object[] { field.GetValue(null), settings };
                     }
 
                     init.Invoke(null, parm);

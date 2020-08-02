@@ -850,7 +850,6 @@ namespace TaiwuEditor.UI
                 {
                     if (!(child is TaiwuToggle))
                         continue;
-                    TaiwuEditor.Logger.LogInfo(child.Name);
                     var toggle = child as TaiwuToggle;
                     //设置字体
                     toggle.Label._Text.FontSize = 18;

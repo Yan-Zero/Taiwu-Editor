@@ -31,7 +31,7 @@ namespace TaiwuEditor.UI
                 LockBasePartValueUI(Func_Base_Scroll, settings);
                 ChangeDefalutCombatRangeUI(Func_Base_Scroll, settings);
                 BuildingLevelPctLimitUI(Func_Base_Scroll, settings);
-                MoveOrDelNPC(Func_Base_Scroll, settings);
+                MoveNPC(Func_Base_Scroll, settings);
             }
 
             //基础功能
@@ -1183,11 +1183,11 @@ namespace TaiwuEditor.UI
                 });
             }
 
-            public static void MoveOrDelNPC(BaseScroll Func_Base_Scroll, Settings settings)
+            public static void MoveNPC(BaseScroll Func_Base_Scroll, Settings settings)
             {
                 Func_Base_Scroll.Add("移动 NPC",new Container()
                 {
-                    Name = "Move Or Del NPC",
+                    Name = "MoveNPC",
                     Element =
                     {
                         PreferredSize = { 0 , 50 }
@@ -1215,16 +1215,7 @@ namespace TaiwuEditor.UI
                             Placeholder = "请输入人物名称或 ID",
                             OnValueChanged = (string Text,InputField IF) =>
                             {
-                                if(string.IsNullOrWhiteSpace(Text))
-                                {
-                                    (IF.Parent.Children[2] as Button).UnityButton.interactable = false;
-                                    (IF.Parent.Children[3] as Button).UnityButton.interactable = false;
-                                }
-                                else
-                                {
-                                    (IF.Parent.Children[2] as Button).UnityButton.interactable = true;
-                                    (IF.Parent.Children[3] as Button).UnityButton.interactable = true;
-                                }
+                                (IF.Parent.Children[2] as Button).UnityButton.interactable = !string.IsNullOrWhiteSpace(Text);
                             },
                             Text = "10001"
                         },

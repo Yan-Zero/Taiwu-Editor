@@ -100,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\RuntimeConfig.cs" />
     <Compile Include="GameObject\ColorBox.cs" />
     <Compile Include="GameObject\ColorBoxGroup.cs" />
     <Compile Include="GameObject\ItemShower.cs" />

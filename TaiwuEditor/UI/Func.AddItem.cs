@@ -13,7 +13,7 @@ namespace TaiwuEditor.UI
 {
     public static partial class EditorUI
     {
-        public static class AddItem
+        public static class AddItemUI
         {
             public static void Init(Container Func_AddItem_Container, Settings settings)
             {
