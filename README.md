@@ -1,3 +1,7 @@
+# 赞助码 Sponsorship
+## 微信
+![avatar](https://www.hualigs.cn/image/600aa12470350.jpg) 
+
 # TaiwuEditor 太吾修改器
 > By babel92、ciwei100000、Yan
 
@@ -9,6 +13,9 @@
 
 ## Change Log
 by Yan
+### 1.5.0.0
+- 忘记更新了啥了.jpg
+
 ### 1.3.0.0
 - 彻底重做了 UI。
 - 添加了：
