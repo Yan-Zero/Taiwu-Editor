@@ -28,7 +28,7 @@ namespace TaiwuEditor
     public class TaiwuEditor : BaseUnityPlugin
     {
         /// <summary>版本</summary>
-        public const string version = "1.6.2.0";
+        public const string version = "1.6.2.2";
 
         /// <summary>GUID</summary>
         public const string GUID = "0.Yan.TaiwuEditor";

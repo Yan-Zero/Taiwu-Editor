@@ -82,6 +82,7 @@ namespace TaiwuEditor.UI
                 TopOfFuncMoreScroll(Func_More_Scroll);
                 AppChange(Func_More_Scroll);
                 DisplayDataFields(Func_More_Scroll, 61, 66, "基本属性");
+                DisplayAppearance(Func_More_Scroll);
                 DisplayDataFields(Func_More_Scroll, 401, 407, "资源");
                 DisplayDataFields(Func_More_Scroll, 501, 516, "技艺资质");
                 DisplayDataFields(Func_More_Scroll, 601, 614, "功法资质");
@@ -393,6 +394,160 @@ namespace TaiwuEditor.UI
                 Func_More_Scroll.Get<TabFuncMore>().DataFields.Add(actorFields);
                 actorFields.SetActive(false);
             }
+
+            public static void DisplayAppearance(BaseScroll Func_More_Scroll)
+            {
+                BoxGridGameObject actorFields = new BoxGridGameObject
+                {
+                    Name = $"Field:15、16",
+                    Grid =
+                    {
+                        StartAxis = Direction.Horizontal,
+                        Constraint = UnityEngine.UI.GridLayoutGroup.Constraint.FixedColumnCount,
+                        ConstraintCount = 3,
+                        CellSize = new Vector2(0 , 50),
+                        AutoWidth = true
+                    },
+                    SizeFitter =
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    }
+                };
+                actorFields.Children.Add(new Container
+                {
+                    Name = $"{15}",
+                    Group =
+                    {
+                        Spacing = 2,
+                        Direction = Direction.Horizontal
+                    },
+                    Element =
+                    {
+                        PreferredSize = { 0 , 50 }
+                    },
+                    Children =
+                    {
+                        new TaiwuLabel
+                        {
+                            Name = $"Text-{Helper.ActorFieldNames[15]}",
+                            Text = Helper.ActorFieldNames[15],
+                            UseBoldFont = true,
+                            UseOutline = true,
+                            Element =
+                            {
+                                PreferredSize = { 200 , 0 }
+                            }
+                        },
+                        new TaiwuInputField
+                        {
+                            Name = $"InputField-{Helper.ActorFieldNames[15]}",
+                            Placeholder = null,
+                            InputType = UnityEngine.UI.InputField.InputType.AutoCorrect,
+                            ContentType = UnityEngine.UI.InputField.ContentType.IntegerNumber,
+                                
+                        },
+                        new TaiwuButton
+                        {
+                            Name = $"Button-{Helper.ActorFieldNames[15]}",
+                            Text = "修改",
+                            UseBoldFont = true,
+                            OnClick = (Button button) =>
+                            {
+                                Helper.ActorSetFieldValue(int.Parse(button.Parent.Name),(button.Parent.Children[1] as TaiwuInputField).Text);
+                            },
+                            Element =
+                            {
+                                PreferredSize = { 75, 0 }
+                            }
+                        }
+                    }
+                });
+                actorFields.Children.Add(new Container
+                {
+                    Name = $"{16}",
+                    Group =
+                    {
+                        Spacing = 2,
+                        Direction = Direction.Horizontal
+                    },
+                    Element =
+                    {
+                        PreferredSize = { 0 , 50 }
+                    },
+                    Children =
+                    {
+                        new TaiwuLabel
+                        {
+                            Name = $"Text-{Helper.ActorFieldNames[16]}",
+                            Text = Helper.ActorFieldNames[16],
+                            UseBoldFont = true,
+                            UseOutline = true,
+                            Element =
+                            {
+                                PreferredSize = { 200 , 0 }
+                            }
+                        },
+                        new TaiwuInputField
+                        {
+                            Name = $"InputField-{Helper.ActorFieldNames[16]}",
+                            Placeholder = null,
+                            InputType = UnityEngine.UI.InputField.InputType.AutoCorrect,
+                            ContentType = UnityEngine.UI.InputField.ContentType.IntegerNumber,
+                        },
+                        new TaiwuButton
+                        {
+                            Name = $"Button-{Helper.ActorFieldNames[16]}",
+                            Text = "修改",
+                            UseBoldFont = true,
+                            OnClick = (Button button) =>
+                            {
+                                Helper.ActorSetFieldValue(int.Parse(button.Parent.Name),(button.Parent.Children[1] as TaiwuInputField).Text);
+                            },
+                            Element =
+                            {
+                                PreferredSize = { 75, 0 }
+                            }
+                        }
+                    }
+                });
+                Func_More_Scroll.Add($"Char-Field:{"魅力、立场"}", new BoxAutoSizeModelGameObject
+                {
+                    Name = $"Char-Field:{"魅力、立场"}",
+                    Group =
+                    {
+                        Spacing = 3,
+                        Direction = Direction.Vertical,
+                        ForceExpandChildWidth = true
+                    },
+                    SizeFitter =
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    },
+                    Children =
+                    {
+                        new TaiwuButton
+                        {
+                            Name = "Button-Show",
+                            Text = "魅力、立场",
+                            UseBoldFont = true,
+                            UseOutline = true,
+                            OnClick = (Button button) =>
+                            {
+                                button.Parent.Children[1].SetActive(!button.Parent.Children[1].IsActive);
+                            },
+                            Element =
+                            {
+                                PreferredSize = { 0 , 50 }
+                            }
+                        },
+                        actorFields
+                    }
+                });
+                Func_More_Scroll.Get<TabFuncMore>().DataFields.Add(actorFields);
+                actorFields.SetActive(false);
+            }
+
+
 
             public static void TaiwuField(BaseScroll Func_More_Scroll)
             {
