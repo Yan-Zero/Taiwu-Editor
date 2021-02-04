@@ -20,6 +20,17 @@ namespace TaiwuEditor.UI
         public static class MoreUI
         {
             public static readonly Image ButtonLeft;
+            public static readonly int[] AppMap = new int[]
+            {
+                7,
+                4,
+                3,
+                1,
+                5,
+                6,
+                2,
+                0,
+            };
             public static readonly string[] AppName = new string[]
             {
                 "体型(未实装)",
@@ -1057,10 +1068,11 @@ namespace TaiwuEditor.UI
 
                 for(int i = 0; i < 8; i++)
                 {
-                    Func_More_Scroll.Get<TabFuncMore>().ColorBoxGroups[i] = new ColorBoxGroup()
+                    int id = AppMap[i];
+                    Func_More_Scroll.Get<TabFuncMore>().ColorBoxGroups[id] = new ColorBoxGroup()
                     {
-                        Name = $"{i}",
-                        Colors = DateFile.instance.faceColor[i].ToList(),
+                        Name = $"{id}",
+                        Colors = DateFile.instance.faceColor[id].ToList(),
                         onValueChanged = (int value,ColorBoxGroup clg) =>
                         {
                             Func_More_Scroll.Get<TabFuncMore>().TaiwuActorFace.FaceColor[int.Parse(clg.Name)] = value;
@@ -1129,7 +1141,7 @@ namespace TaiwuEditor.UI
 
                     Cont.Children.Add(new Container()
                     {
-                        Name = i.ToString(),
+                        Name = id.ToString(),
                         Group =
                         {
                             Direction = Direction.Horizontal,
@@ -1144,14 +1156,14 @@ namespace TaiwuEditor.UI
                             new TaiwuLabel()
                             {
                                 Name = "Label",
-                                Text = AppName[i],
+                                Text = AppName[id],
                                 Element =
                                 {
                                     PreferredSize = { 150 ,50 }
                                 }
                             },
                             leftButton,
-                            (Func_More_Scroll.Get<TabFuncMore>().AppValueLable[i] = new TaiwuLabel()
+                            (Func_More_Scroll.Get<TabFuncMore>().AppValueLable[id] = new TaiwuLabel()
                             {
                                 Name = "Value",
                                 Text = "Value",
@@ -1165,13 +1177,13 @@ namespace TaiwuEditor.UI
                             new TaiwuLabel()
                             {
                                 Name = "Color",
-                                Text = AppColorName[i],
+                                Text = AppColorName[id],
                                 Element =
                                 {
                                     PreferredSize = { 200 , 50 }
                                 }
                             },
-                            Func_More_Scroll.Get<TabFuncMore>().ColorBoxGroups[i]
+                            Func_More_Scroll.Get<TabFuncMore>().ColorBoxGroups[id]
                         }
                     });
                 }
