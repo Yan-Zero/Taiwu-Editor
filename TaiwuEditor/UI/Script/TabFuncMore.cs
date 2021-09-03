@@ -19,6 +19,8 @@ namespace TaiwuEditor.Script
 {
     public class TabFuncMore : MonoBehaviour
     {
+        public static readonly int[] map_to_name_id = { 5, 0, 30 };
+
         private BaseScroll instance;
 
         public TaiwuLabel NameValue;
@@ -34,6 +36,8 @@ namespace TaiwuEditor.Script
         public TaiwuToggle Female = null;
         public ColorBoxGroup[] ColorBoxGroups = new ColorBoxGroup[8];
         public TaiwuLabel[] AppValueLable = new TaiwuLabel[8];
+
+        public TaiwuInputField[] NameChange = new TaiwuInputField[3];
 
         void OnGUI()
         {
@@ -104,6 +108,22 @@ namespace TaiwuEditor.Script
                     GenderChange.isOn = false;
                 else
                     GenderChange.isOn = true;
+
+                string actorDate = DateFile.instance.GetActorDate(RuntimeConfig.UI_Config.ActorId, 0, applyBonus: false);
+                TaiwuButton tb_cn = (TaiwuButton)NameChange[0].Parent.Children.Find((x) => { return x.Name == "Save"; });
+                tb_cn.UnityButton.enabled = actorDate != "";
+                if (tb_cn.UnityButton.enabled)
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        NameChange[i].ReadOnly = false;
+                        NameChange[i].Text = DateFile.instance.GetActorDate(RuntimeConfig.UI_Config.ActorId, map_to_name_id[i], applyBonus: false);
+                    }
+                else
+                    foreach (var i in NameChange)
+                    {
+                        i.ReadOnly = true;
+                        i.Text = "这家伙的改不了";
+                    }
 
                 NeedUpdate = false;
             }

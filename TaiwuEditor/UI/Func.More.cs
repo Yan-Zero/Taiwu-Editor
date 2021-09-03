@@ -98,6 +98,7 @@ namespace TaiwuEditor.UI
                 DisplayDataFields(Func_More_Scroll, 501, 516, "技艺资质");
                 DisplayDataFields(Func_More_Scroll, 601, 614, "功法资质");
                 TaiwuField(Func_More_Scroll);
+                ChangeName(Func_More_Scroll);
                 DisplayHealthAge(Func_More_Scroll);
                 DisplayXXField(Func_More_Scroll);
 
@@ -557,8 +558,6 @@ namespace TaiwuEditor.UI
                 Func_More_Scroll.Get<TabFuncMore>().DataFields.Add(actorFields);
                 actorFields.SetActive(false);
             }
-
-
 
             public static void TaiwuField(BaseScroll Func_More_Scroll)
             {
@@ -1302,8 +1301,126 @@ namespace TaiwuEditor.UI
 
 
             }
+        
+            public static void ChangeName(BaseScroll Func_More_Scroll)
+            {
+                BoxAutoSizeModelGameObject actorFields = new BoxAutoSizeModelGameObject
+                {
+                    Name = "名字更改",
+                    Group =
+                    {
+                        Spacing = 3,
+                        Direction = Direction.Vertical,
+                        ForceExpandChildWidth = true
+                    },
+                    SizeFitter =
+                    {
+                        VerticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize
+                    },
+                    Children =
+                    {
+                        new TaiwuButton
+                        {
+                            Name = "Button-Show",
+                            Text = "名字更改",
+                            UseBoldFont = true,
+                            UseOutline = true,
+                            OnClick = (Button button) =>
+                            {
+                                for(int i = 1;i<button.Parent.Children.Count;i++)
+                                {
+                                    button.Parent.Children[i].SetActive(!button.Parent.Children[i].IsActive);
+                                }
+                            },
+                            Element =
+                            {
+                                PreferredSize = { 0 , 50 }
+                            }
+                        },
+                    }
+                };
+                actorFields.Children.Add(new Container
+                {
+                    DefaultActive = false,
+                    Name = "Name",
+                    Group =
+                    {
+                        Spacing = 5,
+                        Direction = UnityUIKit.Core.Direction.Horizontal
+                    },
+                    Element =
+                    {
+                        PreferredSize = { 0 , 50 }
+                    },
+                    Children =
+                    {
+                        new TaiwuLabel
+                        {
+                            Name = "FL",
+                            Element =
+                            {
+                                PreferredSize = { 100 , 0 }
+                            },
+                            UseBoldFont = true,
+                            Text = "姓"
+                        },
+                        (Func_More_Scroll.Get<TabFuncMore>().NameChange[0] = new TaiwuInputField
+                        {
+                            Name = "FirstName",
+                            Placeholder = "请输入姓氏(为空很正常，忽略就行)"
+                        }),
+                        new TaiwuLabel
+                        {
+                            Name = "SL",
+                            Element =
+                            {
+                                PreferredSize = { 100 , 0 }
+                            },
+                            UseBoldFont = true,
+                            Text = "名"
+                        },
+                        (Func_More_Scroll.Get<TabFuncMore>().NameChange[1] = new TaiwuInputField
+                        {
+                            Name = "SecondName",
+                            Placeholder = "请输入名字"
+                        }),
+                        new TaiwuLabel
+                        {
+                            Name = "FHL",
+                            Element =
+                            {
+                                PreferredSize = { 125 , 0 }
+                            },
+                            UseBoldFont = true,
+                            Text = "法号"
+                        },
+                        (Func_More_Scroll.Get<TabFuncMore>().NameChange[2] = new TaiwuInputField
+                        {
+                            Name = "FH",
+                            Placeholder = "请输入法号"
+                        }),
+                        new TaiwuButton()
+                        {
+                            Name = "Save",
+                            Text = "保存",
+                            Element =
+                            {
+                                PreferredSize = { 125 , 0 }
+                            },
+                            OnClick = (Button bt) =>
+                            {
+                                var x = Func_More_Scroll.Get<TabFuncMore>();
+                                if (x.NameChange[0].ReadOnly)
+                                    return;
+                                for (int i = 0; i < 3; ++i)
+                                    Characters.SetCharProperty(RuntimeConfig.UI_Config.ActorId, TabFuncMore.map_to_name_id[i], x.NameChange[i].Text);
+                            }
+                        }
+                    }
+                });
+                Func_More_Scroll.Add("Name-Change", actorFields);
 
-
+            }
         }
     }
 }
