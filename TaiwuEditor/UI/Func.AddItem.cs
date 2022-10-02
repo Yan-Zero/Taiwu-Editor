@@ -60,7 +60,6 @@ namespace TaiwuEditor.UI
                             {
                                 PreferredSize = { 100 , 0 }
                             },
-                            UseBoldFont = true,
                             Text = "类型"
                         },
                         new ToggleGroup
@@ -77,7 +76,6 @@ namespace TaiwuEditor.UI
                                 {
                                     Name = "All",
                                     Text = "全部",
-                                    UseBoldFont = true,
                                     onValueChanged = (bool value,Toggle tg) => Func_AddItem_Container.Get<TabFuncAddItem>().ItemType = TabFuncAddItem.ItemTypes.All,
                                 }
                             }
@@ -105,14 +103,13 @@ namespace TaiwuEditor.UI
                             {
                                 PreferredSize = { wideOfLabel , 0 }
                             },
-                            UseBoldFont = true,
                             Text = "名字"
                         },
-                        new TaiwuInputField
-                        {
-                            Name = "SeacherInput",
-                            Placeholder = "请输入物品名称或 ID"
-                        },
+                        //new TaiwuInputField
+                        //{
+                        //    Name = "SeacherInput",
+                        //    Placeholder = "请输入物品名称或 ID"
+                        //},
                         new TaiwuButton
                         {
                             Name = "Search",
@@ -121,8 +118,6 @@ namespace TaiwuEditor.UI
                             {
                                 PreferredSize = { wideOfLabel , 0 }
                             },
-                            UseBoldFont = true,
-                            FontColor = Color.white,
                             OnClick = (Button bt) =>
                             {
                                 var i = bt.Parent.Children[1] as InputField;

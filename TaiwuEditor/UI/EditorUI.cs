@@ -40,8 +40,6 @@ namespace TaiwuEditor.UI
                         {
                             PreferredSize = { 150, 0 }
                         },
-                        UseOutline = true,
-                        UseBoldFont = true
                     }
                 }
             };
@@ -57,7 +55,7 @@ namespace TaiwuEditor.UI
                     (RuntimeConfig.UI_Config.windows = new TaiwuWindows()
                     {
                         Name = "TaiwuEditor.Windows",
-                        Title = $"太吾修改器 {TaiwuEditor.version}",
+                        Title = $"太吾修改器 {TaiwuEditor.Version}",
                         Direction = Direction.Vertical,
                         Spacing = 10,
                         Group =
@@ -70,7 +68,7 @@ namespace TaiwuEditor.UI
                         },
                         Element =
                         {
-                            PreferredSize = { 1400, 1000 }
+                            PreferredSize = { 1600, 1200 }
                         },
                     }),
                 }
@@ -133,8 +131,6 @@ namespace TaiwuEditor.UI
                     {
                         Name = fieldName,
                         Text = info.Name ?? fieldName,
-                        UseBoldFont = true,
-                        UseOutline = true,
                         onValueChanged = (bool value, Toggle Toggle) =>
                         {
                             var i = AccessTools.Field(typeof(RuntimeConfig.UI_Tab_Instance), Toggle.Name).GetValue(null) as ManagedGameObject;
@@ -146,8 +142,6 @@ namespace TaiwuEditor.UI
                     {
                         Name = fieldName,
                         Text = info.Name ?? fieldName,
-                        UseBoldFont = true,
-                        UseOutline = true,
                         onValueChanged = (bool value, Toggle Toggle) =>
                         {
                             var i = AccessTools.Field(typeof(RuntimeConfig.UI_Config), Toggle.Name).GetValue(null) as ManagedGameObject;
@@ -163,7 +157,7 @@ namespace TaiwuEditor.UI
 
         public static void TryInit(Settings settings)
         {
-            foreach(var mgo in RuntimeConfig.UI_Config.windows.Children[0].Children)
+            foreach (var mgo in RuntimeConfig.UI_Config.windows.Children[0].Children)
             {
                 var toggle = mgo as Toggle;
                 if (toggle != null)
@@ -177,7 +171,7 @@ namespace TaiwuEditor.UI
 
                     Type InitType = null;
 
-                    if(info.InitType != null)
+                    if (info.InitType != null)
                         InitType = info.InitType;
                     else if (!string.IsNullOrEmpty(info.InitTypeName))
                         InitType = Type.GetType(typeof(EditorUI).FullName + "+" + info.InitTypeName);

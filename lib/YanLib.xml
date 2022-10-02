@@ -4,53 +4,9 @@
         <name>YanLib</name>
     </assembly>
     <members>
-        <member name="M:YanLib.Core.HarmonyPatches.DateFile_GetNewSocialId_Prefix(System.Int32@)">
+        <member name="T:YanLib.Core.RuntimeConfig">
             <summary>
-            删除关系时候的逆向优化（
-            </summary>
-            <param name="__result"></param>
-            <returns></returns>
-        </member>
-        <member name="M:YanLib.Core.HarmonyPatches.DateFile_GetNewActorId_Prefix(System.Int32@)">
-            <summary>
-            删除人物时候的逆向优化（
-            </summary>
-            <param name="__result"></param>
-            <returns></returns>
-        </member>
-        <member name="M:YanLib.Core.HarmonyPatches.DateFile_LifeRecordParamToText_Prefix(System.String@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            修正穿越者们的经历
-            </summary>
-            <param name="__result"></param>
-            <param name="charId"></param>
-            <param name="type"></param>
-            <param name="value"></param>
-            <param name="partId"></param>
-            <param name="placeId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:YanLib.Core.RuntimeConfig.AllocateKey(System.String,System.Int32)">
-            <summary>
-            分配 Key 返回分配到的 Key。
-            </summary>
-            <param name="GUID">GUID</param>
-            <param name="Key">Mod 内部的 Key</param>
-            <returns></returns>
-        </member>
-        <member name="M:YanLib.Core.RuntimeConfig.LoadData">
-            <summary>
-            加载当前存档中的配置
-            </summary>
-        </member>
-        <member name="M:YanLib.Core.RuntimeConfig.NewData">
-            <summary>
-            新建存档时创建基础配置
-            </summary>
-        </member>
-        <member name="M:YanLib.Core.RuntimeConfig.SaveData">
-            <summary>
-            存档保存时的行为
+            运行时候的配置
             </summary>
         </member>
         <member name="T:YanLib.Settings">
@@ -68,168 +24,22 @@
             快捷键设置类
             </summary>
         </member>
-        <member name="M:YanLib.Settings.HotkeyConfig.Init(BepInEx.Configuration.ConfigFile)">
-            <summary>
-            初始化
-            </summary>
-            <param name="Config"></param>
-        </member>
         <member name="F:YanLib.Settings.HotkeyConfig.OpenUI">
             <summary>
             打开/关闭 UI 的快捷键
             </summary>
         </member>
-        <member name="M:YanLib.Settings.Init(BepInEx.Configuration.ConfigFile)">
+        <member name="M:YanLib.Settings.Init">
             <summary>
             加载配置
             </summary>
-            <param name="config"></param>
-        </member>
-        <member name="T:YanLib.DataManipulator.Actor">
-            <summary>
-            对于角色的数据操作
-            </summary>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelActor(System.Int32)">
-            <summary>
-            删除角色，彻底的删除
-            </summary>
-            <param name="ActorID">被删的可怜人的 ID</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.GetSpecifiedLifeData(System.Int32,System.Int32)">
-            <summary>
-            获取 Actor 的关系
-            返回值：Key 为 关系的 ID，Value 为关系中的 ActorID
-            </summary>
-            <param name="ActorId">角色的 ID</param>
-            <param name="SocialTyp">关系的类型</param>
-            <returns></returns>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelSocial(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            删除关系
-            </summary>
-            <param name="SocialId">关系 ID</param>
-            <param name="ActorAId">发起者（即储存在谁那）</param>
-            <param name="SocialTyp">关系类型（饼：后期可能会去改成枚举）</param>
-            <param name="ActorBId">被移除掉的对像（默认为 ActorA ）</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,GameData.LifeRecords.LifeRecord)">
-            <summary>
-            删除角色生平经历
-            </summary>
-            <param name="ActorID">被删的角色 ID</param>
-            <param name="Record">对应的记录</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,GameData.LifeRecords.LifeRecord[])">
-            <summary>
-            删除角色生平经历
-            </summary>
-            <param name="ActorID">被删的角色 ID</param>
-            <param name="Records">被删掉的记录数组</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,System.Int32)">
-            <summary>
-            删除角色生平经历
-            </summary>
-            <param name="ActorID">被删的角色 ID</param>
-            <param name="RecordType">被删掉的记录类型</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            删除角色生平经历，只要对应内容匹配就会删掉
-            </summary>
-            <param name="ActorID">被删的角色 ID</param>
-            <param name="RecordType">-1 = 任意，被删掉的记录类型</param>
-            <param name="ParamType">-1 = 任意，参数类型</param>
-            <param name="ParamValue">必填，参数内容</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DelLifeRecord(System.Collections.Generic.List{GameData.LifeRecords.LifeRecord},System.Int32,System.Int32,System.Int32)">
-            <summary>
-            删除提供的记录中符合条件的记录
-            </summary>
-            <param name="LifeRecords"></param>
-            <param name="RecordType">-1 = 任意，被删掉的记录类型</param>
-            <param name="ParamType">-1 = 任意，参数类型</param>
-            <param name="ParamValue">必填，参数内容</param>
-            <returns></returns>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.GetLifeRecords(System.Int32,System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32})">
-            <summary>
-            获取角色生平经历
-            </summary>
-            <param name="ActorID">角色 ID</param>
-            <param name="RecordTypes">null 为任意，获取的记录类型</param>
-            <param name="ParamTypes">null 为任意，参数类型</param>
-            <param name="ParamValues">null 为任意，参数内容</param>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.DumpActorData(System.Int32,System.Boolean,System.Boolean,System.String)">
-            <summary>
-            导出人物数据
-            </summary>
-            <param name="ActorID">导出的角色</param>
-            <param name="DumpLifeRecord">是否导出记录</param>
-            <param name="FixedActorName">是否导出生平中角色 ID 对应的名字</param>
-            <param name="FileName">导出的名字</param>
-            <returns></returns>
-        </member>
-        <member name="T:YanLib.DataManipulator.Actor.ActorAllData">
-            <summary>
-            用以储存 Actor 的所有数据
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.LifeRecords">
-            <summary>
-            生平经历
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.LifeRecordFix">
-            <summary>
-            生平修正，储存着 ID 与对应的名字
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.InjuryData">
-            <summary>
-            受伤数据
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.StadyData">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.ItemsData">
-            <summary>
-            持有物品
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.EquipGongFas">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.GongFas">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:YanLib.DataManipulator.Actor.ActorAllData.ActorData">
-            <summary>
-            独属于一个人的数据
-            </summary>
-        </member>
-        <member name="M:YanLib.DataManipulator.Actor.LoadActorData(System.String)">
-            <summary>
-            加载角色数据到存档中
-            </summary>
-            <param name="DataJson"></param>
         </member>
         <member name="T:YanLib.YanLib">
             <summary>
             Mod 入口
             </summary>
         </member>
-        <member name="F:YanLib.YanLib.version">
+        <member name="F:YanLib.YanLib.Version">
             <summary>版本</summary>
         </member>
         <member name="F:YanLib.YanLib.GUID">
@@ -238,17 +48,27 @@
         <member name="F:YanLib.YanLib.Logger">
             <summary>日志</summary>
         </member>
-        <member name="F:YanLib.YanLib.settings">
+        <member name="F:YanLib.YanLib.Settings">
             <summary>Yan Lib 的设置</summary>
+        </member>
+        <member name="F:YanLib.YanLib.DebugMode">
+            <summary>
+            Debug 模式
+            </summary>
         </member>
         <member name="F:YanLib.YanLib.ToggleUI">
             <summary>
             开/关 UI
             </summary>
         </member>
-        <member name="T:YanLib.TypeConverterSupporter">
+        <member name="M:YanLib.YanLib.Initialize">
             <summary>
-            转换器支持
+            Mod 初始化
+            </summary>
+        </member>
+        <member name="M:YanLib.YanLib.Dispose">
+            <summary>
+            禁用 Mod 的时候调用
             </summary>
         </member>
         <member name="T:YanLib.MGOInfoAttribute">
@@ -344,6 +164,445 @@
             Transpiler
             </summary>
         </member>
+        <member name="T:YanLib.ModHelper.ConfigDefinition">
+            <summary>
+            Definitions with same section and key are equal.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.#ctor(System.String,System.String)">
+            <summary>
+                Create a new definition. Definitions with same section and key are equal.
+            </summary>
+            <param name="section">Group of the setting, case sensitive.</param>
+            <param name="key">Name of the setting, case sensitive.</param>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigDefinition.Section">
+            <summary>
+                Group of the setting. All settings within a config file are grouped by this.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigDefinition.Key">
+            <summary>
+                Name of the setting.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.Equals(YanLib.ModHelper.ConfigDefinition)">
+            <summary>
+                Check if the definitions are the same.
+            </summary>
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.Equals(System.Object)">
+            <summary>
+                Check if the definitions are the same.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.op_Equality(YanLib.ModHelper.ConfigDefinition,YanLib.ModHelper.ConfigDefinition)">
+            <summary>
+                Check if the definitions are the same.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.op_Inequality(YanLib.ModHelper.ConfigDefinition,YanLib.ModHelper.ConfigDefinition)">
+            <summary>
+                Check if the definitions are the same.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDefinition.ToString">
+            <inheritdoc />
+        </member>
+        <member name="T:YanLib.ModHelper.ConfigDescription">
+            <summary>
+                Metadata of a <see cref="T:YanLib.ModHelper.ConfigEntryBase" />.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigDescription.#ctor(System.String,YanLib.ModHelper.AcceptableValueBase,System.Object[])">
+            <summary>
+                Create a new description.
+            </summary>
+            <param name="description">Text describing the function of the setting and any notes or warnings.</param>
+            <param name="acceptableValues">
+                Range of values that this setting can take. The setting's value will be automatically
+                clamped.
+            </param>
+            <param name="tags">Objects that can be used by user-made classes to add functionality.</param>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigDescription.Description">
+            <summary>
+                Text describing the function of the setting and any notes or warnings.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigDescription.AcceptableValues">
+            <summary>
+                Range of acceptable values for a setting.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigDescription.Tags">
+            <summary>
+                Objects that can be used by user-made classes to add functionality.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigDescription.Empty">
+            <summary>
+                An empty description.
+            </summary>
+        </member>
+        <member name="T:YanLib.ModHelper.AcceptableValueBase">
+            <summary>
+                Base type of all classes representing and enforcing acceptable values of config settings.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.AcceptableValueBase.#ctor(System.Type)">
+            <param name="valueType">Type of values that this class can Clamp.</param>
+        </member>
+        <member name="P:YanLib.ModHelper.AcceptableValueBase.ValueType">
+            <summary>
+                Type of the supported values.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.AcceptableValueBase.Clamp(System.Object)">
+            <summary>
+                Change the value to be acceptable, if it's not already.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.AcceptableValueBase.IsValid(System.Object)">
+            <summary>
+                Check if the value is an acceptable value.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.AcceptableValueBase.ToDescriptionString">
+            <summary>
+                Get the string for use in config files.
+            </summary>
+        </member>
+        <member name="T:YanLib.ModHelper.ConfigEntry`1">
+            <summary>
+                Provides access to a single setting inside of a <see cref="T:YanLib.ModHelper.ConfigFile" />.
+            </summary>
+            <typeparam name="T">Type of the setting.</typeparam>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntry`1.Value">
+            <summary>
+                Value of this setting.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntry`1.BoxedValue">
+            <inheritdoc />
+        </member>
+        <member name="E:YanLib.ModHelper.ConfigEntry`1.SettingChanged">
+            <summary>
+                Fired when the setting is changed. Does not detect changes made outside from this object.
+            </summary>
+        </member>
+        <member name="T:YanLib.ModHelper.ConfigEntryBase">
+            <summary>
+                Container for a single setting of a <see cref="P:YanLib.ModHelper.ConfigEntryBase.ConfigFile" />.
+                Each config entry is linked to one config file.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigEntryBase.#ctor(YanLib.ModHelper.ConfigFile,YanLib.ModHelper.ConfigDefinition,System.Type,System.Object,YanLib.ModHelper.ConfigDescription)">
+            <summary>
+                Types of defaultValue and definition.AcceptableValues have to be the same as settingType.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntryBase.ConfigFile">
+            <summary>
+                Config file this entry is a part of.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntryBase.Definition">
+            <summary>
+                Category and name of this setting. Used as a unique key for identification within a
+                <see cref="P:YanLib.ModHelper.ConfigEntryBase.ConfigFile" />.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntryBase.Description">
+            <summary>
+                Description / metadata of this setting.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntryBase.SettingType">
+            <summary>
+                Type of the <see cref="P:YanLib.ModHelper.ConfigEntryBase.BoxedValue" /> that this setting holds.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntryBase.DefaultValue">
+            <summary>
+                Default value of this setting (set only if the setting was not changed before).
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigEntryBase.BoxedValue">
+            <summary>
+                Get or set the value of the setting.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigEntryBase.ClampValue``1(``0)">
+            <summary>
+                If necessary, clamp the value to acceptable value range. T has to be equal to settingType.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigEntryBase.OnSettingChanged(System.Object)">
+            <summary>
+                Trigger setting changed event.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigEntryBase.SetSerializedValue(System.String)">
+            <summary>
+                Set the value by using its serialized form.
+            </summary>
+            <param name="value">Json Text</param>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigEntryBase.GetSerializedValue">
+            <summary>
+                Get the serialized representation of the value.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigEntryBase.WriteDescription(System.IO.StreamWriter)">
+            <summary>
+                Write a description of this setting using all available metadata.
+            </summary>
+        </member>
+        <member name="T:YanLib.ModHelper.ConfigFile">
+            <summary>
+                配置文件。
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.#ctor(System.String,System.Boolean)">
+            <inheritdoc cref="M:YanLib.ModHelper.ConfigFile.#ctor(System.String,System.Boolean,YanLib.ModHelper.ModHelper)" />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.#ctor(System.String,System.Boolean,YanLib.ModHelper.ModHelper)">
+            <summary>
+                Create a new config file at the specified config path.
+            </summary>
+            <param name="configPath">Full path to a file that contains settings. The file will be created as needed.</param>
+            <param name="saveOnInit">If the config file/directory doesn't exist, create it immediately.</param>
+            <param name="ownerMetadata">Information about the plugin that owns this setting file.</param>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.CoreConfig">
+            <summary>
+                System Config
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.Entries">
+            <summary>
+                All config entries inside
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.ConfigFilePath">
+            <summary>
+                Full path to the config file. The file might not exist until a setting is added and changed, or <see cref="M:YanLib.ModHelper.ConfigFile.Save" />
+                is called.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.SaveOnConfigSet">
+            <summary>
+                If enabled, writes the config to disk every time a value is set.
+                If disabled, you have to manually use <see cref="M:YanLib.ModHelper.ConfigFile.Save" /> or the changes will be lost!
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.Item(YanLib.ModHelper.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.Item(System.String,System.String)">
+            <summary>
+            </summary>
+            <param name="section"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Contains(System.Collections.Generic.KeyValuePair{YanLib.ModHelper.ConfigDefinition,YanLib.ModHelper.ConfigEntryBase})">
+            <inheritdoc />
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.ContainsKey(YanLib.ModHelper.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Add(YanLib.ModHelper.ConfigDefinition,YanLib.ModHelper.ConfigEntryBase)">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Remove(YanLib.ModHelper.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Clear">
+            <inheritdoc />
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.System#Collections#Generic#IDictionary{YanLib#ModHelper#ConfigDefinition,YanLib#ModHelper#ConfigEntryBase}#Item(YanLib.ModHelper.ConfigDefinition)">
+            <inheritdoc />
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.Keys">
+            <summary>
+                Returns the ConfigDefinitions that the ConfigFile contains.
+                <para>Creates a new array when the property is accessed. Thread-safe.</para>
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.Values">
+            <summary>
+                Returns the ConfigEntryBase values that the ConfigFile contains.
+                <para>Creates a new array when the property is accessed. Thread-safe.</para>
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.ConfigFile.GenerateSettingDescriptions">
+            <summary>
+                Generate user-readable comments for each of the settings in the saved .json file.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Reload">
+            <summary>
+                Reloads the config from disk. Unsaved changes are lost.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Save">
+            <summary>
+                Writes the config to disk.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.TryGetEntry``1(YanLib.ModHelper.ConfigDefinition,YanLib.ModHelper.ConfigEntry{``0}@)">
+            <summary>
+                Access one of the existing settings. If the setting has not been added yet, false is returned. Otherwise, true.
+                If the setting exists but has a different type than T, an exception is thrown.
+                New settings should be added with
+                <see cref="M:YanLib.ModHelper.ConfigFile.Bind``1(YanLib.ModHelper.ConfigDefinition,``0,YanLib.ModHelper.ConfigDescription)" />.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="configDefinition">Section and Key of the setting.</param>
+            <param name="entry">The ConfigEntry value to return.</param>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.TryGetEntry``1(System.String,System.String,YanLib.ModHelper.ConfigEntry{``0}@)">
+            <summary>
+                Access one of the existing settings. If the setting has not been added yet, null is returned.
+                If the setting exists but has a different type than T, an exception is thrown.
+                New settings should be added with
+                <see cref="M:YanLib.ModHelper.ConfigFile.Bind``1(YanLib.ModHelper.ConfigDefinition,``0,YanLib.ModHelper.ConfigDescription)" />.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
+            <param name="key">Name of the setting.</param>
+            <param name="entry">The ConfigEntry value to return.</param>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Bind``1(YanLib.ModHelper.ConfigDefinition,``0,YanLib.ModHelper.ConfigDescription)">
+            <summary>
+                Create a new setting. The setting is saved to drive and loaded automatically.
+                Each definition can be used to add only one setting, trying to add a second setting will throw an exception.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="configDefinition">Section and Key of the setting.</param>
+            <param name="defaultValue">Value of the setting if the setting was not created yet.</param>
+            <param name="configDescription">Description of the setting shown to the user and other metadata.</param>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Bind``1(System.String,System.String,``0,YanLib.ModHelper.ConfigDescription)">
+            <summary>
+                Create a new setting. The setting is saved to drive and loaded automatically.
+                Each section and key pair can be used to add only one setting, trying to add a second setting will throw an
+                exception.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
+            <param name="key">Name of the setting.</param>
+            <param name="defaultValue">Value of the setting if the setting was not created yet.</param>
+            <param name="configDescription">Description of the setting shown to the user and other metadata.</param>
+        </member>
+        <member name="M:YanLib.ModHelper.ConfigFile.Bind``1(System.String,System.String,``0,System.String)">
+            <summary>
+                Create a new setting. The setting is saved to drive and loaded automatically.
+                Each section and key pair can be used to add only one setting, trying to add a second setting will throw an
+                exception.
+            </summary>
+            <typeparam name="T">Type of the value contained in this setting.</typeparam>
+            <param name="section">Section/category/group of the setting. Settings are grouped by this.</param>
+            <param name="key">Name of the setting.</param>
+            <param name="defaultValue">Value of the setting if the setting was not created yet.</param>
+            <param name="description">Simple description of the setting shown to the user.</param>
+        </member>
+        <member name="E:YanLib.ModHelper.ConfigFile.ConfigReloaded">
+            <summary>
+                An event that is fired every time the config is reloaded.
+            </summary>
+        </member>
+        <member name="E:YanLib.ModHelper.ConfigFile.SettingChanged">
+            <summary>
+                Fired when one of the settings is changed.
+            </summary>
+        </member>
+        <member name="T:YanLib.ModHelper.KeyboardShortcut">
+            <summary>
+                A keyboard shortcut that can be used in Update method to check if user presses a key combo. The shortcut is only
+                triggered when the user presses the exact combination. For example, <c>F + LeftCtrl</c> will trigger only if user
+                presses and holds only LeftCtrl, and then presses F. If any other keys are pressed, the shortcut will not trigger.
+                How to use: Use <see cref="M:YanLib.ModHelper.KeyboardShortcut.IsDown" /> in this class instead of <see cref="M:UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode)" /> in the
+                Update loop.
+            </summary>
+        </member>
+        <member name="F:YanLib.ModHelper.KeyboardShortcut.Empty">
+            <summary>
+                Shortcut that never triggers.
+            </summary>
+        </member>
+        <member name="F:YanLib.ModHelper.KeyboardShortcut.AllKeyCodes">
+            <summary>
+                All KeyCode values that can be used in a keyboard shortcut.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.#ctor(UnityEngine.KeyCode,UnityEngine.KeyCode[])">
+            <summary>
+                Create a new keyboard shortcut.
+            </summary>
+            <param name="mainKey">Main key to press</param>
+            <param name="modifiers">Keys that should be held down before main key is registered</param>
+        </member>
+        <member name="P:YanLib.ModHelper.KeyboardShortcut.MainKey">
+            <summary>
+                Main key of the key combination. It has to be pressed / let go last for the combination to be triggered.
+                If the combination is empty, <see cref="F:UnityEngine.KeyCode.None" /> is returned.
+            </summary>
+        </member>
+        <member name="P:YanLib.ModHelper.KeyboardShortcut.Modifiers">
+            <summary>
+                Modifiers of the key combination, if any.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.Deserialize(System.String)">
+            <summary>
+                Attempt to deserialize key combination from the string.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.Serialize">
+            <summary>
+                Serialize the key combination into a user readable string.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.IsDown">
+            <summary>
+                Check if the main key was just pressed (Input.GetKeyDown), and specified modifier keys are all pressed
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.IsPressed">
+            <summary>
+                Check if the main key is currently held down (Input.GetKey), and specified modifier keys are all pressed
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.IsUp">
+            <summary>
+                Check if the main key was just lifted (Input.GetKeyUp), and specified modifier keys are all pressed.
+            </summary>
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.KeyboardShortcut.GetHashCode">
+            <inheritdoc />
+        </member>
         <member name="T:YanLib.ModHelper.ModHelper">
             <summary>
             用来方便 Mod 工作的
@@ -351,32 +610,32 @@
         </member>
         <member name="P:YanLib.ModHelper.ModHelper.GUID">
             <summary>
-            Mod 的 GUID
+                Mod 的 GUID
             </summary>
         </member>
         <member name="P:YanLib.ModHelper.ModHelper.Name">
             <summary>
-            Mod 的名字
+                Mod 的名字
             </summary>
         </member>
-        <member name="F:YanLib.ModHelper.ModHelper.SaveData">
+        <member name="P:YanLib.ModHelper.ModHelper.Version">
             <summary>
-            游戏存档时调用
+                Mod 的版本
             </summary>
         </member>
-        <member name="F:YanLib.ModHelper.ModHelper.NewData">
+        <member name="P:YanLib.ModHelper.ModHelper.Config">
             <summary>
-            新建游戏时调用
-            </summary>
-        </member>
-        <member name="F:YanLib.ModHelper.ModHelper.LoadData">
-            <summary>
-            加载存档时调用
+                配置文件
             </summary>
         </member>
         <member name="P:YanLib.ModHelper.ModHelper.SettingUI">
             <summary>
-            Mod 的设置
+                Mod 的设置 UI
+            </summary>
+        </member>
+        <member name="F:YanLib.ModHelper.ModHelper.OnUpdate">
+            <summary>
+                在 Unity Update 中调用
             </summary>
         </member>
         <member name="M:YanLib.ModHelper.ModHelper.#ctor(System.String,System.String)">
@@ -386,12 +645,27 @@
             <param name="_GUID">Mod 的 GUID</param>
             <param name="ModName">Mod 显示的名字</param>
         </member>
-        <member name="M:YanLib.ModHelper.ModHelper.GetActorDataKey(System.Int32)">
+        <member name="M:YanLib.ModHelper.ModHelper.AddKeyboardShortcutListener(YanLib.ModHelper.KeyboardShortcut,System.Action)">
             <summary>
-            返回一个专属的 Key 用以储存信息
+            添加监听的快捷键，全局有效
             </summary>
-            <param name="Key">Mod 内部使用的 Key 值，例如 1 2 3</param>
-            <returns></returns>
+            <param name="shortcut">快捷键</param>
+            <param name="action">回调函数</param>
+            <returns>false 是添加失败，true 则为添加成功</returns>
+        </member>
+        <member name="T:YanLib.ModHelper.SettingChangedEventArgs">
+            <summary>
+                Arguments for events concerning a change of a setting.
+            </summary>
+            <inheritdoc />
+        </member>
+        <member name="M:YanLib.ModHelper.SettingChangedEventArgs.#ctor(YanLib.ModHelper.ConfigEntryBase)">
+            <inheritdoc />
+        </member>
+        <member name="P:YanLib.ModHelper.SettingChangedEventArgs.ChangedSetting">
+            <summary>
+                Setting that was changed
+            </summary>
         </member>
         <member name="T:YanLib.UI.SettingUI">
             <summary>

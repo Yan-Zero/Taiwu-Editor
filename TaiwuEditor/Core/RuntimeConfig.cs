@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using TaiwuUIKit.GameObjects;
 using UnityUIKit.GameObjects;
 using YanLib;
@@ -13,13 +14,13 @@ namespace TaiwuEditor
 {
     public static class RuntimeConfig
     {
-        public static TaiwuEditor TaiwuEditor;
+        //public static TaiwuEditor TaiwuEditor;
         public static MethodInfo SetNeedRange;
         public static bool DebugMode = false;
 
         public static void Init()
         {
-            SetNeedRange = AccessTools.Method(typeof(BattleSystem), "SetNeedRange");
+            //SetNeedRange = AccessTools.Method(typeof(BattleSystem), "SetNeedRange");
         }
 
         public static class UI_Config
@@ -39,7 +40,6 @@ namespace TaiwuEditor
             /// Main Windows
             /// </summary>
             public static TaiwuWindows windows;
-
         }
 
         public static class UI_Tab_Instance

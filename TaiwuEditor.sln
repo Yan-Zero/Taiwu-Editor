@@ -1,28 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaiwuEditor", "TaiwuEditor\TaiwuEditor.csproj", "{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaiwuEditor", "TaiwuEditor\TaiwuEditor.csproj", "{72FAC857-FD8B-458D-B668-8DF3C9F73C3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Harmony12-Release|Any CPU = Harmony12-Release|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}.Harmony12-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}.Harmony12-Release|Any CPU.Build.0 = Release|Any CPU
-		{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FFEE51B-6619-4AEF-BBE4-BF1585257F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72FAC857-FD8B-458D-B668-8DF3C9F73C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72FAC857-FD8B-458D-B668-8DF3C9F73C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72FAC857-FD8B-458D-B668-8DF3C9F73C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72FAC857-FD8B-458D-B668-8DF3C9F73C3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EEAF5F50-6D36-4F30-9D6C-A1EAAF81670C}
+		SolutionGuid = {4B31F962-4948-48FC-8A04-8B7BC67055E4}
 	EndGlobalSection
 EndGlobal

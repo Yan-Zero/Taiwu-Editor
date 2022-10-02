@@ -7,7 +7,6 @@ using TaiwuUIKit.GameObjects;
 using UnityUIKit.GameObjects;
 using UnityEngine;
 using UnityUIKit.Core;
-using TaiwuEditor.MGO;
 using UnityUIKit.Core.GameObjects;
 
 namespace TaiwuEditor.Script
@@ -86,40 +85,40 @@ namespace TaiwuEditor.Script
                 }
             };
 
-            foreach(var i in value)
+            foreach (var i in value)
             {
-                ItemShowerHandle.Children.Add(new ItemShower
-                {
-                    Name = $"ItemID-{i[999]}",
-                    Item = i
-                });
+                //ItemShowerHandle.Children.Add(new ItemShower
+                //{
+                //    Name = $"ItemID-{i[999]}",
+                //    Item = i
+                //});
             }
             valueHander.Add(ItemShowerHandle.Name, ItemShowerHandle);
         }
 
         private List<Dictionary<int, string>> searchItem(string NameOrID)
         {
-            var result = new Dictionary<int,Dictionary<int, string>>();
-            if (string.IsNullOrEmpty(NameOrID))
-                return new List<Dictionary<int, string>>();
+            var result = new Dictionary<int, Dictionary<int, string>>();
+            //if (string.IsNullOrEmpty(NameOrID))
+            //    return new List<Dictionary<int, string>>();
 
-            if (int.TryParse(NameOrID, out int Id))
-            {
-                if (DateFile.instance.presetitemDate.TryGetValue(Id, out var i))
-                {
-                    if (i[4] != "0")
-                        result[Id] = i;
-                }
-            }
+            //if (int.TryParse(NameOrID, out int Id))
+            //{
+            //    if (DateFile.instance.presetitemDate.TryGetValue(Id, out var i))
+            //    {
+            //        if (i[4] != "0")
+            //            result[Id] = i;
+            //    }
+            //}
 
-            foreach (var i in DateFile.instance.presetitemDate.Keys)
-            {
-                if(DateFile.instance.presetitemDate[i][0].Contains(NameOrID))
-                {
-                    if(DateFile.instance.presetitemDate[i][4] != "0")
-                        result[i] = DateFile.instance.presetitemDate[i];
-                }
-            }
+            //foreach (var i in DateFile.instance.presetitemDate.Keys)
+            //{
+            //    if (DateFile.instance.presetitemDate[i][0].Contains(NameOrID))
+            //    {
+            //        if (DateFile.instance.presetitemDate[i][4] != "0")
+            //            result[i] = DateFile.instance.presetitemDate[i];
+            //    }
+            //}
 
             return result.Values.ToList();
         }

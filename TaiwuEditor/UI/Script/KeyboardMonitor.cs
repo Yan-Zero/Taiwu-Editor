@@ -1,5 +1,4 @@
-﻿using BepInEx.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaiwuUIKit.GameObjects;
 using UnityEngine;
+using YanLib.ModHelper;
 
 namespace TaiwuEditor.Script
 {
@@ -30,7 +30,7 @@ namespace TaiwuEditor.Script
                     Monitored = false;
                     KeyCodes = new Dictionary<KeyCode, bool>();
                     FinalKey = KeyCode.None;
-                    Button.Text = "修改快捷键";
+                    (Button as TaiwuButton).Text = "修改快捷键";
                 }
                 else
                     foreach (var i in KeyboardShortcut.AllKeyCodes)
@@ -56,18 +56,17 @@ namespace TaiwuEditor.Script
 
         public void SetHotkey()
         {
-            var filed = HotkeyField.GetValue(TaiwuEditor.settings.Hotkey) as ConfigEntry<KeyboardShortcut>;
+            var filed = HotkeyField.GetValue(TaiwuEditor.settings.Hotkey) as KeyboardShortcut?;
+            filed = filed ?? KeyboardShortcut.Empty;
             List<KeyCode> Modifiers = new List<KeyCode>();
             KeyCodes[FinalKey] = false;
             foreach (var i in KeyCodes)
-            {
                 if (i.Value)
                     Modifiers.Add(i.Key);
-            }
-            filed.Value = new KeyboardShortcut(FinalKey, Modifiers.ToArray());
+            filed = new KeyboardShortcut(FinalKey, Modifiers.ToArray());
 
             ValueLabel.Text = UI.EditorUI.HotkeyUI.Hotkey_ToString(filed.Value);
-            Button.Text = "修改快捷键";
+            (Button as TaiwuButton).Text = "修改快捷键";
             FinalKey = KeyCode.None;
             KeyCodes = new Dictionary<KeyCode, bool>();
         }
@@ -80,14 +79,14 @@ namespace TaiwuEditor.Script
                 HotkeyField = ConfigField;
                 ValueLabel = Label;
                 Button = bt;
-                bt.Text = "请按下按键";
+                (bt as TaiwuButton).Text = "请按下按键";
             }
             else
             {
                 Monitored = false;
                 KeyCodes = new Dictionary<KeyCode, bool>();
                 FinalKey = KeyCode.None;
-                Button.Text = "修改快捷键";
+                (Button as TaiwuButton).Text = "修改快捷键";
             }
         }
     }

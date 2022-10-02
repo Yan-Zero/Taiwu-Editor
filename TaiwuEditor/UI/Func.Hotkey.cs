@@ -1,18 +1,17 @@
-﻿using BepInEx.Configuration;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaiwuEditor.MGO;
 using TaiwuEditor.Script;
 using TaiwuUIKit.GameObjects;
 using UnityEngine;
 using UnityUIKit.Core;
 using UnityUIKit.Core.GameObjects;
 using UnityUIKit.GameObjects;
+using YanLib.ModHelper;
 
 namespace TaiwuEditor.UI
 {
@@ -31,7 +30,7 @@ namespace TaiwuEditor.UI
                 foreach (var i in AccessTools.GetFieldNames(HotkeyConfig))
                 {
                     var Field = AccessTools.Field(HotkeyConfig.GetType(), i);
-                    if (Field.FieldType == typeof(ConfigEntry<KeyboardShortcut>))
+                    if (Field.FieldType == typeof(KeyboardShortcut))
                     {
                         var Container = new Container
                         {
@@ -50,9 +49,7 @@ namespace TaiwuEditor.UI
                                 new TaiwuLabel
                                 {
                                     Name = "TitleLabel",
-                                    Text = (Field.GetValue(HotkeyConfig) as ConfigEntry<KeyboardShortcut>).Description.Description,
-                                    UseBoldFont = true,
-                                    UseOutline = true,
+                                    Text = (Field.GetValue(HotkeyConfig) as ConfigEntry<KeyboardShortcut>)?.Description.Description,
                                     Element =
                                     {
                                         PreferredSize = { 200 , 0}
@@ -61,8 +58,8 @@ namespace TaiwuEditor.UI
                                 new TaiwuLabel
                                 {
                                     Name = "ValueLabel",
-                                    Text = Hotkey_ToString((Field.GetValue(HotkeyConfig) as ConfigEntry<KeyboardShortcut>).Value),
-                                    BackgroundStyle = TaiwuLabel.Style.Value
+                                    Text = (Field.GetValue(HotkeyConfig) as ConfigEntry<KeyboardShortcut>)?.Value.ToString(),
+                                    LableStyle = TaiwuLabel.Style.None
                                 },
                                 new TaiwuButton
                                 {
@@ -72,7 +69,6 @@ namespace TaiwuEditor.UI
                                     {
                                         PreferredSize = { 200 , 0 }
                                     },
-                                    UseBoldFont = true,
                                     OnClick = (Button bt) =>
                                     {
                                         var KeyboardMonitor = Func_Hotkey_Scroll.Get<KeyboardMonitor>();
